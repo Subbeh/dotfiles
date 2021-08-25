@@ -1,0 +1,86 @@
+# various
+alias sudo='sudo '
+alias ffs='sudo !!'
+alias vi=vim
+alias go=xdg-open
+alias h='history 0'
+alias c=cat
+alias b=bat
+alias g='grep -i'
+alias pa='ps -eaf'
+alias pb="curl -F 'f:1=<-' ix.io"
+alias lip='curl ifconfig.me'
+alias rb='sudo systemctl restart bluetooth.service'
+alias dot="$HOME/.dotfiles/dot"
+alias x="startx $XDG_CONFIG_HOME/x11/xinitrc -- -keeptty &> $XDG_CACHE_HOME/.xorg.log"
+alias dm="dmenu_run -nb '#303030' -nf '#b2b2b2' -sf '#444444' -sb '#d7afd7' -h 22 -p dmenu: -dim 0.5 -i -q -fn 'Misc Tamzen:size=10'"
+alias xc="xclip -selection clipboard"
+if [[ $PSHELL =~ zsh ]] ; then
+  alias -g Z='| fzf'
+  alias -g L='| less'
+  alias -g G='| grep'
+fi
+
+# packages
+alias pacman='sudo pacman'
+updatepac='sudo pacman -Syyu'
+updateaur='yay -Sua --noconfirm'
+updateall='yay'
+cleanup='sudo pacman -Rns $(pacman -Qtdq)'
+
+# navigation
+alias ..='cd ..' 
+alias ...='cd ../..'
+alias l='ls -l --color'
+alias ll='ls -la --color'
+alias lt='ls -ltra --color'
+alias cdt='cd /data/temp'
+alias cdd='cd /data'
+alias cddd='cd /data/downloads'
+alias cdw='cd /data/workspace'
+alias cdp='cd /data/programfiles'
+alias cd.="cd $DOT"
+
+# git
+alias gs='git status'
+alias ga='git add'
+alias gaa='git add --all'
+alias gau='git add -u'
+alias gp='git push'
+alias gpo='git push origin'
+alias gtd='git tag --delete'
+alias gtdr='git tag --delete origin'
+alias gr='git branch -r'
+alias gplo='git pull origin'
+alias gb='git branch '
+alias gc='git commit -m'
+alias gd='git diff'
+alias gco='git checkout '
+alias gl='git log'
+alias gr='git remote'
+alias grs='git remote show'
+alias glo='git log --pretty="oneline"'
+alias glol='git log --graph --oneline --decorate'
+
+# dot files
+alias dl='dot load'
+alias dls='dot ls'
+alias ds='dot status'
+alias da='dot add'
+alias daa='dot add --all'
+alias dau='dot add -u'
+alias dp='dot push'
+alias dpo='dot push origin'
+alias dtd='dot tag --delete'
+alias dtdr='dot tag --delete origin'
+alias dr='dot branch -r'
+alias dplo='dot pull origin'
+alias db='dot branch '
+alias dc='dot commit -m'
+alias dd='dot diff'
+alias dco='dot checkout '
+alias dlg='dot log'
+alias dr='dot remote'
+alias drs='dot remote show'
+alias dlo='dot log --pretty="oneline"'
+alias dlol='dot log --graph --oneline --decorate'

@@ -1,0 +1,7 @@
+[user]
+	email = steven001@gmail.com
+	name = Steven
+[credential]
+	helper = cache --timeout=3600
+[diff]
+	ignoreSubmodules = dirty

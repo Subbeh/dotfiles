@@ -1,0 +1,22 @@
+! Colorscheme
+  
+#include </home/sysadm/.config/colorschemes/luciusDark>
+
+! URxvt
+  
+URxvt.scrollBar: false
+URxvt.lineSpace: 1
+URxvt.internalBorder: 24
+URxvt.font: xft:Neep:style=Regular:size=9
+URxvt.boldFont: xft:Neep:style=Bold:size=9
+URxvt.italicFont: xft:Neep:style=Italic:size=9
+URxvt.boldItalicFont: xft:Neep:style=Bold Italic:size=9
+URxvt.cursorUnderline: true
+
+! Perl
+URxvt.perl-ext-common: selection-to-clipboard,default,matcher
+URxvt.clipboard.autocopy: true
+URxvt.keysym.M-c: perl:clipboard:copy
+URxvt.keysym.M-v: perl:clipboard:paste
+URxvt.url-launcher: /usr/bin/xdg-open
+URxvt.matcher.button: 1

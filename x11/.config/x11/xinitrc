@@ -1,0 +1,45 @@
+#!/bin/sh
+#
+# Executed by startx (run your window manager from here)
+
+# start vbox services
+command -v VBoxClient-all && VBoxClient-all
+
+if [ -d /etc/X11/xinit/xinitrc.d ]; then
+  for f in /etc/X11/xinit/xinitrc.d/*; do
+    [ -x "$f" ] && . "$f"
+  done
+  unset f
+fi
+
+# load fonts
+for dir in $(find $XDG_DATA_HOME/fonts/ -type d) ; do 
+  xset +fp $dir
+done
+xset fp rehash
+
+# source files
+[ -f /etc/xprofile ] && . /etc/xprofile
+[ -f $XDG_CONFIG_HOME/x11/xprofile ] && . $XDG_CONFIG_HOME/x11/xprofile
+[ -f $XDG_CONFIG_HOME/x11/xresources ] && xrdb -merge -I$HOME $XDG_CONFIG_HOME/x11/xresources
+[ -f $XDG_CONFIG_HOME/x11/xmdmap ] && xmodmap $XDG_CONFIG_HOME/x11/xmodmap
+[ -f $XDG_CONFIG_HOME/x11/.xrandr ] && . $XDG_CONFIG_HOME/x11/.xrandr
+
+# set cursor
+command -v xsetroot && xsetroot -cursor_name left_ptr
+
+# start notification manager
+command -v dunst && dunst &
+
+# set wallpaper
+command -v nitrogen && nitrogen --restore &
+
+# start compositor
+picom -f &
+
+# start urxvt daemon
+command -v urxvtd && urxvtd &
+
+# start bspwm window manager
+exec bspwm 
+

@@ -1,0 +1,24 @@
+def=(
+  bin
+  bspwm
+  dmenu
+  dot
+  dunst
+  fonts
+  fzf
+  git
+  gtk
+  nitrogen
+  picom
+  polybar
+  profile
+  termite
+  tmux
+  vim
+  x11
+  zsh
+)
+
+root_def=(
+  root_pacman
+)

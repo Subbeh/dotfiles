@@ -1,0 +1,27 @@
+[submodule "zsh/.local/share/zsh/plugins/zsh-completions"]
+	path = zsh/.local/share/zsh/plugins/zsh-completions
+	url = git@github.com:zsh-users/zsh-completions.git
+[submodule "zsh/.local/share/zsh/plugins/zsh-syntax-highlighting"]
+	path = zsh/.local/share/zsh/plugins/zsh-syntax-highlighting
+	url = git@github.com:zsh-users/zsh-syntax-highlighting.git
+[submodule "zsh/.local/share/zsh/plugins/antigen"]
+	path = zsh/.local/share/zsh/plugins/antigen
+	url = git@github.com:zsh-users/antigen.git
+[submodule "dotmanager"]
+	path = dotmanager
+	url = git@github.com:Subbeh/dotmanager.git
+[submodule "secure"]
+	path = secure
+	url = git@github.com:Subbeh/dotfiles.secure.git
+[submodule "polybar/.config/polybar/scripts/timer"]
+	path = polybar/.config/polybar/scripts/timer
+	url = git@github.com:Subbeh/polytimer.git
+[submodule "polybar/.config/polybar/scripts/vpn"]
+	path = polybar/.config/polybar/scripts/vpn
+	url = git@github.com:Subbeh/nordvpn-polybar.git
+[submodule "polybar/.config/polybar/scripts/lifx"]
+	path = polybar/.config/polybar/scripts/lifx
+	url = git@github.com:Subbeh/polylifx.git
+[submodule "polybar/.config/polybar/scripts/date"]
+	path = polybar/.config/polybar/scripts/date
+	url = git@github.com:Subbeh/polydate.git
