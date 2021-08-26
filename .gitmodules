@@ -25,3 +25,6 @@
 [submodule "polybar/.config/polybar/scripts/date"]
 	path = polybar/.config/polybar/scripts/date
 	url = git@github.com:Subbeh/polydate.git
+[submodule "fonts/.local/share/fonts"]
+	path = fonts/.local/share/fonts
+	url = git@github.com:Subbeh/dotfiles.fonts.git
