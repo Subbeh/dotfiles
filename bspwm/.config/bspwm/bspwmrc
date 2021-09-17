@@ -28,3 +28,15 @@ bspc rule -a mpv desktop='^5' state=fullscreen follow=on
 bspc rule -a URxvt:scratchy sticky=on state=floating rectangle=widthxheight+Xoffset+Yoffset
 
 floating_noborder
+
+# Mouse bindings
+bspc config pointer_modifier shift
+
+#   Set mouse 1 to move floating windows
+bspc config pointer_action1 move
+
+#   Mouse 2 button resizes the window by side
+bspc config pointer_action2 resize_side
+
+#   Mouse 3 button (right mouse) resize by corner
+bspc config pointer_action2 resize_corner
