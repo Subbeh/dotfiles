@@ -23,9 +23,14 @@ bspc config borderless_monocle   true
 bspc config gapless_monocle      false
 bspc config single_monocle       true
 
-#bspc rule -a Brave-browser desktop='^2' follow=on
-bspc rule -a mpv desktop='^5' state=fullscreen follow=on
+# Window state configs
+bspc rule -a alsamixer state=floating focus=on
+bspc rule -a Nitrogen state=floating focus=on
+bspc rule -a Pavucontrol state=floating focus=on center=on
+bspc rule -a firefox state=floating follow=on
+bspc rule -a Brave-browser state=floating follow=on
 bspc rule -a URxvt:scratchy sticky=on state=floating rectangle=widthxheight+Xoffset+Yoffset
+bspc config external_rules_command "$HOME/.local/bin/bspwm-external-rules"
 
 floating_noborder
 
@@ -40,3 +45,6 @@ bspc config pointer_action2 resize_side
 
 #   Mouse 3 button (right mouse) resize by corner
 bspc config pointer_action2 resize_corner
+
+
+

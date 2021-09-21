@@ -2,8 +2,12 @@
 #
 # Executed by startx (run your window manager from here)
 
+# fix fonts
+#systemd-run --user --on-calendar '*:*:0/5' /home/sysadm/.local/bin/fontsfix
+pgrep -x fontsfix >/dev/null || fontsfix &
+
 # start vbox services
-command -v VBoxClient-all && VBoxClient-all
+command -v VBoxClient-all && $_
 
 if [ -d /etc/X11/xinit/xinitrc.d ]; then
   for f in /etc/X11/xinit/xinitrc.d/*; do
@@ -22,23 +26,26 @@ xset fp rehash
 [ -f /etc/xprofile ] && . /etc/xprofile
 [ -f $XDG_CONFIG_HOME/x11/xprofile ] && . $XDG_CONFIG_HOME/x11/xprofile
 [ -f $XDG_CONFIG_HOME/x11/xresources ] && xrdb -merge -I$HOME $XDG_CONFIG_HOME/x11/xresources
-[ -f $XDG_CONFIG_HOME/x11/xmdmap ] && xmodmap $XDG_CONFIG_HOME/x11/xmodmap
+[ -f $XDG_CONFIG_HOME/x11/xmodmap ] && xmodmap $XDG_CONFIG_HOME/x11/xmodmap
 [ -f $XDG_CONFIG_HOME/x11/.xrandr ] && . $XDG_CONFIG_HOME/x11/.xrandr
 
 # set cursor
-command -v xsetroot && xsetroot -cursor_name left_ptr
+command -v xsetroot && $_ -cursor_name left_ptr
+
+# turn on numlock
+command -v numlockx && $_ &
 
 # start notification manager
-command -v dunst && dunst &
+command -v dunst && $_ &
 
 # set wallpaper
-command -v nitrogen && nitrogen --restore &
+command -v nitrogen && $_ --restore &
 
 # start compositor
 picom -f &
 
 # start urxvt daemon
-command -v urxvtd && urxvtd &
+command -v urxvtd && $_ &
 
 # start bspwm window manager
 exec bspwm 

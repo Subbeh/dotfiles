@@ -17,6 +17,17 @@ alt + @space
 alt + Escape
 	pkill -USR1 -x sxhkd
 
+# Show help
+super + slash
+  sxhkd-help
+
+# Lock screen
+super + l
+  betterlockscreen -l dim 
+
+# Close screen
+super + shift + l
+    sleep 0.5; xset dpms force standby
 
 #
 # bspwm hotkeys
@@ -25,6 +36,10 @@ alt + Escape
 # quit/restart bspwm
 ctrl + alt + {q,r}
 	bspc {quit,wm -r}
+
+# Reload sxhkdrc
+super + shift + r
+    pkill -usr1 -x sxhkd; notify-send 'sxhkd' 'Reloaded config'
 
 # close and kill
 alt + {q,k}
@@ -103,6 +118,14 @@ ctrl + alt + shift + {1-9,0}
 #  bspc node -d {prev,next}.local
 #	bspc desktop -f {prev,next}.local
 
+# Send to desktop
+#super + shift + {1-9,0}
+#  bspc node -d '^{1-9,10}' --follow
+
+# Send to monitor
+#super + shift + equal
+#  bspc node -m last --follow
+
 
 #
 # preselect
@@ -140,3 +163,9 @@ super + alt + shift + {Left,Down,Up,Right}
 # move a floating window
 alt + {Left,Down,Up,Right}
 	bspc node -v {-20 0,0 20,0 -20,20 0}
+
+# Expand/contract a window by moving one of its side outward/inward
+#super + s : {h,j,k,l}
+#    STEP=20; SELECTION={1,2,3,4}; \
+#    bspc node -z $(echo "left -$STEP 0,bottom 0 $STEP,top 0 -$STEP,right $STEP 0" | cut -d',' -f$SELECTION) || \
+#    bspc node -z $(echo "right -$STEP 0,top 0 $STEP,bottom 0 -$STEP,left $STEP 0" | cut -d',' -f$SELECTION)

@@ -15,11 +15,18 @@ alias dot="$HOME/.dotfiles/dot"
 alias x="startx $XDG_CONFIG_HOME/x11/xinitrc -- -keeptty &> $XDG_CACHE_HOME/.xorg.log"
 alias dm="dmenu_run -nb '#303030' -nf '#b2b2b2' -sf '#444444' -sb '#d7afd7' -h 22 -p dmenu: -dim 0.5 -i -q -fn 'Misc Tamzen:size=10'"
 alias xc="xclip -selection clipboard"
+
+# global aliases
 if [[ $PSHELL =~ zsh ]] ; then
   alias -g Z='| fzf'
   alias -g L='| less'
   alias -g G='| grep'
 fi
+
+# suffix aliases
+alias -s {log,txt}=less
+alias -s pdf=firefox
+alias -s {mp4,MP4,mov,MOV}='vlc'
 
 # packages
 alias pacman='sudo pacman'

@@ -1,0 +1,6 @@
+#!/usr/bin/bash
+
+while true ; do
+  fc-list | grep -q neep || fc-cache -f
+  sleep 5
+done
