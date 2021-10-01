@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 count=0
-connected=""
+connected=""
+connected_wlan=""
 disconnected=""
 
 ID="$(ip link | awk '/state UP/ {print $2}')"
@@ -11,7 +12,7 @@ while true; do
         if [[ $ID == e* ]]; then
             echo "%{F#ff6666}$connected%{F-}" ; sleep 25
         else
-            echo "%{F#86d96c}$connected%{F-}" ; sleep 25
+            echo "%{F#86d96c}$connected_wlan%{F-}" ; sleep 25
         fi
     else
         echo "$disconnected Offline" ; sleep 5

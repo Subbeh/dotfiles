@@ -9,37 +9,41 @@ main() {
 
 update() {
   output=()
-  temps=$(sensors | grep Core | awk '{ print $3 }' | sed 's/^\+//')
-  while read temp ; do
-    output+=($(format_temp $temp))
-  done <<< $temps
-
+   while read temp ; do 
+    output+=($(format $temp))
+  done <<< $(sensors | awk '/^Core/{ print substr($3,2) }')
   output+=($(format_fan))
-
   echo "${output[*]}"
 }
 
-format_temp() {
+format() {
   temp=${1%%.*}
   if (($temp < 60)) ; then
-    color=689d6a    
+    #bg=aa303030
+    bg=afd787
+    fg=d7d7d7
   elif (($temp < 75)) ; then
-    color=de935f
+    bg=fcc92d
+    fg=303030
+  elif (($temp < 85)) ; then
+    bg=de935f
+    fg=303030
   else
-    color=cc241d
+    bg=ff5f5f
+    fg=303030
   fi
 
-  echo %{u#$color}%{+u}$temp°C%{-u}
+  echo "%{u#$bg}%{+u} $temp°C%{-u}"
 }
 
 format_fan() {
   for i in $(i8kfan) ; do
     case $i in
-      0) echo  ;;
       1) echo  ;;
       2) echo  ;;
     esac
   done
 }
 
-main $*
+
+main
