@@ -27,7 +27,7 @@ xset fp rehash
 [ -f $XDG_CONFIG_HOME/x11/xprofile ] && . $XDG_CONFIG_HOME/x11/xprofile
 [ -f $XDG_CONFIG_HOME/x11/xresources ] && xrdb -merge -I$HOME $XDG_CONFIG_HOME/x11/xresources
 [ -f $XDG_CONFIG_HOME/x11/xmodmap ] && xmodmap $XDG_CONFIG_HOME/x11/xmodmap
-[ -f $XDG_CONFIG_HOME/x11/.xrandr ] && . $XDG_CONFIG_HOME/x11/.xrandr
+[ -f $XDG_CONFIG_HOME/x11/xrandr ] && . $XDG_CONFIG_HOME/x11/xrandr
 
 # set cursor
 command -v xsetroot && $_ -cursor_name left_ptr

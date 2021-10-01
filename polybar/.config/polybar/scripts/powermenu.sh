@@ -58,7 +58,7 @@ case $chosen in
         ;;
     $lock)
 		if [[ -f /usr/bin/sflock ]]; then
-			sflock -f "neep-iso8859-9-14"
+			betterlockscreen -l dim
 		fi
         ;;
     $suspend)

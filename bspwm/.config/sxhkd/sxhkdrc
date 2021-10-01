@@ -114,9 +114,9 @@ ctrl + alt + {1-9,0}
 ctrl + alt + shift + {1-9,0}
     id=$(bspc query -N -n); bspc node -d ^{1-9,10}; bspc node -f ${id}
 
-#ctrl + alt + shift + {Left,Right}
-#  bspc node -d {prev,next}.local
-#	bspc desktop -f {prev,next}.local
+ctrl + alt + shift + {Left,Right}
+  bspc node -d {prev,next}.local
+	bspc desktop -f {prev,next}.local
 
 # Send to desktop
 #super + shift + {1-9,0}

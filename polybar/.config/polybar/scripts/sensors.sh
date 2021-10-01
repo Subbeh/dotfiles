@@ -13,12 +13,10 @@ update() {
   while read temp ; do
     output+=($(format_temp $temp))
   done <<< $temps
-  #echo "${output[*]}" | sed 's/ //g'
 
   output+=($(format_fan))
 
-  echo " ${output[*]}"
-  #echo $temps | paste -sd ' ' | sed 's/ / - /g'
+  echo "${output[*]}"
 }
 
 format_temp() {
@@ -37,9 +35,9 @@ format_temp() {
 format_fan() {
   for i in $(i8kfan) ; do
     case $i in
-      0) echo  ;;
-      1) echo  ;;
-      2) echo  ;;
+      0) echo  ;;
+      1) echo  ;;
+      2) echo  ;;
     esac
   done
 }

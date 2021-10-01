@@ -1,0 +1,9 @@
+displays=$(xrandr --listactivemonitors | awk 'NR>1 { print $NF }')
+
+# 3 screens
+if [[ $displays == *DP-2* && $displays == *eDP-1* && $displays == *DP-1* ]] ; then
+  xrandr --output eDP-1 --mode 1920x1080 --pos 3840x0 --rotate normal \
+         --output DP-1 --mode 1920x1080 --pos 0x0 --rotate normal \
+         --output DP-2 --primary --mode 1920x1080 --pos 1920x0 --rotate normal
+  export DISPLAY_ENV=home
+fi

@@ -7,7 +7,7 @@
 
 # Defaults for configurable values, expected to be set by command-line arguments
 AUTOSYNC="no"
-COLOR_MUTED="%{F#6b6b6b}"
+COLOR_MUTED="%{F#303030}"
 ICON_MUTED=
 ICON_SINK=
 NOTIFICATIONS="no"
