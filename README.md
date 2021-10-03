@@ -21,3 +21,8 @@ git submodule init && git submodule update
 cd ~/.dotfiles/fonts/.local/share/fonts
 git submodule init && git submodule update
 ```
+
+5. run `dot` to synchronize files
+```
+$HOME/.dotfiles/dot load -g -p
+```
