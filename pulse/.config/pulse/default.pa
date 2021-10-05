@@ -1,0 +1,4 @@
+update-sink-proplist alsa_output.usb-DisplayLink_Dell_Universal_Dock_D6000_1801300418-02.iec958-stereo device.description="monitor"
+update-sink-proplist alsa_output.pci-0000_00_1f.3.analog-stereo device.description="laptop"
+update-sink-proplist bluez_sink.00_42_79_B0_89_F3.a2dp_sink device.description="charge"
+

@@ -7,7 +7,7 @@ test -e $pipe && rm $pipe
 mkfifo -m 0600 $pipe
 
 declare -i brightness
-offclr=#aa303030 offclrfg=#d7d7d7
+offclr=#aa303030 offclrfg=#d7d7d7 clr=#de935f
 
 trap "trap - SIGTERM && rm -f $pipe && kill -- -$$" SIGINT SIGTERM EXIT
 
@@ -37,7 +37,7 @@ reset() {
 toggle() {
   ($CMD -T && $CMD -a) &> /dev/null &
   reset
-  wait %2 ; sleep 5
+  sleep 5
   status && update
 }
 
@@ -60,15 +60,15 @@ brightness() {
 status() {
   while read status ; do
     case $status in
-      *power*on*) bg=#de935f fg=$offclr ;;
-      *power*off*) bg=#aa303030 fg=$offclrfg ;;
+      *power*on*) bg=$clr fg=$offclr icon= ;;
+      *power*off*) bg=$offclr fg=$offclrfg icon=%{F$clr}%{F$fg} ;;
       *brightness*) brightness=$(echo $status | awk '-F[:,]' '{ print substr($2,0,5) *100 }') ;;
     esac
   done <<< $($CMD -a 2> /dev/null) 
 }
 
 update() {
-  echo "%{B$bg}%{F$fg}  ${brightness:+$brightness% }"
+  echo "%{B$bg}%{F$fg} $icon ${brightness:+$brightness% }"
 }
 
 main $*

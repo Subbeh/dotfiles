@@ -6,6 +6,9 @@ latte() { killall latte-dock && latte-dock & }
 # find files
 f() { find -iname "*$@*"; }
 
+# copy path
+xp() { echo -n $PWD | xclip }
+
 # restart process
 rs() {
   if command -v $1 ; then

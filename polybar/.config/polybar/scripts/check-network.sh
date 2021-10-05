@@ -15,6 +15,6 @@ while true; do
             echo "%{F#86d96c}$connected_wlan%{F-}" ; sleep 25
         fi
     else
-        echo "$disconnected Offline" ; sleep 5
+        echo "$disconnected" ; sleep 5
     fi
 done

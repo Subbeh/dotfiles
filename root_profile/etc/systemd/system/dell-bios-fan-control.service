@@ -1,0 +1,19 @@
+[Unit]
+Description=Simple tool to enable or disable the SMBIOS fan (auto) fan control on Dell laptops
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/dell-bios-fan-control 0
+RemainAfterExit=yes
+ExecStop=/usr/bin/dell-bios-fan-control 1
+StandardOutput=journal
+
+
+# The install section is needed to use
+# `systemctl enable` to start on boot
+# For a user service that you want to enable
+# and start automatically, use `default.target`
+# For system level services, use `multi-user.target`
+[Install]
+WantedBy=multi-user.target

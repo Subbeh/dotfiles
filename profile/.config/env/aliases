@@ -13,21 +13,22 @@ alias lip='curl ifconfig.me'
 alias rb='sudo systemctl restart bluetooth.service'
 alias dot="$HOME/.dotfiles/dot"
 alias x="startx $XDG_CONFIG_HOME/x11/xinitrc -- -keeptty &> $XDG_CACHE_HOME/.xorg.log"
-alias dm="dmenu_run -nb '#303030' -nf '#b2b2b2' -sf '#444444' -sb '#d7afd7' -h 22 -p dmenu: -dim 0.5 -i -q -fn 'Misc Tamzen:size=10'"
+alias dm="dmenu_run -nb '#303030' -nf '#b2b2b2' -sf '#444444' -sb '#d7afd7' -h 23 -p dmenu: -dim 0.5 -i -q -fn 'Misc Tamzen:size=10'"
 alias xc="xclip -selection clipboard"
-alias xp="echo -n $PWD | xclip"
 
-# global aliases
+# ZSH
 if [[ $PSHELL =~ zsh ]] ; then
+  # global aliases
   alias -g Z='| fzf'
   alias -g L='| less'
   alias -g G='| grep'
+  
+  # suffix aliases
+  alias -s {log,txt}=less
+  alias -s pdf=firefox
+  alias -s {mp4,MP4,mov,MOV}='vlc'
 fi
 
-# suffix aliases
-alias -s {log,txt}=less
-alias -s pdf=firefox
-alias -s {mp4,MP4,mov,MOV}='vlc'
 
 # packages
 alias pacman='sudo pacman'
@@ -42,6 +43,8 @@ alias ...='cd ../..'
 alias l='ls -l --color'
 alias ll='ls -la --color'
 alias lt='ls -ltra --color'
+alias cdc="cd $XDG_CONFIG_HOME"
+alias cdb="cd $HOME/.local/bin"
 alias cdt='cd /data/temp'
 alias cdd='cd /data'
 alias cddd='cd /data/downloads'
