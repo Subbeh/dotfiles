@@ -27,7 +27,13 @@ super + l
 
 # Close screen
 super + shift + l
-    sleep 0.5; xset dpms force standby
+  sleep 0.5; xset dpms force standby
+
+# Print screen
+@Print
+  scrot --select --line mode=edge -e 'mv $f ~/'
+ctrl + @Print
+  scrot -f -e 'mv $f ~/'
 
 #
 # bspwm hotkeys

@@ -7,7 +7,7 @@ latte() { killall latte-dock && latte-dock & }
 f() { find -iname "*$@*"; }
 
 # copy path
-xp() { echo -n $PWD | xclip }
+xp() { echo -n $PWD | xclip; }
 
 # restart process
 rs() {
@@ -56,3 +56,22 @@ src() {
 
 # mkdir & cd
 md() { [ $# = 1 ] && mkdir -p "$@" && cd "$@" || echo "Error - no directory passed!"; }
+
+# list all commands / functions / aliases / builtins
+lsk() {
+  for command in ${(k)commands} ; do
+    echo c: $command
+  done
+  for alias in ${(k)aliases} ; do
+    echo a: $alias
+  done
+  for function in ${(k)functions} ; do
+    echo f: $function
+  done
+  for builtin in ${(k)builtins} ; do
+    echo b: $builtin
+  done
+  for var in $(env) ; do
+    echo v: $var
+  done
+}

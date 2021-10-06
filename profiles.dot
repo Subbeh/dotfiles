@@ -1,8 +1,7 @@
 def=(
   bin
   bspwm
-  dmenu
-  dot
+  conky
   dunst
   fonts
   fzf
@@ -12,6 +11,8 @@ def=(
   picom
   polybar
   profile
+  pulse
+  rofi
   termite
   tmux
   vim
@@ -20,5 +21,5 @@ def=(
 )
 
 root_def=(
-  root
+  root_env
 )
