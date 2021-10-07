@@ -1,15 +1,18 @@
-displays=$(xrandr --listactivemonitors | awk 'NR>1 { print $NF }')
-
-# laptop screen
-if (($(echo $displays | wc -l) == 3)) ; then 
-  xrandr --output eDP-1 --primary --mode 1920x1080 --pos 0x0 --rotate normal
-  export DISPLAY_ENV=laptop
-fi
+set -x
+#displays=$(xrandr --listactivemonitors | awk 'NR>1 { print $NF }')
+displays=($(xrandr -q | awk '/ connected/ { print $1 }'))
 
 # 3 screens
-if [[ $displays == *DP-2* && $displays == *eDP-1* && $displays == *DP-1* ]] ; then
+if [[ " ${displays[*]} " =~ " eDP-1 " && " ${displays[*]} " =~ " DP-1 " && " ${displays[*]} " =~ " DP-2 " ]]; then
   xrandr --output eDP-1 --mode 1920x1080 --pos 3840x0 --rotate normal \
-         --output DP-1 --mode 1920x1080 --pos 0x0 --rotate normal \
-         --output DP-2 --primary --mode 1920x1080 --pos 1920x0 --rotate normal
+         --output DP-2 --mode 1920x1080 --pos 1920x0 --rotate normal --primary \
+         --output DP-1 --mode 1920x1080 --pos 0x0 --rotate normal
   export DISPLAY_ENV=home
+elif [[ " ${displays[*]} " =~ " eDP-1 " && " ${displays[*]} " =~ " DP-1 " ]]; then
+  xrandr --output eDP-1 --mode 1920x1080 --pos 1920x0 --rotate normal --primary \
+         --output DP-1 --mode 1920x1080 --pos 0x0 --rotate normal 
+  export DISPLAY_ENV=home_2
+elif [[ " ${displays[*]} " =~ " eDP-1 " ]]; then
+  xrandr --output eDP-1 --mode 1920x1080 --pos 0x0 --rotate normal --primary
+  export DISPLAY_ENV=laptop
 fi
