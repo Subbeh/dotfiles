@@ -60,18 +60,18 @@ md() { [ $# = 1 ] && mkdir -p "$@" && cd "$@" || echo "Error - no directory pass
 # list all commands / functions / aliases / builtins
 lsk() {
   for command in ${(k)commands} ; do
-    echo c: $command
+    echo c: $command | grep -i $1
   done
   for alias in ${(k)aliases} ; do
-    echo a: $alias
+    echo a: $alias | grep -i $1
   done
   for function in ${(k)functions} ; do
-    echo f: $function
+    echo f: $function | grep -i $1
   done
   for builtin in ${(k)builtins} ; do
-    echo b: $builtin
+    echo b: $builtin | grep -i $1
   done
   for var in $(env) ; do
-    echo v: $var
+    echo v: $var | grep -i $1
   done
 }

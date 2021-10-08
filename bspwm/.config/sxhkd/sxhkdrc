@@ -1,33 +1,48 @@
-#
-# wm independent hotkeys
-######
+# vim: set ft=sxhkdrc:
 
-F12
-   scratchy
-
-# terminal emulator
-super + Return
-  termite 
-
-# program launcher
-alt + @space
-  bash -ic 'dm'
-
-# make sxhkd reload its configuration files:
-alt + Escape
-	pkill -USR1 -x sxhkd
+########################
+## env                ##
+########################
 
 # Show help
 super + slash
   sxhkd-help
 
-# Lock screen
-super + l
-  betterlockscreen -l dim 
+# quit/restart bspwm
+ctrl + alt + {q,r}
+  bspc {quit,wm -r}; notify-send 'bspwm' 'reloaded config'
 
-# Close screen
+# reload sxhkd
+super + shift + r
+  pkill -usr1 -x sxhkd; notify-send 'sxhkd' 'reloaded config'
+
+# reload xrandr
+ctrl + alt + shift + r
+  source $XDG_CONFIG_HOME/x11/setxrandr; notify-send 'X11' 'reloaded config'
+
+# lock screen
+super + l
+  betterlockscreen -l dim
+
+# close screen
 super + shift + l
   sleep 0.5; xset dpms force standby
+
+########################
+## app                ##
+########################
+
+# terminal emulator
+super + Return
+  termite 
+
+# scratchpad
+F12
+   scratchy
+
+# dmenu
+alt + @space
+  bash -ic 'dm'
 
 # Print screen
 @Print
@@ -35,143 +50,112 @@ super + shift + l
 ctrl + @Print
   scrot -f -e 'mv $f ~/'
 
-#
-# bspwm hotkeys
-######
+########################
+## bspwm window       ##
+########################
 
-# quit/restart bspwm
-ctrl + alt + {q,r}
-	bspc {quit,wm -r}
-
-# Reload sxhkdrc
-super + shift + r
-    pkill -usr1 -x sxhkd; notify-send 'sxhkd' 'Reloaded config'
-
-# close and kill
-alt + {q,k}
-	bspc node -{c,k}
+# close/kill window
+alt + q
+  bspc node -c
 
 # alternate between the tiled and monocle layout
-alt + m
-	bspc desktop -l next
-
-
-#
-# window hotkeys
-######
-
-# send the newest marked node to the newest preselected node
-alt + y
-	bspc node newest.marked.local -n newest.!automatic.local
-
-# swap the current node and the biggest node
-alt + g
-	bspc node -s biggest
-
-
-#
-# state/flags
-######
+F10
+  bspc desktop -l next
 
 # set the window state
-alt + {t,shift + t,s,f}
-	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
+super + {t,shift + t,s,f}
+  bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
 
 # set the node flags
 alt + ctrl + {m,x,y,z}
-	bspc node -g {marked,locked,sticky,private}
+  bspc node -g {marked,locked,sticky,private}
 
+########################
+## bspwm navigation   ##
+########################
 
-#
-# focus/swap
-######
-
-# focus the node in the given direction
+# focus/swap the node in the given direction
 ctrl + {_,shift + }{Left,Down,Up,Right}
-	bspc node -{f,s} {west,south,north,east}
+  bspc node -{f,s} {west,south,north,east}
 
-# focus the node for the given path jump
-super + {p,b,comma,period}
-	bspc node -f @{parent,brother,first,second}
+# focus or send to the next/previous desktop
+ctrl + alt + {_,shift + } {Left,Right}
+  bspc {desktop -f,node -d} {prev,next} --follow
 
-# focus the next/previous node in the current desktop
-super + {_,shift + }c
-	bspc node -f {next,prev}.local
+# focus or send to the given desktop
+ctrl + alt + {_,shift + } {1-9,0}
+  bspc {desktop -f,node -d} '^{1-9,10}' --follow
 
-# focus the next/previous desktop in the current monitor
-ctrl + alt + {Left,Right}
-	bspc desktop -f {prev,next}.local
+# focus next/previous monitor
+ctrl + super + {_,shift + } {Right, Left}
+  bspc {monitor -f,node -m} {next, prev} --follow
+
+# cycle through nodes
+alt + {_,shift +} Tab
+  bspc node -f {next,prev}.local
 
 # focus the last node/desktop
 super + {grave,Tab}
-	bspc {node,desktop} -f last
+  bspc {node,desktop} -f last
 
 # focus the older or newer node in the focus history
 super + {o,i}
-	bspc wm -h off; \
-	bspc node {older,newer} -f; \
-	bspc wm -h on
+  bspc wm -h off; \
+  bspc node {older,newer} -f; \
+  bspc wm -h on
 
-# focus or send to the given desktop
-#super + {_,shift + }{1-9,0}
-#	bspc {desktop -f,node -d} '^{1-9,10}'
-ctrl + alt + {1-9,0}
-	bspc desktop -f '^{1-9,10}'
-ctrl + alt + shift + {1-9,0}
-    id=$(bspc query -N -n); bspc node -d ^{1-9,10}; bspc node -f ${id}
-
-ctrl + alt + shift + {Left,Right}
-  bspc node -d {prev,next}.local
-	bspc desktop -f {prev,next}.local
-
-# Send to desktop
-#super + shift + {1-9,0}
-#  bspc node -d '^{1-9,10}' --follow
-
-# Send to monitor
-#super + shift + equal
-#  bspc node -m last --follow
-
-
-#
-# preselect
-######
+########################
+## bspwm preselect    ##
+########################
 
 # preselect the direction
 super + ctrl + {Left,Down,Up,Right}
-	bspc node -p {west,south,north,east}
+  bspc node -p {west,south,north,east}
 
 # preselect the ratio
 super + ctrl + {1-9}
-	bspc node -o 0.{1-9}
+  bspc node -o 0.{1-9}
 
 # cancel the preselection for the focused node
 super + ctrl + space
-	bspc node -p cancel
+  bspc node -p cancel
 
 # cancel the preselection for the focused desktop
 super + ctrl + shift + space
-	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
+  bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
 
-
-#
-# move/resize
-######
+########################
+## bspwm preselect    ##
+########################
 
 # expand a window by moving one of its side outward
 super + alt + {Left,Down,Up,Right}
-	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
+  bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
 
 # contract a window by moving one of its side inward
 super + alt + shift + {Left,Down,Up,Right}
-	bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
+  bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
 
 # move a floating window
 super + {Left,Down,Up,Right}
-	bspc node -v {-20 0,0 20,0 -20,20 0}
+  bspc node -v {-20 0,0 20,0 -20,20 0}
 
-# Expand/contract a window by moving one of its side outward/inward
-#super + s : {h,j,k,l}
-#    STEP=20; SELECTION={1,2,3,4}; \
-#    bspc node -z $(echo "left -$STEP 0,bottom 0 $STEP,top 0 -$STEP,right $STEP 0" | cut -d',' -f$SELECTION) || \
-#    bspc node -z $(echo "right -$STEP 0,top 0 $STEP,bottom 0 -$STEP,left $STEP 0" | cut -d',' -f$SELECTION)
+########################
+## media              ##
+########################
+
+XF86AudioRaiseVolume
+  pactl set-sink-volume @DEFAULT_SINK@ +1000
+
+XF86AudioLowerVolume
+  pactl set-sink-volume @DEFAULT_SINK@ -1000
+
+XF86AudioMute
+  pactl set-sink-mute @DEFAULT_SINK@ toggle
+
+XF86Calculator
+  galculator
+
+#XF86MonBrightnessUp
+
+#XF86MonBrightnessDown
