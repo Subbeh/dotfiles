@@ -31,6 +31,7 @@ bspc rule -a Nitrogen state=floating focus=on
 bspc rule -a Pavucontrol state=floating focus=on center=on
 bspc rule -a firefox state=floating follow=on
 bspc rule -a Brave-browser state=floating follow=on
+bspc rule -a Chromium state=floating follow=on
 bspc rule -a Galculator state=floating follow=on
 bspc rule -a URxvt:scratchy sticky=on state=floating rectangle=1800x400+60+0
 bspc config external_rules_command "$HOME/.local/bin/bspwm-external-rules"

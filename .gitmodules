@@ -28,3 +28,6 @@
 [submodule "fonts/.local/share/fonts"]
 	path = fonts/.local/share/fonts
 	url = git@github.com:Subbeh/dotfiles.fonts.git
+[submodule "tmux/.config/tmux/plugins/tpm"]
+	path = tmux/.config/tmux/plugins/tpm
+	url = https://github.com/tmux-plugins/tpm
