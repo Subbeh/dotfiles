@@ -30,22 +30,22 @@ xset fp rehash
 [ -f $XDG_CONFIG_HOME/x11/setxrandr ] && . $XDG_CONFIG_HOME/x11/setxrandr
 
 # set cursor
-command -v xsetroot && $_ -cursor_name left_ptr
+command -v xsetroot && pgrep -x $_ || $_ -cursor_name left_ptr
 
 # turn on numlock
-command -v numlockx && $_ &
+command -v numlockx && pgrep -x $_ || $_ &
 
 # start notification manager
-command -v dunst && $_ &
+command -v dunst    && pgrep -x $_ || $_ &
 
 # set wallpaper
-command -v nitrogen && $_ --restore &
+command -v nitrogen && pgrep -x $_ || $_ --restore &
 
 # start compositor
-picom -f &
+command -v picom    && pgrep -x $_ || $_ -f &
 
 # start urxvt daemon
-command -v urxvtd && $_ &
+command -v urxvtd   && pgrep -x $_ || $_ &
 
 # start bspwm window manager
 exec bspwm 

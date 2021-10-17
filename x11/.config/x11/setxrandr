@@ -1,5 +1,4 @@
 set -x
-#displays=$(xrandr --listactivemonitors | awk 'NR>1 { print $NF }')
 displays=($(xrandr -q | awk '/ connected/ { print $1 }'))
 
 # 3 screens
