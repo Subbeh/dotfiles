@@ -19,7 +19,3 @@ def=(
   x11
   zsh
 )
-
-root_def=(
-  root_env
-)

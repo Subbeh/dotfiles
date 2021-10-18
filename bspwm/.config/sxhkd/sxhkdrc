@@ -161,6 +161,9 @@ XF86AudioMute
 XF86Calculator
   galculator
 
+XF86AudioPlay
+  playerctl play-pause spotify
+
 #XF86MonBrightnessUp
 
 #XF86MonBrightnessDown

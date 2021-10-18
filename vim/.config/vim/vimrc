@@ -57,7 +57,7 @@ call plug#begin('$XDG_DATA_HOME/vim/plugged')
   Plug 'preservim/nerdcommenter'
   Plug 'sheerun/vim-polyglot'
   Plug 'ajh17/VimCompletesMe'
-  Plug 'yuttie/comfortable-motion.vim'
+  "Plug 'yuttie/comfortable-motion.vim'
   Plug 'sheerun/vim-polyglot'
 
 call plug#end()
