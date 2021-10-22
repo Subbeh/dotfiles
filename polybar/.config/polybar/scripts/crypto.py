@@ -29,14 +29,15 @@ for currency in currencies:
     json = requests.get(f'https://api.coingecko.com/api/v3/coins/{currency}',).json()["market_data"]
     local_price = round(float(json["current_price"][f'{base_currency.lower()}']), 2)
     change_24 = float(1 + json['price_change_percentage_24h'] / 100)
+    change_1 = float(1 - json['price_change_percentage_1h_in_currency'][f'{base_currency.lower()}'])
     qty = float(config[currency]['qty'])
     holdings += local_price * qty
-    holdings_old += local_price * change_24 * qty
+    holdings_old += local_price * change_1 * qty
 
 #print(round(holdings))
 #print(round((holdings - holdings_old) / holdings_old * 100, 2))
-diff=round((holdings - holdings_old) / holdings_old * 100, 2)
+diff=round((holdings - holdings_old) / holdings_old, 2)
 icon=('%{F#afd787}%{F-}' if diff > 0 else '%{F#ff5f5f}%{F-}')
 #sys.stdout.write(f'${round(holdings)} ')
-sys.stdout.write(f'${human_format(holdings)} ')
+sys.stdout.write(f'{base_currency} {human_format(holdings)} ')
 sys.stdout.write(f'{icon} {diff:+}%')

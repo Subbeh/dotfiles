@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# Terminate already running bar instances
+# Terminate already running bar instances and child processes
+for pid in $(pgrep polybar) ; do pkill -P $pid ; done
+pkill -f polybar/scripts
 killall -q polybar
 
 # Wait until the processes have been shut down
