@@ -2,4 +2,5 @@
 ! Make the caps lock button a backspace button
 !
 clear lock
-keycode 66 = BackSpace
+!keycode 66 = BackSpace
+keycode 66 = Right

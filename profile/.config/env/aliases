@@ -40,6 +40,7 @@ cleanup='sudo pacman -Rns $(pacman -Qtdq)'
 # navigation
 alias ..='cd ..' 
 alias ...='cd ../..'
+alias -- -='cd -'
 alias l='ls -l --color'
 alias ll='ls -la --color'
 alias lt='ls -ltra --color'

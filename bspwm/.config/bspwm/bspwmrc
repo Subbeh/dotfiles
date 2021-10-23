@@ -35,6 +35,7 @@ bspc rule -a Chromium             state=floating follow=on
 bspc rule -a Galculator           state=floating follow=on
 bspc rule -a feh                  state=floating follow=on
 bspc rule -a Popcorn-Time         state=floating follow=on
+bspc rule -a burp-StartBurp       state=floating follow=on
 bspc rule -a 'VirtualBox Manager' state=floating follow=on
 bspc rule -a 'VirtualBox Machine' state=floating follow=on
 bspc rule -a URxvt:scratchy       sticky=on state=floating rectangle=1800x400+60+0

@@ -52,6 +52,8 @@ export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
  --color=info:#afd787,prompt:#d7af5f,pointer:#d78787
  --color=marker:#afd787,spinner:#d7af5f,header:#d7afd7'
 
-
 # Vim
 export VIMINIT="let \$MYVIMRC='${XDG_CONFIG_HOME}/vim/vimrc' | source \$MYVIMRC"
+
+# Java fonts
+export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=setting'

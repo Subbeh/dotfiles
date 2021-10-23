@@ -59,6 +59,10 @@ ctrl + @Print
 alt + q
   bspc node -c
 
+# xkill
+ctrl + alt + @Escape
+  xkill
+
 # alternate between the tiled and monocle layout
 F9
   bspc desktop -l next
