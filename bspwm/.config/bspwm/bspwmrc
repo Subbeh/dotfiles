@@ -38,7 +38,7 @@ bspc rule -a Popcorn-Time         state=floating follow=on
 bspc rule -a burp-StartBurp       state=floating follow=on
 bspc rule -a 'VirtualBox Manager' state=floating follow=on
 bspc rule -a 'VirtualBox Machine' state=floating follow=on
-bspc rule -a URxvt:scratchy       sticky=on state=floating rectangle=1800x400+60+0
+bspc rule -a URxvt:scratchy       sticky=on state=floating rectangle=1800x500+60+0
 
 bspc config external_rules_command "$HOME/.local/bin/bspwm-external-rules"
 
