@@ -34,10 +34,7 @@ for currency in currencies:
     holdings += local_price * qty
     holdings_old += local_price * change_1 * qty
 
-#print(round(holdings))
-#print(round((holdings - holdings_old) / holdings_old * 100, 2))
 diff=round((holdings - holdings_old) / holdings_old, 2)
 icon=('%{F#afd787}%{F-}' if diff > 0 else '%{F#ff5f5f}%{F-}')
-#sys.stdout.write(f'${round(holdings)} ')
 sys.stdout.write(f'{base_currency} {human_format(holdings)} ')
 sys.stdout.write(f'{icon} {diff:+}%')

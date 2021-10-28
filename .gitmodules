@@ -4,9 +4,6 @@
 [submodule "zsh/.local/share/zsh/plugins/zsh-syntax-highlighting"]
 	path = zsh/.local/share/zsh/plugins/zsh-syntax-highlighting
 	url = git@github.com:zsh-users/zsh-syntax-highlighting.git
-[submodule "zsh/.local/share/zsh/plugins/antigen"]
-	path = zsh/.local/share/zsh/plugins/antigen
-	url = git@github.com:zsh-users/antigen.git
 [submodule "dotmanager"]
 	path = dotmanager
 	url = git@github.com:Subbeh/dotmanager.git
@@ -31,3 +28,9 @@
 [submodule "tmux/.config/tmux/plugins/tpm"]
 	path = tmux/.config/tmux/plugins/tpm
 	url = https://github.com/tmux-plugins/tpm
+[submodule "zsh/.local/share/zsh/plugins/zsh-autosuggestions"]
+	path = zsh/.local/share/zsh/plugins/zsh-autosuggestions
+	url = https://github.com/zsh-users/zsh-autosuggestions
+[submodule "zsh/.local/share/zsh/plugins/zsh-z"]
+	path = zsh/.local/share/zsh/plugins/zsh-z
+	url = https://github.com/agkozak/zsh-z
