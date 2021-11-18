@@ -29,7 +29,7 @@ toggle() {
   if status ; then
     nordvpn disconnect &> /dev/null
   else
-    nordvpn connect &> /dev/null
+    nordvpn connect melbourne &> /dev/null
   fi
 }
 
