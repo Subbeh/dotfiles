@@ -30,7 +30,7 @@ EXIT_CODE=$?
 if [ $EXIT_CODE -eq 0 ]; then
     STATUS=$PLAYERCTL_STATUS
 else
-    STATUS="No player is running"
+    STATUS="N/A"
 fi
 
 if [ "$1" == "--status" ]; then
@@ -41,7 +41,7 @@ else
     elif [ "$STATUS" = "Paused"  ]; then
         update_hooks "$PARENT_BAR_PID" 2
         playerctl --player=$PLAYER metadata --format "$FORMAT"
-    elif [ "$STATUS" = "No player is running"  ]; then
+    elif [ "$STATUS" = "N/A"  ]; then
         echo "$STATUS"
     else
         update_hooks "$PARENT_BAR_PID" 1

@@ -45,12 +45,6 @@ F12
 alt + @space
   bash -ic 'dm'
 
-# Print screen
-@Print
-  scrot --select --line mode=edge -e 'mv $f ~/'
-ctrl + @Print
-  scrot -f -e 'mv $f ~/'
-
 ########################
 ## bspwm window       ##
 ########################
@@ -102,6 +96,10 @@ super + ctrl + alt {_,shift + } {Right, Left}
 # cycle through nodes
 alt + {_,shift +} Tab
   bspc node -f {next,prev}.local
+
+# rofi alt-tab
+alt + grave
+  rofi -show window
 
 # focus the last node/desktop
 super + {grave,Tab}
@@ -163,3 +161,19 @@ XF86AudioPlay
 #XF86MonBrightnessUp
 
 #XF86MonBrightnessDown
+
+########################
+## screenshot         ##
+########################
+
+# cropped screenshot
+@Print
+  $BIN_DIR/screenshot --selected
+
+# fullscreen screenshot
+ctrl + @Print
+  $BIN_DIR/screenshot --fullscreen
+
+# flamshot gui
+super + @Print
+    flameshot gui

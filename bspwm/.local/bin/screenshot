@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+OUTPUT_FILE="$TEMP_DIR/screenshot_$(date "+%Y%m%d_%H%M%S").png"
+CLIPBOARD="$TEMP_DIR/clipboard.png"
+
+case "$1" in 
+    --selected)
+        scrot --select --line mode=edge "$OUTPUT_FILE"
+        wait
+        retval=$(dunstify -u normal --action="default,open" -i "$OUTPUT_FILE" "Screenshot Saved" "Screenshot has been saved to $OUTPUT_FILE")
+        [ "$retval" -eq 2 ] && thunar "$OUTPUT_FILE"
+        ;;
+    --fullscreen)
+        scrot "$OUTPUT_FILE" &
+        wait
+        retval=$(dunstify -u normal --action="default,open" -i "$OUTPUT_FILE" "Screenshot Saved" "Screenshot has been saved to $OUTPUT_FILE")
+        [ "$retval" -eq 2 ] && thunar "$OUTPUT_FILE"
+        ;;
+    --xclip-cropped)
+        scrot --select --line mode=edge -e 'xclip -selection clipboard -t image/png -i $f' &
+        wait
+        dunstify -u normal -i "$CLIPBOARD" "Screenshot Copied" "Screenshot has been copied to the clipboard"
+        ;;
+    --xclip-fullscreen)
+        scrot --line mode=edge -e 'xclip -selection clipboard -t image/png -i $f' &
+        wait
+        dunstify -u normal -i "$CLIPBOARD" "Screenshot Copied" "Screenshot has been copied to the clipboard"
+        ;;
+    *)
+        echo "No such option!"
+        ;;
+esac

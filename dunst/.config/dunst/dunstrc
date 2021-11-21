@@ -1,5 +1,5 @@
 [global]
-    background = "#d7d7d7"
+    background = "#f0f0f0"
     foreground = "#101010"
     monitor = 0
     follow = mouse
@@ -62,7 +62,7 @@
 
 [urgency_normal]
     timeout = 8
-    background = "#d7d7d7"
+    background = "#f0f0f0"
     foreground = "#101010"
 
 [urgency_critical]

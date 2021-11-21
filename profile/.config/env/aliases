@@ -53,6 +53,22 @@ alias cdw='cd /data/workspace'
 alias cdp='cd /data/programfiles'
 alias cd.="cd $DOT"
 
+# exa
+if [ -x "$(command -v exa)" ]; then
+  # 'l' shows the contents + hidden ones including a header
+  # 'll' just shows the contents including a header
+  alias ls="exa"
+  alias l="exa --long --group --icons"
+  alias ll="exa --long --all --group --icons"
+  alias lt="exa --long --all --sort=modified --group --icons"
+  alias la="exa --long --all --group"
+fi
+
+# filemanager
+if [ -x "$(command -v ranger)" ]; then
+  alias fm="ranger"
+fi
+
 # git
 alias gs='git status'
 alias ga='git add'
