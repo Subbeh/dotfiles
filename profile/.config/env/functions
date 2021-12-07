@@ -1,7 +1,5 @@
 # list colors
 lscolor() { for i in {0..255}; do print -Pn "%K{$i}  %k%F{$i}${(l:3::0:)i}%f " ${${(M)$((i%6)):#3}:+$'\n'}; done }
-# latte
-latte() { killall latte-dock && latte-dock & }
 
 # find files
 f() { find -iname "*$@*"; }
@@ -76,3 +74,20 @@ lsk() {
     echo v: $var | grep -i $1
   done
 }
+
+# mount backup drive
+mountbck() {
+  uuid="efeb5276-c841-4246-9c6b-638fc4c477a8"
+  dev=$(lsblk -nrpo name,uuid | awk -v uuid=$uuid '$0 ~ uuid { print $1 }')
+  [[ -z $uuid || -z $dev ]] && { echo "device not found" ; return 1 ; }
+
+  if [ "$1" = "-u" ] ; then
+    sudo umount /backup
+    sudo cryptsetup luksClose backup
+    return
+  fi
+
+  sudo mkdir /backup 2> /dev/null
+  sudo cryptsetup luksOpen "$dev" backup && sudo mount /dev/mapper/backup /backup
+}
+
