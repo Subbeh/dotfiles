@@ -2,4 +2,4 @@ configuration {
   font: "FiraCode Nerd Font Mono 10";
 }
 @import "colors"
-@theme "themes/flat-orange.rasi"
+@theme "themes/glue_pro_blue.rasi"
