@@ -37,9 +37,11 @@ bspc rule -a feh                  state=floating follow=on
 bspc rule -a Popcorn-Time         state=floating follow=on
 bspc rule -a burp-StartBurp       state=floating follow=on
 bspc rule -a vlc                  state=floating follow=on
+bspc rule -a mpv                  state=floating follow=on
 bspc rule -a Cheese               state=floating follow=on
 bspc rule -a Cherrytree           state=floating follow=on
 bspc rule -a Thunar               state=floating follow=on
+bspc rule -a qBittorrent          state=floating follow=on
 bspc rule -a 'VirtualBox Manager' state=floating follow=on
 bspc rule -a 'VirtualBox Machine' state=floating follow=on
 bspc rule -a 'Org.gnome.Nautilus' state=floating follow=on
