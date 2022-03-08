@@ -1,6 +1,7 @@
 def=(
-  bin
+  alacritty
   bspwm
+  btop
   conky
   dunst
   fonts
@@ -12,7 +13,11 @@ def=(
   polybar
   profile
   pulse
+  ranger
   rofi
+  root_env
+  root_xps
+  secure
   termite
   tmux
   vim
