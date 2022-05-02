@@ -16,6 +16,7 @@ alias x="startx $XDG_CONFIG_HOME/x11/xinitrc -- -keeptty &> $XDG_CACHE_HOME/.xor
 alias dm="dmenu_run -nb '#303030' -nf '#b2b2b2' -sf '#444444' -sb '#d7afd7' -h 23 -p dmenu: -dim 0.5 -i -q -fn 'Misc Tamzen:size=10'"
 alias xc="xclip -selection clipboard"
 alias httpserver="python3 -m http.server"
+alias speedtest="curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python -"
 
 # ZSH
 if [[ $PSHELL =~ zsh ]] ; then
@@ -52,6 +53,7 @@ alias cdd='cd /data'
 alias cddd='cd /data/downloads'
 alias cdw='cd /data/workspace'
 alias cdp='cd /data/programfiles'
+alias cdm='cd /mnt'
 alias cd.="cd $DOT"
 
 # exa
