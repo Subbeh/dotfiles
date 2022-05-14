@@ -7,7 +7,6 @@ def=(
   fonts
   fzf
   git
-  gtk
   nitrogen
   picom
   polybar

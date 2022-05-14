@@ -166,14 +166,15 @@ XF86AudioPlay
 ## screenshot         ##
 ########################
 
-# cropped screenshot
+# flamshot gui
 @Print
+  flameshot gui
+
+# cropped screenshot
+super + @Print
   $BIN_DIR/screenshot --selected
 
 # fullscreen screenshot
 ctrl + @Print
   $BIN_DIR/screenshot --fullscreen
 
-# flamshot gui
-super + @Print
-    flameshot gui
