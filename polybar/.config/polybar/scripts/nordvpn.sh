@@ -27,9 +27,11 @@ update() {
 
 toggle() {
   if status ; then
+    notify-send "NordVPN" "Disconnecting..."
     nordvpn disconnect &> /dev/null
   else
-    nordvpn connect &> /dev/null
+    notify-send "NordVPN" "Connecting..."
+    nordvpn connect &> /dev/null 
   fi
 }
 
