@@ -1,6 +1,6 @@
 ! Colorscheme
   
-#include </home/sysadm/.config/colorschemes/LuciusDark>
+#include <.config/colorschemes/theme>
 
 ! URxvt
   

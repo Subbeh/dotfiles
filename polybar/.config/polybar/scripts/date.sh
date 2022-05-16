@@ -1,5 +1,4 @@
 t=0
-sep="%{B#cc303030} %{B#aa303030}"
 
 locations=(
   Australia/Melbourne
@@ -18,7 +17,7 @@ trap "toggle up" USR1
 trap "toggle down" USR2
 
 while true; do
-  TZ=${locations[$t]} date +" %H:%M %Z $sep  %A %d %B %Y"
+  TZ=${locations[$t]} date +" %H:%M %Z  %A %d %B %Y"
   sleep 1 &
   wait
 done

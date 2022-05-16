@@ -18,10 +18,10 @@ status() {
   done <<< $(brightnessctl --device='dell::kbd_backlight' info)
 
   if (($brightness)) ; then
-    echo "%{B#d7d7af}%{F#aa303030}  %{B- F-}"
-  else
-    echo "%{B#aa303030}%{F#d7d7d7}  %{B- F-}"
+    #echo "%{B#d7d7af}%{F#aa303030}  %{B- F-}"
+    echo -n "%{o#d7d7af}%{+o}"
   fi
+  echo "  "
 }
 
 toggle() {

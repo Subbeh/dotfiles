@@ -132,6 +132,7 @@ nnoremap <Leader>a :ls<CR>
 nnoremap <Leader>h :bp<CR>
 nnoremap <Leader>b :bp<CR>
 nnoremap <Leader>l :bn<CR>
+nnoremap <Leader>d :bd<CR>
 nnoremap <Leader><Leader> :bn<CR>
 nnoremap <Leader>g :e#<CR>
 nnoremap <Leader>1 :1b<CR>

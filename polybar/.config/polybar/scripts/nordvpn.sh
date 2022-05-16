@@ -18,9 +18,7 @@ status() {
 update() {
   command -v nordvpn &> /dev/null || exit 1
   if status ; then 
-    echo -n "%{B#afd787}%{F#aa303030}"
-  else
-    echo -n "%{F#afd787}"
+    echo -n "%{+o}"
   fi
   echo "  "
 }
