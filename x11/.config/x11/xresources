@@ -1,16 +1,16 @@
 ! Colorscheme
   
-#include <.config/colorschemes/theme>
+#include </home/sysadm/.config/colorschemes/theme>
 
 ! URxvt
   
 URxvt.scrollBar: false
 URxvt.lineSpace: 1
 URxvt.internalBorder: 24
-URxvt.font: xft:Neep:style=Regular:size=9
-URxvt.boldFont: xft:Neep:style=Bold:size=9
-URxvt.italicFont: xft:Neep:style=Italic:size=9
-URxvt.boldItalicFont: xft:Neep:style=Bold Italic:size=9
+URxvt.font: xft:FuraMono Nerd Font Mono:style=Regular:size=7.5
+URxvt.boldFont: xft:FuraMono Nerd Font Mono:style=Bold:size=7.5
+URxvt.italicFont: xft:FuraMono Nerd Font Mono:style=Italic:size=7.5
+URxvt.boldItalicFont: xft:FuraMono Nerd Font Mono:style=Bold Italic:size=7.5
 URxvt.cursorUnderline: true
 
 ! Perl

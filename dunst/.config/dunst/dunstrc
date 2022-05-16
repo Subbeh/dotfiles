@@ -19,13 +19,13 @@
 
     indicate_hidden = yes
     shrink = no
-    transparency = 40
-    separator_height = 5
+    transparency = 20
+    separator_height = 2
     padding = 15
     horizontal_padding = 15
-    frame_width = 0
-    frame_color = "#2e3440"
-    separator_color = "#00000000"
+    frame_width = 2
+    frame_color = "#d7d7af"
+    separator_color = "#d7d7af"
     sort = no
     idle_threshold = 30
     font = FuraCode Nerd Font 8
@@ -57,17 +57,17 @@
 
 [urgency_low]
     timeout = 4
-    background = "#d7d7d7"
-    foreground = "#101010"
+    background = "#d7d7af"
+    foreground = "#303030"
 
 [urgency_normal]
     timeout = 8
-    background = "#f0f0f0"
-    foreground = "#101010"
+    background = "#303030"
+    foreground = "#d7d7d7"
 
 [urgency_critical]
     timeout = 8
-    background = "#bf5858"
-    foreground = "#d8dee9"
+    background = "#b63b3b"
+    foreground = "#d7d7d7"
 
 ## vim: ft=cfg
