@@ -3,3 +3,5 @@ dotfiles.code-workspace
 *.zwc
 fonts/
 zsh/.local/share/zsh/antigen/
+__init__.py
+__pycache__/
