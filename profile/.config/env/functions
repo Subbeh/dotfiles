@@ -56,7 +56,7 @@ src() {
 md() { [ $# = 1 ] && mkdir -p "$@" && cd "$@" || echo "Error - no directory passed!"; }
 
 # list all commands / functions / aliases / builtins
-lsk() {
+lsc() {
   [ -z $1 ] && return
   for command in ${(k)commands} ; do
     echo c: $command | grep -i $1

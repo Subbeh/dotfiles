@@ -113,6 +113,8 @@ let mapleader = " "
 inoremap hh <esc>
 " Toggle line-numbers
 nnoremap <F2> :set nonumber! norelativenumber!<CR>
+" Toggle paste
+set pastetoggle=<F3>
 " Keep search results at the center of screen
 nnoremap <Leader>zz :let &scrolloff=999-&scrolloff<CR>
 "nmap n nzz

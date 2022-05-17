@@ -128,6 +128,8 @@ function volUp() {
 
     if [ $OSD = "yes" ]; then showOSD "$curSink"; fi
     if [ $AUTOSYNC = "yes" ]; then volSync; fi
+
+    dunstify "Volume: " -h int:value:$VOL_LEVEL
 }
 
 
@@ -142,6 +144,9 @@ function volDown() {
 
     if [ $OSD = "yes" ]; then showOSD "$curSink"; fi
     if [ $AUTOSYNC = "yes" ]; then volSync; fi
+
+    getCurVol "$curSink"
+    dunstify "Volume: " -h int:value:$VOL_LEVEL
 }
 
 

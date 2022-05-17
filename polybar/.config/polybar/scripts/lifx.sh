@@ -46,7 +46,7 @@ update() {
 }
 
 toggle() {
-  (($power)) && notify-send "LIFX" "Turning off light..." || notify-send "LIFX" "Turning on light..."
+  (($power)) && notify-send "LIFX" "Turning on light..." || notify-send "LIFX" "Turning off light..."
   $CMD -T &> /dev/null
   status
 }
@@ -63,6 +63,7 @@ brightness() {
   elif (($brightness < 0)) ; then
     brightness=0
   fi
+  dunstify "LIFX brightness: " -h int:value:$brightness
   $CMD -B $brightness &>/dev/null &
   update
 }

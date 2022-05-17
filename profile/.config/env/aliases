@@ -13,11 +13,13 @@ alias lip='curl ifconfig.me'
 alias rb='sudo systemctl restart bluetooth.service'
 alias dot="$HOME/.dotfiles/dot"
 alias x="startx $XDG_CONFIG_HOME/x11/xinitrc -- -keeptty &> $XDG_CACHE_HOME/.xorg.log"
-#alias dm="dmenu_run -nb '#303030' -nf '#b2b2b2' -sf '#444444' -sb '#d7afd7' -h 24 -p run: -dim 0.5 -i -q -fn 'Misc Tamzen:size=10'"
-alias dm="rofi -show drun -theme lucius-oneline -show-icons -icon-theme Papirus-Dark"
+alias dm="dmenu_run -nb '#303030' -nf '#b2b2b2' -sf '#444444' -sb '#d7afd7' -h 24 -p run: -dim 0.5 -i -q -fn 'Misc Tamzen:size=10'"
+#alias dm="rofi -show drun -theme lucius-oneline -show-icons -icon-theme Papirus-Dark"
+alias launcher="rofi -show drun -show-icons -icon-theme Papirus-Dark"
 alias xc="xclip -selection clipboard"
 alias httpserver="python3 -m http.server"
 alias speedtest="curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python -"
+alias screenrec="ffmpeg -video_size 1920x1080 -framerate 30 -f x11grab -i :0.0+1920,0 -c:v libx264rgb -crf 0 -preset ultrafast /data/temp/screenrec_$(date +"%Y%m%d_%H%M%S").mkv"
 
 # ZSH
 if [[ $PSHELL =~ zsh ]] ; then

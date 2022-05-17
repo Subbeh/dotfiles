@@ -45,6 +45,10 @@ F12
 alt + @space
   bash -ic 'dm'
 
+# rofi application launcher
+super + @space
+  bash -ic 'launcher'
+
 ########################
 ## bspwm window       ##
 ########################
