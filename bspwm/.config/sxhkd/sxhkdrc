@@ -42,11 +42,11 @@ F12
    scratchy
 
 # dmenu
-alt + @space
+super + @space
   bash -ic 'dm'
 
 # rofi application launcher
-super + @space
+alt + @space
   bash -ic 'launcher'
 
 ########################
