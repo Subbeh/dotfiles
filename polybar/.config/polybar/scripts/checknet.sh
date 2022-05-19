@@ -6,8 +6,7 @@ VM=vboxnet0 VM_ICON=
 VPN_ICON=
 STATUS_ICON= 
 
-clr_red=#ff6666
-clr_green=#86d96c
+clr=#87d7ff
 
 URL='https://nordvpn.com/wp-admin/admin-ajax.php?action=get_user_info_data'
 #URL='https://api.nordvpn.com/vpn/check/full'
@@ -40,9 +39,9 @@ link_status() {
   for link in $links ; do
     ip=$(ip -4 -o addr show $link | awk '{sub(/\/.*/, "", $4); print $4}')
     case $link in
-      $WIFI) [[ "$inet_dev" == "$WIFI" && $inet_status == 1 ]] && icon=%{F$clr_green}$WIFI_ICON%{F-} || icon=$WIFI_ICON ;;
-      $WIRED) [[ "$inet_dev" == "$WIRED" && $inet_status == 1 ]] && icon=%{F$clr_green}$WIRED_ICON%{F-} || icon=$WIRED_ICON ;;
-      $VM) [[ "$inet_dev" == "$VM" && $inet_status == 1 ]] && icon=%{F$clr_green}$VM_ICON%{F-} || icon=$VM_ICON ;;
+      $WIFI) [[ "$inet_dev" == "$WIFI" && $inet_status == 1 ]] && icon=%{F$clr}$WIFI_ICON%{F-} || icon=$WIFI_ICON ;;
+      $WIRED) [[ "$inet_dev" == "$WIRED" && $inet_status == 1 ]] && icon=%{F$clr}$WIRED_ICON%{F-} || icon=$WIRED_ICON ;;
+      $VM) [[ "$inet_dev" == "$VM" && $inet_status == 1 ]] && icon=%{F$clr}$VM_ICON%{F-} || icon=$VM_ICON ;;
       *) icon= ;;
     esac
     connections+=($icon $ip) 
@@ -55,7 +54,7 @@ check_inet() { (ping -c 1 8.8.8.8 || ping -c 1 1.1.1.1) &>/dev/null && return 1 
 check_vpn() { json=$(curl -s $URL); return $(echo $json | python -c 'import sys, json; data = json.load(sys.stdin); print(1 if data["status"] is True else 0);'); }
 
 update_bar() {
-  (($vpn_status)) && echo -n "%{F$clr_green}$VPN_ICON%{F-} " || echo -n "$VPN_ICON "
+  (($vpn_status)) && echo -n "%{F$clr}$VPN_ICON%{F-} " || echo -n "$VPN_ICON "
   echo ${connections[*]}
 }
 
