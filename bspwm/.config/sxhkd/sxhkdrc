@@ -39,7 +39,7 @@ super + Return
 
 # scratchpad
 F12
-   scratchy
+   dropterm
 
 # dmenu
 super + @space

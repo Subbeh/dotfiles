@@ -27,9 +27,6 @@ export LESS_TERMCAP_ue=$'\E[0m'        # reset underline
 ( $(type src-hilite-lesspipe.sh >/dev/null 2>&1) ) && export LESSOPEN='|src-hilite-lesspipe.sh %s'
 export LESS=' --RAW-CONTROL-CHARS --ignore-case --status-column --LONG-PROMPT --HILITE-UNREAD --tabs=4 '
 
-# Export X11 colorscheme
-awk '/\w+:\s+#/ { gsub(/[*:]/, ""); print "XCLR_" toupper($1), $2 }' $XDG_CONFIG_HOME/colorschemes/theme | while read -A line ; do export ${line[1]}=${line[2]} ; done
-
 # FZF
 export FZF_BASE=${XDG_CONFIG_HOME}/fzf
 export FZF_DEFAULT_COMMAND="fd --hidden"

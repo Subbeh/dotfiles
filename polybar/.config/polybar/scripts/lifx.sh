@@ -3,7 +3,7 @@
 CMD='lifx -g Office'
 PIPE=/tmp/lifx.pipe
 ICN=
-CLR=${XCLR_COLOR3:-#de935f}
+CLR=${XCLR_COLOR3:-#87d7ff}
 declare -i brightness
 
 test -e $PIPE && exit 1
@@ -41,8 +41,9 @@ status() {
 }
 
 update() {
-  (($power)) && echo -n "%{o$CLR}%{+o}"
-  echo $ICN ${brightness:+$brightness% }
+  #(($power)) && echo -n "%{o$CLR}%{+o}"
+  (($power)) && echo -n "%{+o}"
+  echo %{F$CLR}${ICN}%{F-} ${brightness:+$brightness% }
 }
 
 toggle() {

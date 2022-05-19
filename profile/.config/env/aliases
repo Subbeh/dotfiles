@@ -20,6 +20,8 @@ alias xc="xclip -selection clipboard"
 alias httpserver="python3 -m http.server"
 alias speedtest="curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python -"
 alias screenrec="ffmpeg -video_size 1920x1080 -framerate 30 -f x11grab -i :0.0+1920,0 -c:v libx264rgb -crf 0 -preset ultrafast /data/temp/screenrec_$(date +"%Y%m%d_%H%M%S").mkv"
+alias pgrep="pgrep -f"
+alias pkill="pkill -f"
 
 # ZSH
 if [[ $PSHELL =~ zsh ]] ; then

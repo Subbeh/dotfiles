@@ -7,6 +7,8 @@ def=(
   fonts
   fzf
   git
+  gtk
+  neofetch
   nitrogen
   picom
   polybar
@@ -17,7 +19,6 @@ def=(
   root_env
   root_xps
   secure
-  termite
   tmux
   vim
   x11

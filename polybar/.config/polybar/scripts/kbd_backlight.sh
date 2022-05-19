@@ -19,7 +19,7 @@ status() {
 
   if (($brightness)) ; then
     #echo "%{B#d7d7af}%{F#aa303030}  %{B- F-}"
-    echo -n "%{o#d7d7af}%{+o}"
+    echo -n "%{+o}"
   fi
   echo "  "
 }
