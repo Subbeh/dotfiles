@@ -33,6 +33,10 @@ set cursorline                  " highlight current line
 set scrolloff=10
 "set mouse+=a
 
+"""" Folding
+set foldmethod=indent
+set foldlevel=99
+
 """" Files and directories
 set noswapfile
 set undofile
@@ -56,9 +60,12 @@ call plug#begin('$XDG_DATA_HOME/vim/plugged')
   Plug 'preservim/nerdtree'
   Plug 'preservim/nerdcommenter'
   Plug 'sheerun/vim-polyglot'
-  Plug 'ajh17/VimCompletesMe'
-  "Plug 'yuttie/comfortable-motion.vim'
+  Plug 'Valloric/YouCompleteMe'
+  Plug 'tmhedberg/SimpylFold'
   Plug 'sheerun/vim-polyglot'
+  Plug 'puremourning/vimspector'
+  "Plug 'yuttie/comfortable-motion.vim'
+  "Plug 'ajh17/VimCompletesMe'
 
 call plug#end()
 nnoremap <F5> :source $MYVIMRC<CR>
@@ -73,6 +80,9 @@ let g:airline_powerline_fonts = 1
 
 colorscheme lucius
 LuciusDark
+
+""" Vimspector
+let g:vimspector_enable_mappings = 'HUMAN'
 
 """ NERDTree
 map <C-n> :NERDTreeToggle<CR>
@@ -129,6 +139,9 @@ nnoremap <Leader>zz :let &scrolloff=999-&scrolloff<CR>
 " Select all text
 noremap vA ggVG                     "select all text
 
+" Enable folding with the spacebar
+"nnoremap <space> za
+
 " Buffers
 nnoremap <Leader>a :ls<CR>
 nnoremap <Leader>h :bp<CR>
@@ -148,6 +161,11 @@ nnoremap <Leader>8 :8b<CR>
 nnoremap <Leader>9 :9b<CR>
 nnoremap <Leader>0 :10b<CR>
 
+" Split navigation
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
 
 " Same as normal H/L behavior, but preserves scrolloff
 nnoremap H :call JumpWithScrollOff('H')<CR>

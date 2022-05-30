@@ -2,7 +2,7 @@
 alias sudo='sudo '
 alias ffs='sudo !!'
 alias vi=vim
-alias go=xdg-open
+alias open=xdg-open
 alias h='history 0'
 alias c=cat
 alias b=bat
@@ -22,6 +22,7 @@ alias speedtest="curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/m
 alias screenrec="ffmpeg -video_size 1920x1080 -framerate 30 -f x11grab -i :0.0+1920,0 -c:v libx264rgb -crf 0 -preset ultrafast /data/temp/screenrec_$(date +"%Y%m%d_%H%M%S").mkv"
 alias pgrep="pgrep -f"
 alias pkill="pkill -f"
+alias qr="xclip -o | qrencode -t utf8"
 
 # ZSH
 if [[ $PSHELL =~ zsh ]] ; then

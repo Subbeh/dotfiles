@@ -11,15 +11,16 @@ main() {
       bspc rule -a URxvt:$name sticky=on state=floating rectangle=$size
     fi
     urxvtc -name $name -e zsh -c "tmux new-session -A -s $name";
-    xdo above -N Polybar -t $(xdo id -n $name)
   else
     wininfo
     if (($y < 0)) ; then
+      xdo above -N Polybar -t $(xdo id -n $name)
       move +$speed 
       xdo activate -n $name
     else
       move -$speed
       [[ "$wm" == "bspwm" ]] && bspc node -f last
+      xdo below -N Polybar -t $(xdo id -n $name)
     fi
   fi
 }
