@@ -18,6 +18,6 @@ case "$class" in
 IN
         case "$(ps -p "${_NET_WM_PID:?}" -o comm= 2>/dev/null)" in
             (spotify)
-                echo state=floating ;;
+                echo state=pseudo_tiled monitor='eDP-1' ;;
         esac;;
 esac;
