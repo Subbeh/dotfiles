@@ -29,7 +29,7 @@ toggle() {
     nordvpn disconnect &> /dev/null
   else
     notify-send "NordVPN" "Connecting .."
-    nordvpn connect &> /dev/null 
+    nordvpn connect &> /dev/null || notify-send "NordVPN" "ERROR: Unable to connect"
   fi
 }
 
