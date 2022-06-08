@@ -12,7 +12,7 @@ ICON_DOWN = ""
 
 username=''
 password=''
-host='pi-mediaa'
+host='pi-media'
 port='1340'
 
 qbc = qbittorrentapi.Client(host=host,username=username,password=password, port=port, SIMPLE_RESPONSES=True)
@@ -22,12 +22,12 @@ parser.add_argument('--playpause', action="store_true")
 args = parser.parse_args()
 
 qbc = qbittorrentapi.Client(host=host,username=username,password=password, port=port, SIMPLE_RESPONSES=True)
-failed = False
+
 try:
     qbc.auth_log_in()
 except:
     print(ICON, ICON_DISC + " ")
-    exit(1)
+    exit()
 
 active = qbc.torrents.info.active()
 if args.playpause:
@@ -53,4 +53,4 @@ cumulative_percentage = 0
 if len(active):
     cumulative_percentage = reduce(lambda a, b: a+b['progress'], active, 0) / len(active)
 
-print(f'%{{A1: {PATH} --playpause:}}{ICON}%{{A}} {len(active)}  {cumulative_percentage:.2%} {ICON_UP} {upspeed:.2f}{upunit} {ICON_DOWN} {dlspeed:.2f}{dlunit} ')
+print(f'%{{A1: {PATH} --playpause:}}{ICON}%{{A}} {len(active)}  {int(cumulative_percentage)}% {ICON_DOWN} {int(dlspeed)}{dlunit} {ICON_UP} {int(upspeed)}{upunit} ')

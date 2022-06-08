@@ -26,7 +26,6 @@ main() {
     inet_dev=$(get_inet_dev)
     link_status
     update_bar
-    exit 1
     sleep 1
   done
 }
