@@ -1,0 +1,11 @@
+[Unit]
+Description=Dell laptop thermal monitoring
+Documentation=man:i8kmon
+
+[Service]
+ExecStart=/usr/bin/i8kmon
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

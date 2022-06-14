@@ -2,10 +2,12 @@
 import qbittorrentapi
 import argparse
 from sys import exit
+from functools import reduce
 import os
 
 PATH=os.path.realpath(__file__)
 ICON = ""
+ICON_ACTIVE = "%{F#87d7ff}%{F-}"
 ICON_DISC = ""
 ICON_UP = ""
 ICON_DOWN = ""
@@ -14,8 +16,6 @@ username=''
 password=''
 host='pi-media'
 port='1340'
-
-qbc = qbittorrentapi.Client(host=host,username=username,password=password, port=port, SIMPLE_RESPONSES=True)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--playpause', action="store_true")
@@ -30,6 +30,7 @@ except:
     exit()
 
 active = qbc.torrents.info.active()
+downloading = qbc.torrents.info.downloading()
 if args.playpause:
     if len(active):
         qbc.torrent_pause('all')
@@ -50,7 +51,8 @@ if upspeed > 1024:
     upspeed = upspeed/1024
 
 cumulative_percentage = 0
-if len(active):
+if len(downloading):
     cumulative_percentage = reduce(lambda a, b: a+b['progress'], active, 0) / len(active)
 
-print(f'%{{A1: {PATH} --playpause:}}{ICON}%{{A}} {len(active)}  {int(cumulative_percentage)}% {ICON_DOWN} {int(dlspeed)}{dlunit} {ICON_UP} {int(upspeed)}{upunit} ')
+#print(f'%{{A1: {PATH} --playpause:}}{ICON}%{{A}} {len(downloading)}  {int(cumulative_percentage)}% {ICON_DOWN} {int(dlspeed)}{dlunit} {ICON_UP} {int(upspeed)}{upunit} ')
+print(f'{ICON_ACTIVE + " " + str(len(downloading)) + " " + str(int(cumulative_percentage)) + "%" if downloading else ICON} {ICON_DOWN} {int(dlspeed)}{dlunit} {ICON_UP} {int(upspeed)}{upunit} ')

@@ -37,7 +37,7 @@ format() {
 }
 
 format_fan() {
-  for i in $(i8kfan) ; do
+  for i in $(i8kctl -s fan -n 1; i8kctl -s fan -n 2) ; do
     case $i in
       1) echo  ;;
       2) echo  ;;

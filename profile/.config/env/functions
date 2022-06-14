@@ -91,3 +91,5 @@ mountbck() {
   sudo cryptsetup luksOpen "$dev" backup && sudo mount /dev/mapper/backup /backup
 }
 
+# retry previous command
+retry() { until $(fc -ln -1) ; do sleep ${1:-1} ; done }
