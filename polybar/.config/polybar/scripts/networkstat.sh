@@ -7,6 +7,7 @@ readonly WIRED=eth0 WIRED_ICON=
 readonly VPN=wg-mullvad VPN_ICON=
 readonly PIHOLE_ICON=
 readonly PIHOLE_URL='http://pi/admin/api.php?auth=6bf6f2a462785f9f79e41ccffd2039dc3f066f369a2973d5e605170c2d186fc4'
+readonly PIHOLE_DISABLE_TIME=1800
 readonly CLR=#87d7ff
 
 main() {
@@ -72,7 +73,7 @@ toggle_vpn() {
 
 toggle_pihole() {
   if get_pihole_status ; then
-    action=disable
+    action="disable=${PIHOLE_DISABLE_TIME}"
     notify-send "Pi-hole" "Disabling .."
   else
     action=enable
@@ -82,14 +83,14 @@ toggle_pihole() {
 }
 
 update_bar() {
-  # vpn
-  echo -n "%{A1:$0 -v:}"
-  (($vpn_status)) && echo -n "$VPN_ICON " || echo -n "%{F$CLR}$VPN_ICON%{F-} "
-  echo -n "%{A}"
-
   # pihole
   echo -n "%{A1:$0 -p:}"
   (($pihole_status)) && echo -n "$PIHOLE_ICON " || echo -n "%{F$CLR}$PIHOLE_ICON%{F-} "
+  echo -n "%{A}"
+
+  # vpn
+  echo -n "%{A1:$0 -v:}"
+  (($vpn_status)) && echo -n "$VPN_ICON " || echo -n "%{F$CLR}$VPN_ICON%{F-} "
   echo -n "%{A}"
 
   # network interfaces

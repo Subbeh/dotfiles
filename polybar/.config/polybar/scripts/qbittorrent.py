@@ -52,7 +52,7 @@ if upspeed > 1024:
 
 cumulative_percentage = 0
 if len(downloading):
-    cumulative_percentage = reduce(lambda a, b: a+b['progress'], active, 0) / len(active)
+    cumulative_percentage = reduce(lambda a, b: a+b['progress'], downloading, 0) / len(downloading) * 100
 
-#print(f'%{{A1: {PATH} --playpause:}}{ICON}%{{A}} {len(downloading)}  {int(cumulative_percentage)}% {ICON_DOWN} {int(dlspeed)}{dlunit} {ICON_UP} {int(upspeed)}{upunit} ')
-print(f'{ICON_ACTIVE + " " + str(len(downloading)) + " " + str(int(cumulative_percentage)) + "%" if downloading else ICON} {ICON_DOWN} {int(dlspeed)}{dlunit} {ICON_UP} {int(upspeed)}{upunit} ')
+#print(f'{ICON_ACTIVE + " " + str(len(downloading)) + " " + str(int(cumulative_percentage)) + "%" if downloading else ICON} {ICON_DOWN} {int(dlspeed)}{dlunit} {ICON_UP} {int(upspeed)}{upunit} ')
+print(f'{ICON_ACTIVE + " " + str(len(downloading)) + " " + str(int(cumulative_percentage)) + "%" + " " + ICON_DOWN + " " + str(int(dlspeed)) + dlunit if downloading else ICON} {ICON_UP} {int(upspeed)}{upunit} ')

@@ -92,4 +92,4 @@ mountbck() {
 }
 
 # retry previous command
-retry() { until $(fc -ln -1) ; do sleep ${1:-1} ; done }
+retry() { until $(fc -ln -1) ; do sleep ${1:-1} ; done ; }
