@@ -23,6 +23,7 @@ alias screenrec="ffmpeg -video_size 1920x1080 -framerate 30 -f x11grab -i :0.0+1
 alias pgrep="pgrep -f"
 alias pkill="pkill -f"
 alias qr="xclip -o | qrencode -t utf8"
+alias services="systemctl --type=service"
 
 # ZSH
 if [[ $PSHELL =~ zsh ]] ; then
