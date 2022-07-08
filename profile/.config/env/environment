@@ -57,3 +57,6 @@ export VIMINIT="let \$MYVIMRC='${XDG_CONFIG_HOME}/vim/vimrc' | source \$MYVIMRC"
 
 # Java fonts
 export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=setting'
+
+# SSH agent
+export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR:?not set}/ssh-agent.socket"

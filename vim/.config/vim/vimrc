@@ -81,9 +81,6 @@ let g:airline_powerline_fonts = 1
 colorscheme lucius
 LuciusDark
 
-""" Vimspector
-let g:vimspector_enable_mappings = 'HUMAN'
-
 """ NERDTree
 map <C-n> :NERDTreeToggle<CR>
 let NERDTreeShowHidden=1

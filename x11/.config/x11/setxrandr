@@ -1,4 +1,3 @@
-set -x
 displays=($(xrandr -q | awk '/ connected/ { print $1 }'))
 
 # 3 screens
