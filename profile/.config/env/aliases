@@ -6,7 +6,7 @@ alias open=xdg-open
 alias h='history 0'
 alias c=cat
 alias b=bat
-alias g='grep -i'
+alias g='grep -ri'
 alias pa='ps -eaf'
 alias pb="curl -F 'f:1=<-' ix.io"
 alias lip='curl ifconfig.me'
@@ -38,7 +38,6 @@ if [[ $PSHELL =~ zsh ]] ; then
   alias -s {mp4,MP4,mov,MOV}='vlc'
 fi
 
-
 # packages
 alias pacman='sudo pacman'
 updatepac='sudo pacman -Syyu'
@@ -49,19 +48,20 @@ cleanup='sudo pacman -Rns $(pacman -Qtdq)'
 # navigation
 alias ..='cd ..' 
 alias ...='cd ../..'
+alias ....='cd ../../..'
 alias -- -='cd -'
 alias l='ls -l --color'
 alias ll='ls -la --color'
 alias lt='ls -ltra --color'
-alias cdc="cd $XDG_CONFIG_HOME"
+alias cd.="cd $DOT"
 alias cdb="cd $HOME/.local/bin"
-alias cdt='cd /data/temp'
+alias cdc="cd $XDG_CONFIG_HOME"
 alias cdd='cd /data'
 alias cddd='cd /data/downloads'
-alias cdw='cd /data/workspace'
-alias cdp='cd /data/programfiles'
 alias cdm='cd /mnt'
-alias cd.="cd $DOT"
+alias cdp='cd /data/programfiles'
+alias cdt='cd /data/temp'
+alias cdw='cd /data/workspace'
 
 # exa
 if [ -x "$(command -v exa)" ]; then
@@ -119,3 +119,7 @@ alias dr='dot remote'
 alias drs='dot remote show'
 alias dlo='dot log --pretty="oneline"'
 alias dlol='dot log --graph --oneline --decorate'
+
+# ansible
+alias a="cd /data/workspace/ansible"
+alias run="ansible-playbook run.yml.tst -l test -K"
