@@ -34,3 +34,6 @@
 [submodule "zsh/.local/share/zsh/plugins/zsh-z"]
 	path = zsh/.local/share/zsh/plugins/zsh-z
 	url = https://github.com/agkozak/zsh-z
+[submodule "zsh/.local/share/zsh/plugins/zplug"]
+	path = zsh/.local/share/zsh/plugins/zplug
+	url = https://github.com/zplug/zplug

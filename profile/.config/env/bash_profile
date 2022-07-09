@@ -105,7 +105,7 @@ shopt -s expand_aliases
 shopt -s histappend
 
 ### SET VI MODE IN BASH SHELL
-set -o vi
+#set -o vi
 
 # FZF keybindings
 [ -f $XDG_CONFIG_HOME/fzf/.fzf.bash ] && source $XDG_CONFIG_HOME/fzf/.fzf.bash
