@@ -2,12 +2,15 @@ syntax on
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
 """" Basic Behavior
+set encoding=utf8
+set guifont=FuraCode\ Nerd\ Font\ 11
 set noerrorbells
 set showmode!
 set visualbell                  " blink cursor on error, instead of beeping
 set wildmenu                    " visual autocomplete for command menu
 set wildmode=longest,list,full
 set ffs=unix,dos,mac
+set guioptions+=P               " share system clipboard
 
 """" Tab settings
 set expandtab
@@ -64,6 +67,8 @@ call plug#begin('$XDG_DATA_HOME/vim/plugged')
   Plug 'tmhedberg/SimpylFold'
   Plug 'sheerun/vim-polyglot'
   Plug 'puremourning/vimspector'
+  Plug 'ryanoasis/vim-devicons'
+  Plug 'tpope/vim-commentary'                " keys: gcc / gc / gcap / gcgc
   "Plug 'yuttie/comfortable-motion.vim'
   "Plug 'ajh17/VimCompletesMe'
 
@@ -116,7 +121,7 @@ end
 
 """" key mappings
 let mapleader = " "
-
+" Remap Escape
 inoremap hh <esc>
 " Toggle line-numbers
 nnoremap <F2> :set nonumber! norelativenumber!<CR>
@@ -135,9 +140,6 @@ nnoremap <Leader>zz :let &scrolloff=999-&scrolloff<CR>
 
 " Select all text
 noremap vA ggVG                     "select all text
-
-" Enable folding with the spacebar
-"nnoremap <space> za
 
 " Buffers
 nnoremap <Leader>a :ls<CR>
@@ -164,15 +166,5 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
-" Same as normal H/L behavior, but preserves scrolloff
-nnoremap H :call JumpWithScrollOff('H')<CR>
-nnoremap L :call JumpWithScrollOff('L')<CR>
-function! JumpWithScrollOff(key) " {{{
-  set scrolloff=0
-  execute 'normal! ' . a:key
-  set scrolloff=999
-endfunction " }}}
-
 vnoremap J :m '>+1<CR>gv=gv     
 vnoremap K :m '>-2<CR>gv=gv 
-

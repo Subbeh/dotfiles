@@ -25,11 +25,13 @@ export LESS_TERMCAP_us=$'\E[1;32m'     # begin underline
 export LESS_TERMCAP_ue=$'\E[0m'        # reset underline
 
 ( $(type src-hilite-lesspipe.sh >/dev/null 2>&1) ) && export LESSOPEN='|src-hilite-lesspipe.sh %s'
-export LESS=' --RAW-CONTROL-CHARS --ignore-case --status-column --LONG-PROMPT --HILITE-UNREAD --tabs=4 '
+#export LESS=' --RAW-CONTROL-CHARS --ignore-case --status-column --LONG-PROMPT --HILITE-UNREAD --tabs=4 '
+export LESS=' --RAW-CONTROL-CHARS --ignore-case --LONG-PROMPT --tabs=4 '
 
 # FZF
 export FZF_BASE=${XDG_CONFIG_HOME}/fzf
-export FZF_DEFAULT_COMMAND="fd --hidden"
+#export FZF_DEFAULT_COMMAND="fd --hidden --follow --no-ignore"
+export FZF_DEFAULT_COMMAND='rg --files --follow --no-ignore-vcs --hidden -g "!{node_modules/*,.git/*}"'
 export FZF_CTRL_T_COMMAND=${FZF_DEFAULT_COMMAND}
 export FZF_COMPLETION_TRIGGER='**'
 export FZF_DEFAULT_OPTS="
