@@ -2,6 +2,7 @@ syntax on
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
 """" Basic Behavior
+set nocompatible
 set encoding=utf8
 set guifont=FuraCode\ Nerd\ Font\ 11
 set noerrorbells
@@ -69,6 +70,7 @@ call plug#begin('$XDG_DATA_HOME/vim/plugged')
   Plug 'puremourning/vimspector'
   Plug 'ryanoasis/vim-devicons'
   Plug 'tpope/vim-commentary'                " keys: gcc / gc / gcap / gcgc
+  Plug 'kovetskiy/sxhkd-vim'
   "Plug 'yuttie/comfortable-motion.vim'
   "Plug 'ajh17/VimCompletesMe'
 
@@ -82,9 +84,20 @@ let g:airline_theme='lucius'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_powerline_fonts = 1
 
-
 colorscheme lucius
 LuciusDark
+
+""" Auto pastetoggle
+let &t_SI .= "\<Esc>[?2004h"
+let &t_EI .= "\<Esc>[?2004l"
+
+inoremap <special> <expr> <Esc>[200~ XTermPasteBegin()
+
+function! XTermPasteBegin()
+  set pastetoggle=<Esc>[201~
+  set paste
+  return ""
+endfunction
 
 """ NERDTree
 map <C-n> :NERDTreeToggle<CR>
