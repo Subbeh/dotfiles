@@ -22,8 +22,8 @@ ctrl + alt + shift + r
   bspc wm -r; notify-send 'bspwm' 'reloaded config'
 
 # lock screen
-super + l
-  betterlockscreen -l dim
+#super + l
+#  betterlockscreen -l dim
 
 # close screen
 super + shift + l
@@ -92,6 +92,8 @@ super + {m,x,y,z}
 
 # focus/swap the node in the given direction
 super + {_,shift + }{Left,Down,Up,Right}
+  bspc node -{f,s} {west,south,north,east}
+super + {_,shift + }{h,j,k,l}
   bspc node -{f,s} {west,south,north,east}
 
 # focus or send to the next/previous desktop

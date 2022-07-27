@@ -3,7 +3,7 @@
 trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
 
 readonly WIFI=wlan0 WIFI_ICON=
-readonly WIRED=enp59s0u2u1i5 WIRED_ICON=
+readonly WIRED=enp WIRED_ICON=
 readonly VPN=wg-mullvad VPN_ICON=
 readonly PIHOLE_ICON=
 readonly PIHOLE_URL='http://pi/admin/api.php?auth=6bf6f2a462785f9f79e41ccffd2039dc3f066f369a2973d5e605170c2d186fc4'
@@ -44,7 +44,7 @@ get_link_status() {
     ip=$(ip -4 -o addr show $link | awk '{sub(/\/.*/, "", $4); print $4}')
     case $link in
       $WIFI) [[ "$inet_dev" == "$WIFI" && $inet_status == 0 ]] && icon=%{F$CLR}$WIFI_ICON%{F-} || icon=$WIFI_ICON ;;
-      $WIRED) [[ "$inet_dev" == "$WIRED" && $inet_status == 0 ]] && icon=%{F$CLR}$WIRED_ICON%{F-} || icon=$WIRED_ICON ;;
+      $WIRED*) [[ "$inet_dev" == "$WIRED"* && $inet_status == 0 ]] && icon=%{F$CLR}$WIRED_ICON%{F-} || icon=$WIRED_ICON ;;
       *) icon= ;;
     esac
     connections+=($icon $ip)

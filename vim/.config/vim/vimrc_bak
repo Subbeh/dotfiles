@@ -53,8 +53,6 @@ set viewdir=$XDG_DATA_HOME/vim/view
 set viminfo+=n$XDG_DATA_HOME/vim/viminfo
 
 let g:netrw_home=$XDG_CACHE_HOME.'/vim'
-let g:polyglot_disabled = ['yaml']
-let g:polyglot_disabled = ['autoindent']
 
 """" Plugins
 call plug#begin('$XDG_DATA_HOME/vim/plugged')
@@ -66,6 +64,7 @@ call plug#begin('$XDG_DATA_HOME/vim/plugged')
   Plug 'vim-airline/vim-airline-themes'
   Plug 'preservim/nerdtree'
   Plug 'preservim/nerdcommenter'
+  Plug 'sheerun/vim-polyglot'
   Plug 'Valloric/YouCompleteMe'
   Plug 'tmhedberg/SimpylFold'
   Plug 'sheerun/vim-polyglot'
@@ -77,9 +76,6 @@ call plug#begin('$XDG_DATA_HOME/vim/plugged')
   "Plug 'ajh17/VimCompletesMe'
 
 call plug#end()
-
-filetype indent off
-
 nnoremap <F5> :source $MYVIMRC<CR>
 
 au BufRead,BufNewFile *.ini set filetype=dosini
@@ -105,6 +101,7 @@ function! XTermPasteBegin()
 endfunction
 
 """ Fix indenting
+let g:polyglot_disabled = ['autoindent']
 set indentkeys-=0#
 
 """ NERDTree
