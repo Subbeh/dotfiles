@@ -1,7 +1,7 @@
 # various
 alias sudo='sudo '
-alias ffs='sudo !!'
 alias vi=vim
+alias vifm=vifmrun
 alias open=xdg-open
 alias h='history 0'
 alias c=cat
@@ -91,7 +91,7 @@ alias gb='git branch '
 alias gc='git commit -m'
 alias gd='git diff'
 alias gco='git checkout '
-alias gl='git log'
+alias gl='git log --oneline --graph'
 alias gr='git remote'
 alias grs='git remote show'
 alias glo='git log --pretty="oneline"'
@@ -122,5 +122,4 @@ alias dlol='dot log --graph --oneline --decorate'
 
 # ansible
 alias a="cd /data/workspace/ansible"
-alias run="ansible-playbook run_test.yml -l test -K"
 alias facts="ansible test -m setup" 

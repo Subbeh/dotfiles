@@ -2,7 +2,7 @@
 lscolor() { for i in {0..255}; do print -Pn "%K{$i}  %k%F{$i}${(l:3::0:)i}%f " ${${(M)$((i%6)):#3}:+$'\n'}; done }
 
 # find files
-f() { find -iname "*$@*"; }
+f() { find -iname "*$@*" 2>/dev/null; }
 
 # copy path
 xp() { echo -n $PWD | xclip; }
@@ -94,3 +94,5 @@ mountbck() {
 # retry previous command
 retry() { until $(fc -ln -1) ; do sleep ${1:-1} ; done ; }
 
+# run previous command with sudo
+ffs() { sudo $(fc -ln -1); }

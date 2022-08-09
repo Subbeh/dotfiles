@@ -4,3 +4,8 @@
 127.0.0.1     localhost.localdomain	localhost
 ::1           localhost
 127.0.1.1     arch
+
+192.168.1.20 traefik.sbbh.cloud
+#192.168.1.11 nuc
+#192.168.1.12 opti
+#192.168.1.2 pihole
