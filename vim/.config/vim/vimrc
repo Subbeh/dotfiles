@@ -56,6 +56,8 @@ let g:netrw_home=$XDG_CACHE_HOME.'/vim'
 let g:polyglot_disabled = ['yaml']
 let g:polyglot_disabled = ['autoindent']
 
+au BufRead * if getline(1) =~ '---' | setlocal ft=yaml | endif
+
 """" Plugins
 call plug#begin('$XDG_DATA_HOME/vim/plugged')
 
@@ -71,7 +73,9 @@ call plug#begin('$XDG_DATA_HOME/vim/plugged')
   Plug 'sheerun/vim-polyglot'
   Plug 'puremourning/vimspector'
   Plug 'ryanoasis/vim-devicons'
-  Plug 'tpope/vim-commentary'                " keys: gcc / gc / gcap / gcgc
+  " Plug 'tpope/vim-commentary'                " keys: gcc / gc / gcap / gcgc
+  Plug 'tomtom/tcomment_vim'
+  Plug 'suy/vim-context-commentstring'
   Plug 'kovetskiy/sxhkd-vim'
   "Plug 'yuttie/comfortable-motion.vim'
   "Plug 'ajh17/VimCompletesMe'
@@ -91,6 +95,9 @@ let g:airline_powerline_fonts = 1
 
 colorscheme lucius
 LuciusDark
+
+""" Vim-commentary
+autocmd FileType yaml setlocal commentstring=#\ %s
 
 """ Auto pastetoggle
 let &t_SI .= "\<Esc>[?2004h"

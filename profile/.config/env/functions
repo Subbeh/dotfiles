@@ -2,7 +2,7 @@
 lscolor() { for i in {0..255}; do print -Pn "%K{$i}  %k%F{$i}${(l:3::0:)i}%f " ${${(M)$((i%6)):#3}:+$'\n'}; done }
 
 # find files
-f() { find -iname "*$@*" 2>/dev/null; }
+f() { find -iname "*$@*" -not -path "*/\.git/*" 2>/dev/null; }
 
 # copy path
 xp() { echo -n $PWD | xclip; }

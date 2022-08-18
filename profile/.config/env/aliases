@@ -65,10 +65,9 @@ alias cdw='cd /data/workspace'
 
 # exa
 if [ -x "$(command -v exa)" ]; then
-  alias l="exa --long --group --icons"
-  alias ll="exa --long --all --group --icons"
-  alias lt="exa --long --all --sort=modified --group --icons"
-  alias la="exa --long --all --group"
+  alias l="exa --long --group-directories-first --group --icons"
+  alias ll="exa --long --all --group-directories-first --group --icons"
+  alias lt="exa --long --all --sort=modified --group-directories-first --group --icons"
 fi
 
 # filemanager
