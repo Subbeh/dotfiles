@@ -120,5 +120,5 @@ alias dlo='dot log --pretty="oneline"'
 alias dlol='dot log --graph --oneline --decorate'
 
 # ansible
-alias a="cd /data/workspace/ansible"
+alias a="cd /data/workspace/homelab/ansible"
 alias facts="ansible test -m setup" 
