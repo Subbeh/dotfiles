@@ -119,6 +119,7 @@ alias drs='dot remote show'
 alias dlo='dot log --pretty="oneline"'
 alias dlol='dot log --graph --oneline --decorate'
 
-# ansible
+# infra
 alias a="cd /data/workspace/homelab/ansible"
+alias i="cd /data/workspace/homelab/infra"
 alias facts="ansible test -m setup" 

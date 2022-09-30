@@ -1,8 +1,8 @@
 [Unit]
 Description=Lifx shutdown
 Requires=network.target
+Before=poweroff.target halt.target
 DefaultDependencies=no
-Before=shutdown.target
 
 [Service]
 Type=oneshot
@@ -11,7 +11,7 @@ RemainAfterExit=true
 User=sysadm
 Group=sysadm
 ExecStart=/bin/true
-ExecStop=/usr/bin/lifx -g Office -0
+ExecStop=/bin/bash -c 'systemctl list-jobs | grep -Eq 'reboot.target.*start' || /usr/bin/lifx -g Office -0'
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=multi-user.target systemd-halt.service systemd-poweroff.service
