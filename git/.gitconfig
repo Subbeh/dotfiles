@@ -5,3 +5,5 @@
 	helper = cache --timeout=3600
 [diff]
 	ignoreSubmodules = dirty
+[safe]
+	directory = /mnt/workspace/notes
