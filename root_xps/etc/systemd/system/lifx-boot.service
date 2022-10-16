@@ -1,13 +1,13 @@
 [Unit]
 Description=Spark service
-After=network-online.target
-Wants=network-online.target
+After=network-online.target nss-lookup.target
 
 [Service]
 Type=simple
-TimeoutSec=5
+TimeoutSec=10
 User=sysadm
 Group=sysadm
+ExecStartPre=/bin/bash -c 'until host api.lifx.com; do sleep 1; done'
 ExecStart=/usr/bin/lifx -g Office -1
 
 [Install]
