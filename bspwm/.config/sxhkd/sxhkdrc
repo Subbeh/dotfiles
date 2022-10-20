@@ -109,8 +109,10 @@ super + ctrl + alt {_,shift + } {Right, Left}
   bspc {monitor -f,node -m} {next, prev} --follow
 
 # cycle through nodes
+# alt + {_,shift +} Tab
+#   bspc node -f {next,prev}.local.!hidden.window.!sticky
 alt + {_,shift +} Tab
-  bspc node -f {next,prev}.local.!hidden.window.!sticky
+  bspc node -f {last,next}.local.!hidden.window.!sticky
 
 # rofi alt-tab
 alt + grave
