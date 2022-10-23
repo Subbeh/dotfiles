@@ -1,4 +1,7 @@
 # Environment
+export EDITOR=vim
+export TERMINAL=alacritty
+export PAGER=less
 export XINITRC=${XDG_CONFIG_HOME}/X11/.config/X11/xinitrc
 
 # History
