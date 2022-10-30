@@ -1,5 +1,6 @@
 syntax on
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 
 """" Basic Behavior
 set nocompatible
@@ -56,6 +57,11 @@ let g:netrw_home=$XDG_CACHE_HOME.'/vim'
 let g:polyglot_disabled = ['yaml']
 let g:polyglot_disabled = ['autoindent']
 
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+let g:ale_sign_error = ''
+let g:ale_sign_warning = ''
+let g:ale_lint_on_text_changed = 'never'
+
 au BufRead * if getline(1) =~ '---' | setlocal ft=yaml | endif
 
 """" Plugins
@@ -73,12 +79,12 @@ call plug#begin('$XDG_DATA_HOME/vim/plugged')
   Plug 'sheerun/vim-polyglot'
   Plug 'puremourning/vimspector'
   Plug 'ryanoasis/vim-devicons'
-  " Plug 'tpope/vim-commentary'                " keys: gcc / gc / gcap / gcgc
   Plug 'tomtom/tcomment_vim'
   Plug 'suy/vim-context-commentstring'
   Plug 'kovetskiy/sxhkd-vim'
-  "Plug 'yuttie/comfortable-motion.vim'
-  "Plug 'ajh17/VimCompletesMe'
+  Plug 'Yggdroot/indentLine'
+  Plug 'dense-analysis/ale'
+  " Plug 'stephpy/vim-yaml'
 
 call plug#end()
 
