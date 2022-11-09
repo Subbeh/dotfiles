@@ -3,7 +3,7 @@ ZSH_GIT_PROMPT_SHOW_UPSTREAM="symbol"
 
 ZSH_THEME_GIT_PROMPT_PREFIX=" %{$fg_bold[default]%}≺ "
 ZSH_THEME_GIT_PROMPT_SUFFIX=""
-ZSH_THEME_GIT_PROMPT_SEPARATOR=" "
+ZSH_THEME_GIT_PROMPT_SEPARATOR=""
 ZSH_THEME_GIT_PROMPT_DETACHED="%{$fg_no_bold[cyan]%}:"
 #ZSH_THEME_GIT_PROMPT_BRANCH="%{$fg_no_bold[grey]%}"
 ZSH_THEME_GIT_PROMPT_UPSTREAM_SYMBOL="%{$fg_bold[yellow]%}⟳ "
@@ -18,5 +18,8 @@ ZSH_THEME_GIT_PROMPT_UNTRACKED="…"
 ZSH_THEME_GIT_PROMPT_STASHED="%{$fg[blue]%}⚑"
 ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg_bold[green]%}✔"
 
+zstyle ':zsh-kubectl-prompt:' separator '|'
+# zstyle ':zsh-kubectl-prompt:' namespace false
+
 PROMPT='%B%~%b %F{blue}≻%f '
-RPROMPT='$(gitprompt)'
+RPROMPT='$(gitprompt) %{$fg_bold[default]%}≺ %{$fg_no_bold[blue]%}$ZSH_KUBECTL_PROMPT'

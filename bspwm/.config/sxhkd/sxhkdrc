@@ -29,6 +29,10 @@ ctrl + alt + shift + r
 super + shift + l
   sleep 0.5; xset dpms force standby
 
+# copy last command to clipboard
+super + c
+  tail -1 /home/sysadm/.cache/bash_history | sed 's/.*;//' | xclip -selection clipboard
+
 ########################
 ## app                ##
 ########################

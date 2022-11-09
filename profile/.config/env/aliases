@@ -17,13 +17,21 @@ alias dm="dmenu_run -nb '#303030' -nf '#b2b2b2' -sf '#444444' -sb '#d7afd7' -h 2
 #alias dm="rofi -show drun -theme lucius-oneline -show-icons -icon-theme Papirus-Dark"
 alias launcher="rofi -show drun -show-icons -icon-theme Papirus-Dark"
 alias xc="xclip -selection clipboard"
+alias cc="fc -ln -1 | xclip -selection clipboard"
 alias httpserver="python3 -m http.server"
 alias speedtest="curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python -"
 alias screenrec="ffmpeg -video_size 1920x1080 -framerate 30 -f x11grab -i :0.0+1920,0 -c:v libx264rgb -crf 0 -preset ultrafast /data/temp/screenrec_$(date +"%Y%m%d_%H%M%S").mkv"
 alias pgrep="pgrep -f"
 alias pkill="pkill -f"
 alias qr="xclip -o | qrencode -t utf8"
-alias services="systemctl --type=service"
+
+# systemd
+alias jrnl="sudo journalctl -b"
+alias jrnlu="sudo journalctl -b -u"
+alias jrnle="sudo journalctl -p3 -xb"
+alias ctl="sudo systemctl"
+alias ctls="sudo systemctl status"
+alias svc="systemctl --type=service"
 
 # ZSH
 if [[ $PSHELL =~ zsh ]] ; then
@@ -120,8 +128,11 @@ alias dlo='dot log --pretty="oneline"'
 alias dlol='dot log --graph --oneline --decorate'
 
 # infra
-alias a="cd /data/workspace/homelab/ansible"
 alias i="cd /data/workspace/homelab/infra"
+alias a="cd /data/workspace/homelab/infra/ansible"
 alias facts="ansible test -m setup" 
 alias av="ansible-vault edit /data/workspace/homelab/infra/group_vars/all/vault"
 alias ap="ansible-playbook"
+alias k="kubectl"
+alias kctx="kubectx"
+alias kns="kubens"
