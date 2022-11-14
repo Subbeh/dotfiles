@@ -54,15 +54,15 @@ bspc config pointer_action1 move
 bspc config pointer_action2 resize_corner
 
 # Multi monitor config
-if [[ "$DISPLAY_ENV" -eq "home" ]] ; then
-  bspc monitor DP-1 -d  0
-  bspc monitor DP-2 -d  1 2 3 4
-  bspc monitor eDP-1 -d 5
-
-  bspc config -m DP-1 top_padding 0
-  bspc config -m DP-1 bottom_padding 0
-  bspc config -m eDP-1 top_padding 0
-  bspc config -m eDP-1 bottom_padding 0
-
-  bspc rule -a firefox            monitor='DP-2'
-fi
+# if [[ "$DISPLAY_ENV" -eq "home" ]] ; then
+#   bspc monitor DP-1 -d  0
+#   bspc monitor DP-2 -d  1 2 3 4
+#   bspc monitor eDP-1 -d 5
+#
+#   bspc config -m DP-1 top_padding 0
+#   bspc config -m DP-1 bottom_padding 0
+#   bspc config -m eDP-1 top_padding 0
+#   bspc config -m eDP-1 bottom_padding 0
+#
+#   bspc rule -a firefox            monitor='DP-2'
+# fi

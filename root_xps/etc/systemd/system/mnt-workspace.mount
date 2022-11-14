@@ -1,0 +1,12 @@
+[Unit]
+Description=Mount workspace NFS share
+After=network.target
+
+[Mount]
+What=10.0.10.10:/volume1/workspace
+Where=/mnt/workspace
+Type=nfs
+Options=_netdev,auto
+
+[Install]
+WantedBy=multi-user.target

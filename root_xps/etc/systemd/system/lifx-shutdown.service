@@ -1,5 +1,5 @@
 [Unit]
-Description=Lifx shutdown
+Description=LIFX shutdown service
 Requires=network.target
 Before=poweroff.target halt.target
 DefaultDependencies=no
