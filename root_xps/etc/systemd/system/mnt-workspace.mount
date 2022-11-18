@@ -1,12 +1,14 @@
 [Unit]
 Description=Mount workspace NFS share
-After=network.target
+Requires=network-online.service
+After=network-online.service nss-lookup.target
 
 [Mount]
-What=10.0.10.10:/volume1/workspace
+What=nas.int.sbbh.cloud:/volume1/workspace
 Where=/mnt/workspace
 Type=nfs
 Options=_netdev,auto
+TimeoutSec=5
 
 [Install]
 WantedBy=multi-user.target

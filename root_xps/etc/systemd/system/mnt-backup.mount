@@ -1,12 +1,14 @@
 [Unit]
-Description=Mount backups NFS share
-After=network.target
+Description=Mount backup NFS share
+Requires=network-online.service
+After=network-online.service nss-lookup.target
 
 [Mount]
-What=10.0.10.10:/volume1/backups
+What=nas.int.sbbh.cloud:/volume1/backups
 Where=/mnt/backup
 Type=nfs
 Options=_netdev,auto
+TimeoutSec=5
 
 [Install]
 WantedBy=multi-user.target

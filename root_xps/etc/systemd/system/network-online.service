@@ -1,0 +1,12 @@
+[Unit]
+Description=Wait until NM actually online
+Requires=NetworkManager-wait-online.service
+After=NetworkManager-wait-online.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/nm-online -q --timeout=120
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
