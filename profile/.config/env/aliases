@@ -32,6 +32,7 @@ alias jrnle="sudo journalctl -p3 -xb"
 alias ctl="sudo systemctl"
 alias ctls="sudo systemctl status"
 alias svc="systemctl --type=service"
+alias mnta="systemctl list-units -t mount --all | awk '/loaded\s+failed/{ print \"Mounting \"\$2 ; system(\"sudo systemctl start \" \$2) }'"
 
 # ZSH
 if [[ $PSHELL =~ zsh ]] ; then

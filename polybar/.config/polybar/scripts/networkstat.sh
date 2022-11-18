@@ -5,23 +5,26 @@ trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
 readonly WIFI=wlan0 WIFI_ICON=
 readonly WIRED=enp WIRED_ICON=
 readonly VPN=wg-mullvad VPN_ICON=
+readonly TAILSCALE_ICON=
 readonly PIHOLE_ICON=
 readonly PIHOLE_URL='https://pihole.sbbh.cloud/api.php?auth=6bf6f2a462785f9f79e41ccffd2039dc3f066f369a2973d5e605170c2d186fc4'
 readonly PIHOLE_DISABLE_TIME=1800
 readonly CLR=#87d7ff
 
 main() {
-  while getopts vp flag
+  while getopts vpt flag
   do
     case "${flag}" in
       v) toggle_vpn ;;
       p) toggle_pihole ;;
+      t) toggle_tailscale ;;
     esac
   done
 
   get_inet_status ; inet_status=$?
   get_vpn_status ; vpn_status=$?
   get_pihole_status ; pihole_status=$?
+  get_tailscale_status ; tailscale_status=$?
   inet_dev=$(get_inet_dev)
   get_link_status
   update_bar
@@ -56,10 +59,14 @@ get_vpn_status() {
   return $?
 }
 
+get_tailscale_status() {
+  tailscale status &> /dev/null
+  return $?
+}
+
 get_pihole_status() {
-  # curl -sf "${PIHOLE_URL}&status" | grep -q enabled 2>/dev/null
-  # return $?
-  return 1
+  curl -sf "${PIHOLE_URL}&status" | grep -q enabled 2>/dev/null
+  # return 1
 }
 
 toggle_vpn() {
@@ -69,6 +76,16 @@ toggle_vpn() {
   else
     notify-send "Mullvad VPN" "Connecting .."
     mullvad connect
+  fi
+}
+
+toggle_tailscale() {
+  if get_tailscale_status ; then
+    notify-send "Tailscale" "Disconnecting .."
+    tailscale down &> /dev/null && notify-send "Tailscale" "Disconnected"
+  else
+    notify-send "Tailscale" "Connecting .."
+    tailscale up --accept-routes &> /dev/null && notify-send "Tailscale" "Connected" || notify-send "Tailscale" "ERROR: Unable to connect"
   fi
 }
 
@@ -87,6 +104,11 @@ update_bar() {
   # pihole
   echo -n "%{A1:$0 -p:}"
   (($pihole_status)) && echo -n "$PIHOLE_ICON " || echo -n "%{F$CLR}$PIHOLE_ICON%{F-} "
+  echo -n "%{A}"
+
+  # tailscale
+  echo -n "%{A1:$0 -t:}"
+  (($tailscale_status)) && echo -n "$TAILSCALE_ICON " || echo -n "%{F$CLR}$TAILSCALE_ICON%{F-} "
   echo -n "%{A}"
 
   # vpn
