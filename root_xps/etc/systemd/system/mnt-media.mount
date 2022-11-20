@@ -1,5 +1,5 @@
 [Unit]
-Description=Mount media NFS share
+Description=mount media NFS share
 Requires=network-online.service
 After=network-online.service nss-lookup.target
 
