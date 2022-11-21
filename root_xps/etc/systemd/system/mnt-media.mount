@@ -1,13 +1,11 @@
 [Unit]
 Description=mount media NFS share
-Requires=network-online.service
-After=network-online.service nss-lookup.target
 
 [Mount]
 What=nas.int.sbbh.cloud:/volume1/media
 Where=/mnt/media
 Type=nfs
-Options=_netdev,auto
+Options=defaults
 TimeoutSec=5
 
 [Install]

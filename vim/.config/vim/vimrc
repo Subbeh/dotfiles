@@ -162,7 +162,8 @@ let mapleader = " "
 " Remap Escape
 inoremap hh <esc>
 " Toggle line-numbers
-nnoremap <F2> :set nonumber! norelativenumber!<CR>
+" nnoremap <F2> :set nonumber! norelativenumber!<CR>
+nnoremap <F2> :set nonumber! norelativenumber! \| IndentLinesToggle<CR>
 " Toggle paste
 set pastetoggle=<F3>
 " Keep search results at the center of screen

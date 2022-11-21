@@ -1,13 +1,11 @@
 [Unit]
 Description=mount backup NFS share
-Requires=network-online.service
-After=network-online.service nss-lookup.target
 
 [Mount]
 What=nas.int.sbbh.cloud:/volume1/backups
 Where=/mnt/backup
 Type=nfs
-Options=_netdev,auto
+Options=defaults
 TimeoutSec=5
 
 [Install]
