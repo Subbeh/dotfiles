@@ -3,7 +3,7 @@ Description=LIFX boot service
 After=network-online.target nss-lookup.target
 
 [Service]
-Type=simple
+Type=oneshot
 TimeoutSec=10
 User=sysadm
 Group=sysadm
