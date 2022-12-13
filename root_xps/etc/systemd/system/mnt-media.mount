@@ -2,7 +2,7 @@
 Description=mount media NFS share
 
 [Mount]
-What=nas.int.sbbh.cloud:/volume1/media
+What=10.0.10.10:/volume1/media
 Where=/mnt/media
 Type=nfs
 Options=defaults

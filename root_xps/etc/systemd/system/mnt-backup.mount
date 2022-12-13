@@ -2,7 +2,7 @@
 Description=mount backup NFS share
 
 [Mount]
-What=nas.int.sbbh.cloud:/volume1/backups
+What=10.0.10.10:/volume1/backups
 Where=/mnt/backup
 Type=nfs
 Options=defaults
