@@ -8,13 +8,13 @@
 super + slash
   sxhkd-help
 
-# quit/restart bspwm
-ctrl + alt + {q,r}
-  bspc {quit,wm -r}; notify-send 'bspwm' 'reloaded config'
-
 # reload sxhkd
 super + shift + r
   pkill -usr1 -x sxhkd; notify-send 'sxhkd' 'reloaded config'
+
+# quit/restart bspwm
+ctrl + alt + {q,r}
+  bspc {quit,wm -r}; notify-send 'bspwm' 'reloaded config'
 
 # reload xrandr
 ctrl + alt + shift + r
@@ -96,9 +96,9 @@ super + {m,x,y,z}
 
 # focus/swap the node in the given direction
 super + {_,shift + }{Left,Down,Up,Right}
-  bspc node -{f,s} {west,south,north,east}
+  bspc node -{f,s} {west,south,north,east}.!sticky.!hidden
 super + {_,shift + }{h,j,k,l}
-  bspc node -{f,s} {west,south,north,east}
+  bspc node -{f,s} {west,south,north,east}.!sticky.!hidden
 
 # focus or send to the next/previous desktop
 super + ctrl + {_,shift + } {Left,Right}
@@ -107,6 +107,10 @@ super + ctrl + {_,shift + } {Left,Right}
 # focus or send to the given desktop
 super + {_,shift + } {1-9,0}
   bspc {desktop -f,node -d} '^{1-9,10}' --follow
+
+# focus next/previous desktop
+F11
+  bspc desktop -f last
 
 # focus next/previous monitor
 super + ctrl + alt {_,shift + } {Right, Left}
