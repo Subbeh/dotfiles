@@ -7,7 +7,6 @@ alias open=xdg-open
 alias h='history 0'
 alias c=cat
 alias b=bat
-# alias g='grep -Ri'
 alias g="rg --ignore-case --hidden --follow --one-file-system --no-ignore-vcs --search-zip -g '!{node_modules/*,.git/*}'"
 alias pa='ps -eaf'
 alias pb="curl -F 'f:1=<-' ix.io"
@@ -16,10 +15,11 @@ alias rb='sudo systemctl restart bluetooth.service'
 alias dot="$HOME/.dotfiles/dot"
 alias x="startx $XDG_CONFIG_HOME/x11/xinitrc -- -keeptty &> $XDG_CACHE_HOME/.xorg.log"
 alias dm="dmenu_run -nb '#303030' -nf '#b2b2b2' -sf '#444444' -sb '#d7afd7' -h 24 -p run: -dim 0.5 -i -q -fn 'Misc Tamzen:size=10'"
-#alias dm="rofi -show drun -theme lucius-oneline -show-icons -icon-theme Papirus-Dark"
 alias launcher="rofi -show drun -show-icons -icon-theme Papirus-Dark"
-alias xc="xclip -selection clipboard"
-alias cc="fc -ln -1 | xclip -selection clipboard"
+alias xc="xclip -i -selection clipboard"
+alias xp="echo -n $PWD | xclip -i -selection clipboard"
+alias cc="fc -ln -1 | xclip -i -selection clipboard"
+alias http=xh
 alias httpserver="python3 -m http.server"
 alias speedtest="curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python -"
 alias screenrec="ffmpeg -video_size 1920x1080 -framerate 30 -f x11grab -i :0.0+1920,0 -c:v libx264rgb -crf 0 -preset ultrafast /data/temp/screenrec_$(date +"%Y%m%d_%H%M%S").mkv"
@@ -77,8 +77,9 @@ alias cdw='cd /data/workspace'
 # exa
 if [ -x "$(command -v exa)" ]; then
   alias l="exa --long --group-directories-first --group --icons"
-  alias ll="exa --long --all --group-directories-first --group --icons"
-  alias lt="exa --long --all --sort=modified --group-directories-first --group --icons"
+  alias ll="exa --long --all --group-directories-first --group --icons --git"
+  alias lt="exa --long --all --sort=modified --group-directories-first --group --icons --git"
+  alias ltree="exa --long --all --sort=modified --group-directories-first --group --icons --git --tree --level=2"
 fi
 
 # filemanager

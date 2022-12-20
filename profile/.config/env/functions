@@ -1,14 +1,20 @@
 # list colors
 lscolor() { for i in {0..255}; do print -Pn "%K{$i}  %k%F{$i}${(l:3::0:)i}%f " ${${(M)$((i%6)):#3}:+$'\n'}; done }
 
+# mkdir & cd
+md() { [ $# = 1 ] && mkdir -p "$@" && cd "$@" || echo "Error - no directory passed!"; }
+
+# cd & ls
+cl() { cd "$@" && l; }
+
 # find files
 f() { find -iname "*$@*" -not -path "*/\.git/*" 2>/dev/null; }
 
-# copy path
-xp() { echo -n $PWD | xclip; }
+# copy file
+xf() { xclip -i -selection clipboard < "$@"; }
 
 # restart process
-rs() {
+restart() {
   if command -v $1 ; then
     pkill $1
     $1 &
@@ -25,7 +31,7 @@ ex ()
       *.tar.bz2)   tar xjf $1   ;;
       *.tar.gz)    tar xzf $1   ;;
       *.bz2)       bunzip2 $1   ;;
-      *.rar)       unrar x $1     ;;
+      *.rar)       unrar x $1   ;;
       *.gz)        gunzip $1    ;;
       *.tar)       tar xf $1    ;;
       *.tbz2)      tar xjf $1   ;;
@@ -42,18 +48,20 @@ ex ()
 
 # source
 src() {
-  source /etc/profile
-  source /etc/environment
+  env_files=()
+  env_files+=("/etc/profile" "/etc/environment")
   
   case $PSHELL in
-    *bash) . $HOME/.bashrc ;;
-    *zsh)  . $HOME/.zshenv
-           . $XDG_CONFIG_HOME/zsh/.zshrc ;;
+    *bash) env_files+=( $HOME/.bashrc ) ;;
+    *zsh)  env_files+=( $HOME/.zshenv )
+           env_files+=( $XDG_CONFIG_HOME/zsh/.zshrc ) ;;
   esac
-}
 
-# mkdir & cd
-md() { [ $# = 1 ] && mkdir -p "$@" && cd "$@" || echo "Error - no directory passed!"; }
+  for f in ${env_files[@]}; do
+    echo sourcing $f
+    . "$f"
+  done
+}
 
 # list all commands / functions / aliases / builtins
 lsc() {
