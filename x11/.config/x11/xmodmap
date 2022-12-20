@@ -1,6 +1,3 @@
-!
-! Make the caps lock button a backspace button
-!
 clear lock
-!keycode 66 = BackSpace
+! map capslock to right-arrow key
 keycode 66 = Right

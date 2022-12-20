@@ -7,7 +7,8 @@ alias open=xdg-open
 alias h='history 0'
 alias c=cat
 alias b=bat
-alias g='grep -Ri'
+# alias g='grep -Ri'
+alias g="rg --ignore-case --hidden --follow --one-file-system --no-ignore-vcs --search-zip -g '!{node_modules/*,.git/*}'"
 alias pa='ps -eaf'
 alias pb="curl -F 'f:1=<-' ix.io"
 alias lip='curl ifconfig.me'
