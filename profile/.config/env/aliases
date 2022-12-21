@@ -57,6 +57,7 @@ updateall='yay'
 cleanup='sudo pacman -Rns $(pacman -Qtdq)'
 
 # navigation
+alias p='pwd'
 alias ..='cd ..' 
 alias ...='cd ../..'
 alias ....='cd ../../..'
