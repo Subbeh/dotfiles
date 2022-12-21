@@ -35,8 +35,6 @@ zplug "zsh-users/zsh-history-substring-search"    # browse history with keywords
 zplug "agkozak/zsh-z"                             # navigate to directories using keywords
 zplug "hlissner/zsh-autopair"                     # auto-add matching delimiters
 zplug "Aloxaf/fzf-tab"                            # use fzf for suggestions
-# zplug "superbrothers/zsh-kubectl-prompt"          # add kubectl prompt
-# zplug "plugins/git-prompt",        from:oh-my-zsh # add git prompt
 zplug "plugins/bgnotify",          from:oh-my-zsh # notify on finished command execution
 zplug "plugins/dirhistory",        from:oh-my-zsh # navigate directories using key bindings
 zplug "plugins/sudo",              from:oh-my-zsh # prefix last command with sudo [2x ESC]
@@ -48,9 +46,6 @@ zplug "romkatv/powerlevel10k",     as:theme, depth:1 # powerlevel10k prompt
 
 zplug check --verbose || zplug install  # install missing plugins
 zplug load                              # load plugins
-
-# set prompt
-# test -f ${ZDOTDIR:?not set}/prompt.zsh && . $_
 
 # source env files
 for file in environment aliases functions ; do
@@ -90,7 +85,6 @@ esac
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
 
-# typeset -g POWERLEVEL9K_SHORTEN_STRATEGY=truncate_to_unique
 typeset -g POWERLEVEL9K_SHORTEN_STRATEGY=default
 typeset -g POWERLEVEL9K_SHORTEN_DIR_LENGTH=2
 typeset -g POWERLEVEL9K_SHORTEN_DELIMITER='%B%F{005}+'
@@ -101,7 +95,6 @@ function kube-toggle() {
   if (( ${+POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND} )); then
     unset POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND
   else
-    # POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx|oc|istioctl|kogito|k9s|helmfile|flux|fluxctl|stern|kubeseal|skaffold'
     POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx|k9s'
   fi
   p10k reload
