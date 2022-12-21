@@ -1,8 +1,16 @@
 # Environment
+export XDG_CONFIG_HOME=${HOME}/.config
+export XDG_CACHE_HOME=${HOME}/.cache
+export XDG_DATA_HOME=${HOME}/.local/share
+export DATA_DIR=/data
+export TEMP_DIR=${DATA_DIR}/temp
+export BIN_DIR=${HOME}/.local/bin
+export PATH=${BIN_DIR}:/usr/bin:${PATH}
 export EDITOR=vim
 export TERMINAL=alacritty
 export PAGER=less
 export XINITRC=${XDG_CONFIG_HOME}/X11/.config/X11/xinitrc
+export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR:?not set}/ssh-agent.socket"
 
 # History
 HISTFILE=${XDG_CACHE_HOME}/bash_history
@@ -12,6 +20,12 @@ SAVEHIST=50000
 # Zsh
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#717171"
 ADOTDIR="$XDG_DATA_HOME/zsh/antigen"
+
+# Vim
+export VIMINIT="let \$MYVIMRC='${XDG_CONFIG_HOME}/vim/vimrc' | source \$MYVIMRC"
+
+# Java fonts
+export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=setting'
 
 # Various
 export PSHELL=$(ps -hp $$|awk '{print $NF}')
@@ -56,12 +70,3 @@ export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
  --color=fg+:#dbdbdb,bg+:#303030,hl+:#add6ff
  --color=info:#afd787,prompt:#d7af5f,pointer:#d78787
  --color=marker:#afd787,spinner:#d7af5f,header:#d7afd7'
-
-# Vim
-export VIMINIT="let \$MYVIMRC='${XDG_CONFIG_HOME}/vim/vimrc' | source \$MYVIMRC"
-
-# Java fonts
-export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=setting'
-
-# SSH agent
-export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR:?not set}/ssh-agent.socket"
