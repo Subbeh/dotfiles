@@ -27,7 +27,7 @@
 	url = git@github.com:Subbeh/dotfiles.fonts.git
 [submodule "tmux/.config/tmux/plugins/tpm"]
 	path = tmux/.config/tmux/plugins/tpm
-	url = https://github.com/tmux-plugins/tpm
+	url = git@github.com:tmux-plugins/tpm.git
 [submodule "zsh/.local/share/zsh/plugins/zsh-autosuggestions"]
 	path = zsh/.local/share/zsh/plugins/zsh-autosuggestions
 	url = https://github.com/zsh-users/zsh-autosuggestions
