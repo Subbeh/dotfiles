@@ -1,3 +1,10 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # env
 export ZSHZ_DATA=${XDG_CACHE_HOME:?not set}/.z
 export KEYTIMEOUT=1
@@ -12,6 +19,7 @@ setopt EXTENDED_HISTORY            # Write the history file in the ":start:elaps
 setopt HIST_IGNORE_SPACE           # Don't record an entry starting with a space.
 setopt GLOB_DOTS                   # enable glob expansion
 _comp_options+=(globdots)          # with hidden files
+autoload -U colors && colors
 
 # plugins
 test -f /usr/share/fzf/key-bindings.zsh && source $_
@@ -27,8 +35,8 @@ zplug "zsh-users/zsh-history-substring-search"    # browse history with keywords
 zplug "agkozak/zsh-z"                             # navigate to directories using keywords
 zplug "hlissner/zsh-autopair"                     # auto-add matching delimiters
 zplug "Aloxaf/fzf-tab"                            # use fzf for suggestions
-zplug "superbrothers/zsh-kubectl-prompt"          # add kubectl prompt
-zplug "plugins/git-prompt",        from:oh-my-zsh # add git prompt
+# zplug "superbrothers/zsh-kubectl-prompt"          # add kubectl prompt
+# zplug "plugins/git-prompt",        from:oh-my-zsh # add git prompt
 zplug "plugins/bgnotify",          from:oh-my-zsh # notify on finished command execution
 zplug "plugins/dirhistory",        from:oh-my-zsh # navigate directories using key bindings
 zplug "plugins/sudo",              from:oh-my-zsh # prefix last command with sudo [2x ESC]
@@ -36,12 +44,13 @@ zplug "plugins/command-not-found", from:oh-my-zsh # provide package suggestions 
 zplug "plugins/alias-finder",      from:oh-my-zsh # alias suggestions
 zplug "plugins/docker",            from:oh-my-zsh # add docker completions and aliases
 zplug "plugins/kubtctl",           from:oh-my-zsh # add kubectl completions and aliases
+zplug "romkatv/powerlevel10k",     as:theme, depth:1 # powerlevel10k prompt
 
 zplug check --verbose || zplug install  # install missing plugins
 zplug load                              # load plugins
 
 # set prompt
-test -f ${ZDOTDIR:?not set}/prompt.zsh && . $_
+# test -f ${ZDOTDIR:?not set}/prompt.zsh && . $_
 
 # source env files
 for file in environment aliases functions ; do
@@ -51,6 +60,7 @@ done
 # key bindings
 bindkey -e                          # use emacs keys
 bindkey -s '\e[15~' 'src'         # run src with F5
+bindkey '^]' kube-toggle            # ctrl-] to toggle kubecontext in powerlevel10k prompt
 bindkey "[H" beginning-of-line    # enable HOME key
 bindkey "[F" end-of-line          # enable END key
 bindkey '[A' history-substring-search-up
@@ -76,3 +86,28 @@ case $TERM in
     precmd () { print -Pn - '\e]0;%~\a' }
     ;;
 esac
+
+# To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
+[[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
+
+# typeset -g POWERLEVEL9K_SHORTEN_STRATEGY=truncate_to_unique
+typeset -g POWERLEVEL9K_SHORTEN_STRATEGY=default
+typeset -g POWERLEVEL9K_SHORTEN_DIR_LENGTH=2
+typeset -g POWERLEVEL9K_SHORTEN_DELIMITER='%B%F{005}+'
+typeset -g POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx|k9s'
+# Show prompt segment "kubecontext" only when the command you are typing
+# invokes kubectl, helm, kubens, kubectx, oc, istioctl, kogito, k9s, helmfile, flux, fluxctl, stern, kubeseal, or skaffold.
+function kube-toggle() {
+  if (( ${+POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND} )); then
+    unset POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND
+  else
+    # POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx|oc|istioctl|kogito|k9s|helmfile|flux|fluxctl|stern|kubeseal|skaffold'
+    POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx|k9s'
+  fi
+  p10k reload
+  if zle; then
+    zle push-input
+    zle accept-line
+  fi
+}
+zle -N kube-toggle
