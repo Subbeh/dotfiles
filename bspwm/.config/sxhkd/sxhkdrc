@@ -34,7 +34,7 @@ super + c
   tail -1 /home/sysadm/.cache/bash_history | sed 's/.*;//' | xclip -selection clipboard
 
 ########################
-## app                ##
+## apps               ##
 ########################
 
 # terminal emulator
@@ -52,6 +52,9 @@ super + @space
 # rofi application launcher
 alt + @space
   bash -ic 'launcher'
+
+XF86Calculator
+  galculator
 
 ########################
 ## bspwm window       ##
@@ -176,9 +179,6 @@ XF86AudioLowerVolume
 
 XF86AudioMute
   pactl set-sink-mute @DEFAULT_SINK@ toggle
-
-XF86Calculator
-  galculator
 
 XF86AudioPlay
   playerctl play-pause spotify
