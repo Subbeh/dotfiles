@@ -1,26 +1,24 @@
 def=(
-  alacritty
-  bspwm
-  btop
-  conky
-  dunst
   fonts
-  fzf
-  git
   gtk
-  neofetch
-  nitrogen
+  git
+  fzf
   picom
-  polybar
-  profile
-  pulse
-  ranger
-  rofi
-  root_env
-  root_xps
   secure
-  tmux
-  vim
-  x11
+  bspwm
+  polybar
+  dotmanager
+  rofi
+  pulse
   zsh
+  x11
+  root_xps
+  vifm
+  alacritty
+  tmux
+  nitrogen
+  profile
+  dunst
+  btop
+  vim
 )

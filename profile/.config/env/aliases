@@ -134,7 +134,6 @@ alias dlol='dot log --graph --oneline --decorate'
 # infra
 alias i="cd /data/workspace/homelab/infra"
 alias a="cd /data/workspace/homelab/infra/ansible"
-alias facts="ansible test -m setup" 
 alias av="ansible-vault edit /data/workspace/homelab/infra/group_vars/all/vault"
 alias ap="ansible-playbook"
 alias k="kubectl"
