@@ -6,3 +6,4 @@ fonts/
 zsh/.local/share/zsh/antigen/
 __init__.py
 __pycache__/
+tmux/.config/tmux/plugins/
