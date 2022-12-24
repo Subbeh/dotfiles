@@ -13,6 +13,9 @@ f() { find -iname "*$@*" -not -path "*/\.git/*" 2>/dev/null; }
 # copy file
 xf() { xclip -i -selection clipboard < "$@"; }
 
+# copy path
+xp() { echo -n $PWD | xclip -i -selection clipboard; }
+
 # restart process
 restart() {
   if command -v $1 ; then
