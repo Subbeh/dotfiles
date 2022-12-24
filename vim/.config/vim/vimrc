@@ -180,6 +180,9 @@ nnoremap <Leader>zz :let &scrolloff=999-&scrolloff<CR>
 " Select all text
 noremap vA ggVG                     "select all text
 
+" Toggle word-wrap
+nnoremap <silent> <C-w> :set wrap!<cr>
+
 " Buffers
 nnoremap <Leader>a :ls<CR>
 nnoremap <Leader>h :bp<CR>
