@@ -107,3 +107,6 @@ retry() { until $(fc -ln -1) ; do sleep ${1:-1} ; done ; }
 
 # run previous command with sudo
 ffs() { sudo $(fc -ln -1); }
+
+# unlock bitwarden vault
+unlockbw() { eval $(bw unlock | sed -n 's/^$ //;/export/p'); }
