@@ -60,6 +60,7 @@ bindkey "[H" beginning-of-line    # enable HOME key
 bindkey "[F" end-of-line          # enable END key
 bindkey '[A' history-substring-search-up
 bindkey '[B' history-substring-search-down
+bindkey '^F' fzf-file-widget
 
 # Z plugin
 zstyle ':completion:*' menu select

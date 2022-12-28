@@ -111,6 +111,9 @@ super + ctrl + {_,shift + } {Left,Right}
 super + {_,shift + } {1-9,0}
   bspc {desktop -f,node -d} '^{1-9,10}' --follow
 
+super + {button4,button5}
+  bspc desktop -f {next,prev}
+
 # focus next/previous desktop
 F11
   bspc desktop -f last
