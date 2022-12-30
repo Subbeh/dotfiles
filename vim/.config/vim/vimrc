@@ -19,6 +19,8 @@ set expandtab
 set shiftwidth=2
 set tabstop=2 softtabstop=2
 set smartindent
+set listchars=tab:▷▷⋮
+set invlist
 
 """" Search settings
 set hlsearch
@@ -128,7 +130,7 @@ set indentkeys-=0#
 map <C-n> :NERDTreeToggle<CR>
 let NERDTreeShowHidden=1
 autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") && v:this_session == "" | NERDTree | endif
+" autocmd VimEnter * if argc() == 0 && !exists("s:std_in") && v:this_session == "" | NERDTree | endif
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 """" FZF shortcuts
@@ -163,7 +165,7 @@ let mapleader = " "
 " inoremap hh <esc>
 " Toggle line-numbers
 " nnoremap <F2> :set nonumber! norelativenumber!<CR>
-nnoremap <F2> :set nonumber! norelativenumber! \| IndentLinesToggle<CR>
+nnoremap <F2> :set nonumber! norelativenumber! invlist! \| IndentLinesToggle<CR>
 " Toggle paste
 set pastetoggle=<F3>
 " Keep search results at the center of screen
