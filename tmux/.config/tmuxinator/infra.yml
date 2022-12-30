@@ -1,16 +1,18 @@
 # /home/sysadm/.config/tmuxinator/infra.yml
 
 name: infra
-root: /data/workspace/infra
+root: /data/workspace/homelab/infra/ansible
 
 windows:
-  - editor:
-      layout: main-vertical
-      # Synchronize all panes of this window, can be enabled before or after the pane commands run.
-      # 'before' represents legacy functionality and will be deprecated in a future release, in favour of 'after'
-      # synchronize: after
+  - workspace:
+      layout: c6b7,311x65,0,0{102x65,0,0,6,208x65,103,0[208x32,103,0{104x32,103,0,11,103x32,208,0,12},208x32,103,33,7]}
       panes:
         - vim
-        - guard
-  - server: bundle exec rails s
-  - logs: tail -f log/development.log
+        - # empty
+        - # empty
+        - # empty
+  - various:
+      layout: main-horizontal
+      panes:
+        -
+        -
