@@ -53,6 +53,14 @@ super + @space
 alt + @space
   bash -ic 'launcher'
 
+# Win+r application launcher
+super + r ; {t,f,o}
+  { \
+  alacritty, \
+  firefox, \
+  obsidian \
+  }
+
 XF86Calculator
   galculator
 
@@ -106,6 +114,8 @@ super + {_,shift + }{h,j,k,l}
 # focus or send to the next/previous desktop
 super + ctrl + {_,shift + } {Left,Right}
   bspc {desktop -f,node -d} {prev,next} --follow
+super + ctrl + {_,shift + } {h,l}
+  bspc {desktop -f,node -d} {prev,next} --follow
 
 # focus or send to the given desktop
 super + {_,shift + } {1-9,0}
@@ -120,6 +130,8 @@ F11
 
 # focus next/previous monitor
 super + ctrl + alt {_,shift + } {Right, Left}
+  bspc {monitor -f,node -m} {next, prev} --follow
+super + ctrl + alt {_,shift + } {l, h}
   bspc {monitor -f,node -m} {next, prev} --follow
 
 # cycle through nodes
@@ -165,9 +177,13 @@ super + Escape
 # expand/contract a window
 super + alt + shift + {Right,Down,Left,Up}
   bspc node -z {right 20 0,bottom 0 20,right -20 0,bottom 0 -20}
+super + alt + shift + {l,j,h,k}
+  bspc node -z {right 20 0,bottom 0 20,right -20 0,bottom 0 -20}
 
 # move a floating window
 super + alt + {Left,Down,Up,Right}
+  bspc node -v {-20 0,0 20,0 -20,20 0}
+super + alt + {h,j,k,l}
   bspc node -v {-20 0,0 20,0 -20,20 0}
 
 ########################
