@@ -23,10 +23,12 @@ k9s:
         active: all
         lockFavorites: false
         favorites:
+        - metallb-system
+        - all
         - longhorn-system
         - default
       view:
-        active: node
+        active: storageclass
       featureGates:
         nodeShell: false
       shellPod:
