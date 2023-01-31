@@ -1,7 +1,7 @@
 # /home/sysadm/.config/tmuxinator/infra.yml
 
 name: infra
-root: /data/workspace/homelab/infra/ansible
+root: /data/workspace/homelab/infra
 
 windows:
   - workspace:

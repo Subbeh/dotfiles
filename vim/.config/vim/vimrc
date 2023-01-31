@@ -65,7 +65,15 @@ let g:ale_sign_warning = ''
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_yaml_yamllint_options='-d "{extends: relaxed, rules: {line-length: disable}}"'
 
-au BufRead * if getline(1) =~ '---' | setlocal ft=yaml | endif
+let g:UltiSnipsExpandTrigger="<F4>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+" let g:ansible_unindent_after_newline = 1
+" let g:ansible_yamlKeyName = 'yamlKey'
+
+" au BufRead * if getline(1) =~ '---' | setlocal ft=yaml | endif
+" au BufRead,BufNewFile */ansible/*.yml set filetype=yaml.ansible
 
 """" Plugins
 call plug#begin('$XDG_DATA_HOME/vim/plugged')
@@ -87,6 +95,9 @@ call plug#begin('$XDG_DATA_HOME/vim/plugged')
   Plug 'kovetskiy/sxhkd-vim'
   Plug 'Yggdroot/indentLine'
   Plug 'dense-analysis/ale'
+  Plug 'SirVer/ultisnips'
+  Plug 'honza/vim-snippets'
+  Plug 'pearofducks/ansible-vim', { 'do': './UltiSnips/generate.sh' }
   " Plug 'stephpy/vim-yaml'
 
 call plug#end()
@@ -183,13 +194,12 @@ nnoremap <Leader>zz :let &scrolloff=999-&scrolloff<CR>
 noremap vA ggVG                     "select all text
 
 " Toggle word-wrap
-nnoremap <silent> <C-w> :set wrap!<cr>
+nnoremap <silent> <C-e> :set wrap!<cr>
 
 " Buffers
 nnoremap <Leader>a :ls<CR>
-nnoremap <Leader>h :bp<CR>
 nnoremap <Leader>b :bp<CR>
-nnoremap <Leader>l :bn<CR>
+nnoremap <Leader>n :bn<CR>
 nnoremap <Leader>d :bd<CR>
 nnoremap <Leader><Leader> :bn<CR>
 nnoremap <Leader>g :e#<CR>
@@ -212,3 +222,24 @@ nnoremap <C-H> <C-W><C-H>
 
 vnoremap J :m '>+1<CR>gv=gv     
 vnoremap K :m '>-2<CR>gv=gv 
+
+
+let g:ansible_goto_role_paths = './roles,../_common/roles'
+
+function! FindAnsibleRoleUnderCursor()
+  if exists("g:ansible_goto_role_paths")
+    let l:role_paths = g:ansible_goto_role_paths
+  else
+    let l:role_paths = "./roles"
+  endif
+  let l:tasks_main = expand("<cfile>") . "/tasks/main.yml"
+  let l:found_role_path = findfile(l:tasks_main, l:role_paths)
+  if l:found_role_path == ""
+    echo l:tasks_main . " not found"
+  else
+    execute "edit " . fnameescape(l:found_role_path)
+  endif
+endfunction
+
+au BufRead,BufNewFile */ansible/*.yml nnoremap <leader>r :call FindAnsibleRoleUnderCursor()<CR>
+au BufRead,BufNewFile */ansible/*.yml vnoremap <leader>r :call FindAnsibleRoleUnderCursor()<CR>

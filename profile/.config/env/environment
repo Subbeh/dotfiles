@@ -27,6 +27,9 @@ export VIMINIT="let \$MYVIMRC='${XDG_CONFIG_HOME}/vim/vimrc' | source \$MYVIMRC"
 # Java fonts
 export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=setting'
 
+# SOPS
+export SOPS_AGE_KEY_FILE="${XDG_CONFIG_HOME}/sops/age/keys.txt"
+
 # Various
 export PSHELL=$(ps -hp $$|awk '{print $NF}')
 export DOT=$HOME/.dotfiles

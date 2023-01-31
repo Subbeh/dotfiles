@@ -7,8 +7,9 @@ Type=oneshot
 TimeoutSec=10
 User=sysadm
 Group=sysadm
-ExecStartPre=/bin/bash -c 'until host api.lifx.com; do sleep 1; done'
-ExecStart=/usr/bin/lifx -g Office -1
+#ExecStartPre=/bin/bash -c 'until host api.lifx.com; do sleep 1; done'
+#ExecStart=/usr/bin/lifx -g Office -1
+ExecStart=/usr/bin/lifx-boot -1
 
 [Install]
 WantedBy=multi-user.target

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+local_ip=$(ip -4 -o addr show $(ip route get 8.8.8.8 | grep -Po '(?<=(dev ))(\S+)') | awk '{sub(/\/.*/, "", $4); print $4}')
+
+until host api.lifx.com ; do
+  sleep 1
+done
+
+if [[ "$local_ip" == "10.0.0.100" ]] ; then
+  /usr/bin/lifx -g Office ${1:?not set}
+fi
