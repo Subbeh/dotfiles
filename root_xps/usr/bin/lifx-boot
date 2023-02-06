@@ -1,10 +1,14 @@
 #!/bin/bash
-
-local_ip=$(ip -4 -o addr show $(ip route get 8.8.8.8 | grep -Po '(?<=(dev ))(\S+)') | awk '{sub(/\/.*/, "", $4); print $4}')
+set -x
+exec 3>&1 4>&2
+trap 'exec 2>&4 1>&3' 0 1 2 3
+exec 1>/tmp/lifx.log 2>&1
 
 until host api.lifx.com ; do
   sleep 1
 done
+
+local_ip=$(ip -4 -o addr show $(ip route get 8.8.8.8 | grep -Po '(?<=(dev ))(\S+)') | awk '{sub(/\/.*/, "", $4); print $4}')
 
 if [[ "$local_ip" == "10.0.0.100" ]] ; then
   /usr/bin/lifx -g Office ${1:?not set}

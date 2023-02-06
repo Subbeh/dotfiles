@@ -8,7 +8,7 @@ bspc monitor -d 0 1 2 3 4 5
 
 bspc config border_width         0 
 bspc config window_gap           12
-bspc config top_padding          22
+bspc config top_padding          20
 bspc config bottom_padding       10
 
 bspc config split_ratio          0.52
@@ -21,12 +21,12 @@ bspc config remove_unplugged_monitors true
 bspc config focus_follows_pointer     true
 
 # Window state configs
+bspc desktop -l monocle
 bspc rule -a alsamixer            state=floating focus=on follow=on
 bspc rule -a Arandr               state=floating focus=on follow=on
 bspc rule -a Nitrogen             state=floating focus=on follow=on
 bspc rule -a Pavucontrol          state=floating focus=on follow=on
-bspc rule -a firefox              state=floating focus=on follow=on
-bspc rule -a Brave-browser        state=floating focus=on follow=on
+# bspc rule -a firefox              state=tiled    focus=on follow=on
 bspc rule -a Chromium             state=floating focus=on follow=on
 bspc rule -a Galculator           state=floating focus=on follow=on
 bspc rule -a feh                  state=floating focus=on follow=on
@@ -41,7 +41,7 @@ bspc rule -a qBittorrent          state=floating focus=on follow=on
 bspc rule -a Virt-manager         state=floating focus=on follow=on
 bspc rule -a code-oss             state=floating focus=on follow=on
 bspc rule -a scrcpy               state=floating focus=on follow=on
-bspc rule -a obsidian             state=floating focus=on follow=on
+# bspc rule -a obsidian             state=floating focus=on follow=on
 bspc rule -a 'VirtualBox Manager' state=floating focus=on follow=on
 bspc rule -a 'VirtualBox Machine' state=floating focus=on follow=on
 bspc rule -a 'Org.gnome.Nautilus' state=floating focus=on follow=on
