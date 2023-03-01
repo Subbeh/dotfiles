@@ -5,6 +5,7 @@ alias nvim='$HOME/nvim/nvim'
 alias vifm=vifmrun
 alias open=xdg-open
 alias h='history 0'
+alias f="fd --hidden --follow"
 alias c=cat
 alias b=bat
 alias g="rg --ignore-case --hidden --follow --one-file-system --no-ignore-vcs --search-zip -g '!{node_modules/*,.git/*}'"

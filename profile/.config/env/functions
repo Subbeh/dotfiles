@@ -8,7 +8,7 @@ md() { [ $# = 1 ] && mkdir -p "$@" && cd "$@" || echo "Error - no directory pass
 cl() { cd "$@" && l; }
 
 # find files
-f() { find -iname "*$@*" -not -path "*/\.git/*" 2>/dev/null; }
+# f() { find -iname "*$@*" -not -path "*/\.git/*" 2>/dev/null; }
 
 # copy file
 xf() { xclip -i -selection clipboard < "$@"; }
