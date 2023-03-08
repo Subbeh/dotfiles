@@ -133,6 +133,7 @@ alias dlo='dot log --pretty="oneline"'
 alias dlol='dot log --graph --oneline --decorate'
 
 # infra
+alias infra="tmuxinator start infra"
 alias i="cd /data/workspace/homelab/infra"
 alias a="cd /data/workspace/homelab/infra/ansible"
 alias av="ansible-vault edit /data/workspace/homelab/infra/group_vars/all/vault"

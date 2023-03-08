@@ -31,7 +31,7 @@ bspc rule -a Chromium             state=floating focus=on follow=on
 bspc rule -a Galculator           state=floating focus=on follow=on
 bspc rule -a feh                  state=floating focus=on follow=on
 bspc rule -a burp-StartBurp       state=floating focus=on follow=on
-bspc rule -a vlc                  state=floating focus=on follow=on
+# bspc rule -a vlc                  state=floating focus=on follow=on
 bspc rule -a mpv                  state=floating focus=on follow=on
 bspc rule -a Cheese               state=floating focus=on follow=on
 bspc rule -a Cherrytree           state=floating focus=on follow=on

@@ -95,7 +95,7 @@ element selected urgent {
 }
 
 element selected active {
-    background-color:   @nord8;
+    background-color:   @fg;
 }
 
 element-icon {
