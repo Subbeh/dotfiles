@@ -6,7 +6,7 @@
 
 # Show help
 super + slash
-  sxhkd-help
+  sxhkd_help
 
 # reload sxhkd
 super + shift + r
@@ -43,7 +43,7 @@ super + Return
 
 # scratchpad
 F12
-   dropterm
+   bspwm_dropterm
 
 # dmenu
 super + @space

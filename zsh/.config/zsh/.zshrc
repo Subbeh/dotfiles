@@ -28,6 +28,7 @@ test -f ${XDG_CONFIG_HOME:?not set}/fzf/.fzf.zsh && source $_
 
 # zplug plugins
 source ${ZPLUG_HOME:?not set}/init.zsh
+zplug 'zplug/zplug', hook-build:'zplug --self-manage'
 zplug "zsh-users/zsh-syntax-highlighting"         # syntax highlighting
 zplug "zsh-users/zsh-autosuggestions"             # suggestions while typing
 zplug "zsh-users/zsh-completions"                 # additional completion definitions

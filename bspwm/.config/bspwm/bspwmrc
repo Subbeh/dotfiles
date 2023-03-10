@@ -1,10 +1,12 @@
 #! /bin/sh
+set -x
+
+exec &> >(tee -a "${XDG_CACHE_HOME}/bspwm2.log")
 
 pgrep -x sxhkd > /dev/null || sxhkd &
-killall polybar 2>/dev/null
-$HOME/.config/polybar/launch.sh 2> ${XDG_CACHE_HOME}/.polybar.err &
+# ${XDG_CONFIG_HOME:?not set}/polybar/launch.sh 2> ${XDG_CACHE_HOME:?not set}/.polybar.err &
 
-bspc monitor -d 0 1 2 3 4 5
+# bspc monitor -d 0 1 2 3 4 5
 
 bspc config border_width         0 
 bspc config window_gap           12
@@ -20,31 +22,29 @@ bspc config remove_disabled_monitors  true
 bspc config remove_unplugged_monitors true
 bspc config focus_follows_pointer     true
 
-# Window state configs
-bspc desktop -l monocle
+# Window state config
 bspc rule -a alsamixer            state=floating focus=on follow=on
 bspc rule -a Arandr               state=floating focus=on follow=on
 bspc rule -a Nitrogen             state=floating focus=on follow=on
 bspc rule -a Pavucontrol          state=floating focus=on follow=on
-# bspc rule -a firefox              state=tiled    focus=on follow=on
-bspc rule -a Chromium             state=floating focus=on follow=on
 bspc rule -a Galculator           state=floating focus=on follow=on
 bspc rule -a feh                  state=floating focus=on follow=on
-bspc rule -a burp-StartBurp       state=floating focus=on follow=on
-# bspc rule -a vlc                  state=floating focus=on follow=on
-bspc rule -a mpv                  state=floating focus=on follow=on
-bspc rule -a Cheese               state=floating focus=on follow=on
-bspc rule -a Cherrytree           state=floating focus=on follow=on
 bspc rule -a Thunar               state=floating focus=on follow=on
-bspc rule -a discord              state=floating focus=on follow=on
 bspc rule -a qBittorrent          state=floating focus=on follow=on
 bspc rule -a Virt-manager         state=floating focus=on follow=on
-bspc rule -a code-oss             state=floating focus=on follow=on
 bspc rule -a scrcpy               state=floating focus=on follow=on
-# bspc rule -a obsidian             state=floating focus=on follow=on
 bspc rule -a 'VirtualBox Manager' state=floating focus=on follow=on
-bspc rule -a 'VirtualBox Machine' state=floating focus=on follow=on
 bspc rule -a 'Org.gnome.Nautilus' state=floating focus=on follow=on
+bspc rule -a 'VirtualBox Machine' state=floating focus=on follow=on
+# bspc rule -a vlc                  state=floating focus=on follow=on
+# bspc rule -a mpv                  state=floating focus=on follow=on
+# bspc rule -a Cheese               state=floating focus=on follow=on
+# bspc rule -a Cherrytree           state=floating focus=on follow=on
+# bspc rule -a discord              state=floating focus=on follow=on
+# bspc rule -a code-oss             state=floating focus=on follow=on
+# bspc rule -a obsidian             state=floating focus=on follow=on
+# bspc rule -a firefox              state=tiled    focus=on follow=on
+# bspc rule -a Chromium             state=floating focus=on follow=on
 
 bspc config external_rules_command "${XDG_CONFIG_HOME}/bspwm/bspwm-external-rules"
 
@@ -53,16 +53,17 @@ bspc config pointer_modifier mod4
 bspc config pointer_action1 move
 bspc config pointer_action2 resize_corner
 
-# Multi monitor config
-# if [[ "$DISPLAY_ENV" -eq "home" ]] ; then
-#   bspc monitor DP-1 -d  0
-#   bspc monitor DP-2 -d  1 2 3 4
-#   bspc monitor eDP-1 -d 5
-#
-#   bspc config -m DP-1 top_padding 0
-#   bspc config -m DP-1 bottom_padding 0
-#   bspc config -m eDP-1 top_padding 0
-#   bspc config -m eDP-1 bottom_padding 0
-#
-#   bspc rule -a firefox            monitor='DP-2'
-# fi
+. bspwm_setup_monitors > "${XDG_CACHE_HOME}/bspwm.log" 2>&1 &
+
+# Desktop state config
+bspc query -D | xargs -I {} bspc desktop {} -l monocle
+
+#Multi monitor config on first load
+if [[ "$1" = 0 ]] ; then
+  if [[ "$DISPLAY_ENV" -eq "docked" ]] ; then
+    bspc rule -a Alacritty  -o monitor="DP-2"; alacritty --hold -e tmuxinator start infra &
+    bspc rule -a firefox    -o monitor="DP-2"; firefox &
+    bspc rule -a obsidian   -o monitor="DP-1"; obsidian &
+  fi
+fi
+

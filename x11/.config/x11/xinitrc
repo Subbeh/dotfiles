@@ -23,11 +23,9 @@ done
 xset fp rehash
 
 # source files
-[ -f /etc/xprofile ] && . /etc/xprofile
-[ -f $XDG_CONFIG_HOME/x11/xprofile ] && . $XDG_CONFIG_HOME/x11/xprofile
 [ -f $XDG_CONFIG_HOME/x11/xresources ] && xrdb -merge -I$HOME $XDG_CONFIG_HOME/x11/xresources
 [ -f $XDG_CONFIG_HOME/x11/xmodmap ] && xmodmap $XDG_CONFIG_HOME/x11/xmodmap
-[ -f $XDG_CONFIG_HOME/x11/setxrandr ] && . $XDG_CONFIG_HOME/x11/setxrandr
+# [ -f $BIN_DIR/setxrandr ] && . $BIN_DIR/setxrandr
 
 # set cursor
 command -v xsetroot && pgrep -x $_ || $_ -cursor_name left_ptr
@@ -48,4 +46,5 @@ command -v picom    && pgrep -x $_ || $_ -f &
 command -v urxvtd   && pgrep -x $_ || $_ &
 
 # start bspwm window manager
-exec bspwm 
+exec bspwm
+#exec bspwm </dev/null >/var/tmp/polybar-primary.log 2>&1 200>&- &
