@@ -1,12 +1,9 @@
-#! /bin/sh
+#!/bin/sh
 set -x
 
-exec &> >(tee -a "${XDG_CACHE_HOME}/bspwm2.log")
-
 pgrep -x sxhkd > /dev/null || sxhkd &
-# ${XDG_CONFIG_HOME:?not set}/polybar/launch.sh 2> ${XDG_CACHE_HOME:?not set}/.polybar.err &
 
-# bspc monitor -d 0 1 2 3 4 5
+[ "$1" = 0 ] && bspc monitor -d 0 1 2 3 4 5
 
 bspc config border_width         0 
 bspc config window_gap           12

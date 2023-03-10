@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 set -x
 
-bspc monitor -d 0 1 2 3 4 5
-
 export DISPLAY_ENV DISPL_0 DISPL_1 DISPL_2
 
 DISPL_0="eDP-1" # laptop display
@@ -17,18 +15,18 @@ change_docked() {
   DISPLAY_ENV=docked
 
   # move desktop 0 to DISPL_1
-  bspc desktop "0" --to-monitor "$DISPL_1"
+  bspc desktop 0 --to-monitor "$DISPL_1"
 
   # move desktop 1-4 to DISPL_2
   for desktop in {1..4} ; do
-    bspc desktop "$desktop" --to-monitor "$DISPL_2"
+    bspc desktop $desktop --to-monitor "$DISPL_2"
   done
 
   # move desktop 5 to DISPL_0
-  bspc desktop "5" --to-monitor "$DISPL_0"
+  bspc desktop 5 --to-monitor "$DISPL_0"
 
   # reorder monitors
-  bspc wm -O ${DISPLAYS_DOCKED[@]}
+  # bspc wm -O ${DISPLAYS_DOCKED[@]}
 
   # change padding
   for display in $DISPL_0 $DISPL_1 ; do
@@ -53,7 +51,7 @@ change_undocked() {
 }
 
 restart_polybar() {
-  killall -q polybar
+  pkill -q polybar 2> /dev/null
   while pgrep -u $UID -x polybar > /dev/null; do sleep 1; done
 
   polybar --reload top -c ~/.config/polybar/config.ini </dev/null >/var/tmp/polybar-primary.log 2>&1 200>&- &
@@ -62,7 +60,7 @@ restart_polybar() {
 
 get_displays() {
   # xrandr --listmonitors | awk 'NR>1{ a[$NF] } END { n=asorti(a,sorted);for(i=1;i<=n;i++) print sorted[i] }'
-  xrandr --current | awk '/ connected/ { print $1 } END { n=asorti(a,sorted);for(i=1;i<=n;i++) print sorted[i] }'
+  xrandr --current | awk '/ connected/ { print $1 }' | sort
 }
 
 main() {
@@ -77,6 +75,9 @@ main() {
 
   # restart polybar
   restart_polybar
+
+  # reset wallpaper
+  nitrogen --restore &
 
   # remove default desktop
   bspc desktop Desktop --remove
