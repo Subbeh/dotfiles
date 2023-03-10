@@ -45,7 +45,7 @@ change_undocked() {
 
   # move all desktops to DISPL_0
   for desktop in {0..5} ; do
-    bspc desktop "$i" --to-monitor "$DISPL_0"
+    bspc desktop "$desktop" --to-monitor "$DISPL_0"
   done
 
   # reorder desktops
@@ -61,7 +61,8 @@ restart_polybar() {
 }
 
 get_displays() {
-  xrandr --listmonitors | awk 'NR>1{ a[$NF] } END { n=asorti(a,sorted);for(i=1;i<=n;i++) print sorted[i] }'
+  # xrandr --listmonitors | awk 'NR>1{ a[$NF] } END { n=asorti(a,sorted);for(i=1;i<=n;i++) print sorted[i] }'
+  xrandr --current | awk '/ connected/ { print $1 } END { n=asorti(a,sorted);for(i=1;i<=n;i++) print sorted[i] }'
 }
 
 main() {
