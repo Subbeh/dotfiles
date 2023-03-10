@@ -1,0 +1,6 @@
+#!/bin/sh
+
+case $1 in
+    pre)  /usr/bin/lifx-boot -0 ;;
+    post) /usr/bin/lifx-boot -1 ;;
+esac

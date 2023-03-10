@@ -11,7 +11,6 @@ RemainAfterExit=true
 User=sysadm
 Group=sysadm
 ExecStart=/bin/true
-#ExecStop=/bin/bash -c 'systemctl list-jobs | grep -Eq 'reboot.target.*start' || /usr/bin/lifx -g Office -0'
 ExecStop=/bin/bash -c 'systemctl list-jobs | grep -Eq 'reboot.target.*start' || /usr/bin/lifx-boot -0'
 
 [Install]
