@@ -25,9 +25,6 @@ change_docked() {
   # move desktop 5 to DISPL_0
   bspc desktop 5 --to-monitor "$DISPL_0"
 
-  # reorder monitors
-  # bspc wm -O ${DISPLAYS_DOCKED[@]}
-
   # change padding
   for display in $DISPL_0 $DISPL_1 ; do
     bspc config -m "$display" top_padding 0
@@ -51,7 +48,8 @@ change_undocked() {
 }
 
 restart_polybar() {
-  pkill -q polybar 2> /dev/null
+  # pkill -q polybar 2> /dev/null
+  polybar-msg cmd quit
   while pgrep -u $UID -x polybar > /dev/null; do sleep 1; done
 
   polybar --reload top -c ~/.config/polybar/config.ini </dev/null >/var/tmp/polybar-primary.log 2>&1 200>&- &
@@ -59,7 +57,7 @@ restart_polybar() {
 }
 
 get_displays() {
-  # xrandr --listmonitors | awk 'NR>1{ a[$NF] } END { n=asorti(a,sorted);for(i=1;i<=n;i++) print sorted[i] }'
+  # list currently connected displays
   xrandr --current | awk '/ connected/ { print $1 }' | sort
 }
 
@@ -73,7 +71,7 @@ main() {
     change_undocked
   fi
 
-  # restart polybar
+  # (re)start polybar
   restart_polybar
 
   # reset wallpaper
