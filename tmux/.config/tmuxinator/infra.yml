@@ -1,10 +1,11 @@
 # /home/sysadm/.config/tmuxinator/infra.yml
 
 name: infra
-root: /data/workspace/homelab/infra
+root: ~/
 
 windows:
   - workspace:
+      pre: cd /data/workspace/homelab/infra; clear
       layout: c6b7,311x65,0,0{102x65,0,0,6,208x65,103,0[208x32,103,0{104x32,103,0,11,103x32,208,0,12},208x32,103,33,7]}
       panes:
         - vim
@@ -16,8 +17,8 @@ windows:
       panes:
         -
         -
-  - k8s:
-      layout: main-horizontal
-      panes:
-        - k9s
-        - cd /data/workspace/homelab/infra/k8s
+  # - k8s:
+  #     layout: main-horizontal
+  #     panes:
+  #       - k9s
+  #       - cd /data/workspace/homelab/infra/k8s
