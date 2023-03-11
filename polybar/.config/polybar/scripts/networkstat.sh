@@ -7,7 +7,7 @@ readonly WIRED=enp WIRED_ICON=
 readonly VPN=wg-mullvad VPN_ICON=
 readonly TAILSCALE_ICON=
 readonly PIHOLE_ICON=
-readonly PIHOLE_URL="https://pihole.sbbh.cloud/api.php?auth=$(<$HOME/.pihole_api)"
+readonly PIHOLE_URL="https://pihole.sbbh.cloud/admin/api.php?auth=$(<$HOME/.pihole_api)"
 readonly PIHOLE_DISABLE_TIME=1800
 readonly CLR=#87d7ff
 
