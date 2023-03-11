@@ -64,6 +64,9 @@ src() {
     echo sourcing $f
     . "$f"
   done
+
+  xmodmap $XDG_CONFIG_HOME/x11/xmodmap
+  xrdb -merge -I$HOME $XDG_CONFIG_HOME/x11/xresources
 }
 
 # list all commands / functions / aliases / builtins

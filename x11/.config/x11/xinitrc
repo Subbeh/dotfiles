@@ -25,19 +25,18 @@ xset fp rehash
 # source files
 [ -f $XDG_CONFIG_HOME/x11/xresources ] && xrdb -merge -I$HOME $XDG_CONFIG_HOME/x11/xresources
 [ -f $XDG_CONFIG_HOME/x11/xmodmap ] && xmodmap $XDG_CONFIG_HOME/x11/xmodmap
-# [ -f $BIN_DIR/setxrandr ] && . $BIN_DIR/setxrandr
 
 # set cursor
-command -v xsetroot && pgrep -x $_ || $_ -cursor_name left_ptr
+command -v xsetroot && $_ -cursor_name left_ptr
 
 # turn on numlock
-command -v numlockx && pgrep -x $_ || $_ &
+command -v numlockx && $_ &
 
 # start notification manager
 command -v dunst    && pgrep -x $_ || $_ &
 
 # set wallpaper
-command -v nitrogen && pgrep -x $_ || $_ --restore &
+command -v nitrogen && $_ --restore &
 
 # start compositor
 command -v picom    && pgrep -x $_ || $_ -f &

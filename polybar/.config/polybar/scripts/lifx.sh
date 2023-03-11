@@ -1,7 +1,7 @@
 #!/bin/sh
 
 CMD='lifx -g Office'
-PIPE=/tmp/lifx.pipe
+PIPE=/tmp/polybar_lifx.pipe
 ICN=
 CLR=${XCLR_COLOR3:-#87d7ff}
 declare -i brightness

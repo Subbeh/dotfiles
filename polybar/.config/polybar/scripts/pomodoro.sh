@@ -14,7 +14,7 @@ clr_paused=de935f
 clr_started=689d6a
 clr_stopped=aa303030
 
-pipe=/tmp/pomodoro.pipe
+pipe=/tmp/polybar_pomodoro.pipe
 mkfifo -m 0600 $pipe
 trap "trap - SIGTERM && rm -f $pipe && kill -- -$$" SIGINT SIGTERM EXIT
 

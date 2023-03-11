@@ -48,10 +48,18 @@ change_undocked() {
 }
 
 restart_polybar() {
-  # pkill -q polybar 2> /dev/null
-  polybar-msg cmd quit
-  while pgrep -u $UID -x polybar > /dev/null; do sleep 1; done
+  pkill -q polybar 2> /dev/null
 
+  while pgrep -u $UID -x polybar > /dev/null; do 
+    sleep 1
+    ((++i % 4)) || {
+      polybar-msg cmd quit
+      pkill -f -9 polybar
+      break
+    }
+  done
+
+  rm -f /tmp/polybar_* 2> /dev/null
   polybar --reload top -c ~/.config/polybar/config.ini </dev/null >/var/tmp/polybar-primary.log 2>&1 200>&- &
   polybar --reload bottom -c ~/.config/polybar/config.ini </dev/null >/var/tmp/polybar-secondary.log 2>&1 200>&- &
 }
