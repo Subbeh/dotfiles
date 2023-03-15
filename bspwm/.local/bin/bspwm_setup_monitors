@@ -42,9 +42,6 @@ change_undocked() {
   for desktop in {0..5} ; do
     bspc desktop "$desktop" --to-monitor "$DISPL_0"
   done
-
-  # reorder desktops
-  bspc monitor "$DISPL_0" -o 0 1 2 3 4 5
 }
 
 restart_polybar() {
@@ -74,21 +71,25 @@ main() {
 
   # check if laptop is docked
   if [ "$(printf '%s\n' "${DISPLAYS_DOCKED[*]}"|sort)" = "$(get_displays)" ] ; then
+    state=docked
     change_docked
-
-    # reorder desktops
-    bspc monitor "$DISPL_1" -o 0
-    bspc monitor "$DISPL_2" -o 1 2 3 4
-    bspc monitor "$DISPL_0" -o 5
   else
+    state=undocked
     change_undocked
-
-    # reorder desktops
-    bspc monitor "$DISPL_0" -o 0 1 2 3 4 5
   fi
 
   # (re)start polybar
   restart_polybar
+
+  # reoirder desktops
+  case "$state" in
+    undocked)
+      bspc monitor "$DISPL_0" -o 0 1 2 3 4 5 ;;
+    docked)
+      bspc monitor "$DISPL_1" -o 0
+      bspc monitor "$DISPL_2" -o 1 2 3 4
+      bspc monitor "$DISPL_0" -o 5 ;;
+  esac
 
   # reset wallpaper
   nitrogen --restore &
