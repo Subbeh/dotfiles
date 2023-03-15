@@ -36,6 +36,7 @@ zplug "zsh-users/zsh-history-substring-search"    # browse history with keywords
 zplug "agkozak/zsh-z"                             # navigate to directories using keywords
 zplug "hlissner/zsh-autopair"                     # auto-add matching delimiters
 zplug "Aloxaf/fzf-tab"                            # use fzf for suggestions
+zplug 'wfxr/forgit'                               # efficient git
 zplug "plugins/bgnotify",          from:oh-my-zsh # notify on finished command execution
 zplug "plugins/dirhistory",        from:oh-my-zsh # navigate directories using key bindings
 zplug "plugins/sudo",              from:oh-my-zsh # prefix last command with sudo [2x ESC]
