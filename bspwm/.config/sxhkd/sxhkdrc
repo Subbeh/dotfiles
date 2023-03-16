@@ -31,7 +31,7 @@ super + shift + l
 
 # copy last command to clipboard
 super + c
-  awk -F';' 'END { $1=""; print }' /home/$HOME/.cache/bash_history | xclip -selection clipboard
+  awk -F';' 'END { $1=""; print }' $HOME/.cache/bash_history | xclip -selection clipboard
 
 ########################
 ## apps               ##
