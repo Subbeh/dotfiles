@@ -31,7 +31,7 @@ super + shift + l
 
 # copy last command to clipboard
 super + c
-  tail -1 /home/sysadm/.cache/bash_history | sed 's/.*;//' | xclip -selection clipboard
+  awk -F';' 'END { $1=""; print }' /home/$HOME/.cache/bash_history | xclip -selection clipboard
 
 ########################
 ## apps               ##
