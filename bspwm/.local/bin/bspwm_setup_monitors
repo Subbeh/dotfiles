@@ -50,7 +50,7 @@ restart_polybar() {
   while pgrep -u $UID -x polybar > /dev/null; do 
     sleep 1
     ((++i % 4)) || {
-      polybar-msg cmd quit
+      # polybar-msg cmd quit
       pkill -f -9 polybar
       break
     }
@@ -84,11 +84,11 @@ main() {
   # reoirder desktops
   case "$state" in
     undocked)
-      bspc monitor "$DISPL_0" -o 0 1 2 3 4 5 ;;
+      bspc monitor "$DISPL_0" -d 0 1 2 3 4 5 ;;
     docked)
-      bspc monitor "$DISPL_1" -o 0
-      bspc monitor "$DISPL_2" -o 1 2 3 4
-      bspc monitor "$DISPL_0" -o 5 ;;
+      bspc monitor "$DISPL_1" -d 0
+      bspc monitor "$DISPL_2" -d 1 2 3 4
+      bspc monitor "$DISPL_0" -d 5 ;;
   esac
 
   # reset wallpaper
