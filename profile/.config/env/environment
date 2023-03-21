@@ -22,7 +22,7 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#717171"
 ADOTDIR="$XDG_DATA_HOME/zsh/antigen"
 
 # Vim
-export VIMINIT="let \$MYVIMRC='${XDG_CONFIG_HOME}/vim/vimrc' | source \$MYVIMRC"
+# export VIMINIT="let \$MYVIMRC='${XDG_CONFIG_HOME}/vim/vimrc' | source \$MYVIMRC"
 
 # Java fonts
 export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=setting'

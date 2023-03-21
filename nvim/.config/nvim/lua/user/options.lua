@@ -1,29 +1,50 @@
--- set vim options here (vim.<first_key>.<second_key> = value)
-return {
-  opt = {
-    -- set to true or false etc.
-    relativenumber = true, -- sets vim.opt.relativenumber
-    number = true, -- sets vim.opt.number
-    spell = false, -- sets vim.opt.spell
-    signcolumn = "auto", -- sets vim.opt.signcolumn to auto
-    wrap = false, -- sets vim.opt.wrap
-  },
-  g = {
-    mapleader = " ", -- sets vim.g.mapleader
-    autoformat_enabled = true, -- enable or disable auto formatting at start (lsp.formatting.format_on_save must be enabled)
-    cmp_enabled = true, -- enable completion at start
-    autopairs_enabled = true, -- enable autopairs at start
-    diagnostics_mode = 3, -- set the visibility of diagnostics in the UI (0=off, 1=only show in status line, 2=virtual text off, 3=all on)
-    icons_enabled = true, -- disable icons in the UI (disable if no nerd font is available, requires :PackerSync after changing)
-    ui_notifications_enabled = true, -- disable notifications when toggling UI elements
-  },
+local options = {
+  backup = false,                          -- creates a backup file
+  clipboard = "unnamedplus",               -- allows neovim to access the system clipboard
+  cmdheight = 2,                           -- more space in the neovim command line for displaying messages
+  completeopt = { "menuone", "noselect" }, -- mostly just for cmp
+  conceallevel = 0,                        -- so that `` is visible in markdown files
+  fileencoding = "utf-8",                  -- the encoding written to a file
+  hlsearch = true,                         -- highlight all matches on previous search pattern
+  ignorecase = true,                       -- ignore case in search patterns
+  mouse = "n",                             -- allow the mouse to be used in neovim
+  pumheight = 10,                          -- pop up menu height
+  showmode = false,                        -- we don't need to see things like -- INSERT -- anymore
+  showtabline = 2,                         -- always show tabs
+  smartcase = true,                        -- smart case
+  smartindent = true,                      -- make indenting smarter again
+  splitbelow = true,                       -- force all horizontal splits to go below current window
+  splitright = true,                       -- force all vertical splits to go to the right of current window
+  swapfile = false,                        -- creates a swapfile
+  termguicolors = true,                    -- set term gui colors (most terminals support this)
+  timeoutlen = 300,                        -- time to wait for a mapped sequence to complete (in milliseconds)
+  undofile = true,                         -- enable persistent undo
+  updatetime = 300,                        -- faster completion (4000ms default)
+  writebackup = false,                     -- if a file is being edited by another program (or was written to file while editing with another program), it is not allowed to be edited
+  expandtab = true,                        -- convert tabs to spaces
+  shiftwidth = 2,                          -- the number of spaces inserted for each indentation
+  tabstop = 2,                             -- insert 2 spaces for a tab
+  cursorline = true,                       -- highlight the current line
+  number = true,                           -- set numbered lines
+  relativenumber = false,                  -- set relative numbered lines
+  numberwidth = 4,                         -- set number column width to 2 {default 4}
+
+  signcolumn = "yes",                      -- always show the sign column, otherwise it would shift the text each time
+  wrap = true,                             -- display lines as one long line
+  linebreak = true,                        -- companion to wrap, don't split words
+  scrolloff = 8,                           -- minimal number of screen lines to keep above and below the cursor
+  sidescrolloff = 8,                       -- minimal number of screen columns either side of cursor if wrap is `false`
+  guifont = "monospace:h17",               -- the font used in graphical neovim applications
+  whichwrap = "bs<>[]hl",                  -- which "horizontal" keys are allowed to travel to prev/next line
 }
--- If you need more control, you can use the function()...end notation
--- return function(local_vim)
---   local_vim.opt.relativenumber = true
---   local_vim.g.mapleader = " "
---   local_vim.opt.whichwrap = vim.opt.whichwrap - { 'b', 's' } -- removing option from list
---   local_vim.opt.shortmess = vim.opt.shortmess + { I = true } -- add to option list
---
---   return local_vim
--- end
+
+for k, v in pairs(options) do
+  vim.opt[k] = v
+end
+
+-- vim.opt.shortmess = "ilmnrx"                        -- flags to shorten vim messages, see :help 'shortmess'
+vim.opt.shortmess:append "c"                           -- don't give |ins-completion-menu| messages
+vim.opt.iskeyword:append "-"                           -- hyphenated words recognized by searches
+vim.opt.formatoptions:remove({ "c", "r", "o" })        -- don't insert the current comment leader automatically for auto-wrapping comments using 'textwidth', hitting <Enter> in insert mode, or hitting 'o' or 'O' in normal mode.
+vim.opt.runtimepath:remove("/usr/share/vim/vimfiles")  -- separate vim plugins from neovim in case vim still in use
+

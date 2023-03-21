@@ -1,6 +1,6 @@
 # various
 alias sudo='sudo '
-alias vi=vim
+alias vi='$HOME/nvim/nvim'
 alias nvim='$HOME/nvim/nvim'
 alias vifm=vifmrun
 alias open=xdg-open
