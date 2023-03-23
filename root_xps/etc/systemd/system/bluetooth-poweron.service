@@ -5,8 +5,8 @@ After=bluetooth.target
 [Service]
 Type=simple
 ExecStart=/usr/bin/bluetoothctl -- power on
-Restart=always
-RestartSec=5s
+;Restart=always
+;RestartSec=5s
 
 [Install]
 WantedBy=multi-user.target

@@ -65,6 +65,7 @@ alias -- -='cd -'
 alias l='ls -l --color'
 alias ll='ls -la --color'
 alias lt='ls -ltra --color'
+alias lsd='ls -ld */'
 alias cd.="cd $DOT"
 alias cdb="cd $HOME/.local/bin"
 alias cdc="cd $XDG_CONFIG_HOME"
