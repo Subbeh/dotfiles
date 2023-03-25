@@ -1,5 +1,84 @@
-local status_ok, bufferline = pcall(require, "bufferline")
-if not status_ok then
+local colorscheme = "onedark"
+
+local status_cs, _ = pcall(vim.cmd, "colorscheme " .. colorscheme)
+if not status_cs then
+  return
+end
+
+local status_od, onedark = pcall(require, "onedark")
+if not status_od then
+  return
+end
+
+onedark.setup {
+  style = 'warm',
+  colors = {
+    -- black = "#444444",
+    bg0 = "#303030",
+    -- bg1 = "#35373b",
+    -- bg2 = "#3e4045",
+    -- bg3 = "#404247",
+    -- bg_d = "#242628",
+    -- bg_blue = "#79b7eb",
+    -- bg_yellow = "#e6cfa1",
+    -- fg = "#b1b4b9",
+    -- purple = "#d7afd7",
+    -- green = "#99bc80",
+    -- orange = "#c99a6e",
+    -- blue = "#87d7ff",
+    -- yellow = "#d7d7af",
+    -- cyan = "#87d7af",
+    -- red = "#ff5f5f",
+    -- grey = "#646568",
+    -- light_grey = "#8b8d91",
+    -- dark_cyan = "#316a71",
+    -- dark_red = "#914141",
+    -- dark_yellow = "#8c6724",
+    -- dark_purple = "#854897",
+    -- diff_add = "#32352f",
+    -- diff_delete = "#342f2f",
+    -- diff_change = "#203444",
+    -- diff_text = "#32526c",
+  },
+}
+
+onedark.load()
+
+-- Set lualine as statusline
+-- See `:help lualine.txt`
+local status_ll, lualine = pcall(require, "lualine")
+if not status_ll then
+  return
+end
+
+lualine.setup {
+  options = {
+    icons_enabled = true,
+    theme = "onedark",
+    component_separators = "|",
+    section_separators = "",
+  },
+  -- sections = {
+  --   lualine_a = {
+  --     {
+  --       "buffers",
+  --     }
+  --   }
+  -- }
+}
+
+local status_ib, indent_blankline = pcall(require, "indent_blankline")
+if not status_ib then
+  return
+end
+
+indent_blankline.setup {
+  char = '┊',
+  show_trailing_blankline_indent = false,
+}
+
+local status_bl, bufferline = pcall(require, "bufferline")
+if not status_bl then
   return
 end
 
@@ -13,7 +92,7 @@ bufferline.setup {
     -- NOTE: this plugin is designed with this icon in mind,
     -- and so changing this is NOT recommended, this is intended
     -- as an escape hatch for people who cannot bear it for whatever reason
-	indicator_icon = nil,
+        indicator_icon = nil,
     indicator = { style = "icon", icon = "▎"},
     buffer_close_icon = "",
     -- buffer_close_icon = '',
