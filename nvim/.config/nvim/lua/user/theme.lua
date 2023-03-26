@@ -23,7 +23,7 @@ onedark.setup {
     -- bg_yellow = "#e6cfa1",
     fg = "#f2f2f2",
     purple = "#d7afd7",
-    green = "#99bc80",
+    green = "#b2e697",
     orange = "#c99a6e",
     blue = "#87d7ff",
     yellow = "#d7d7af",

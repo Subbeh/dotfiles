@@ -62,6 +62,14 @@ return packer.startup(function(use)
   -- various
   use { 'nvim-telescope/telescope.nvim', branch = '0.1.x', requires = { 'nvim-lua/plenary.nvim' } }
   use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make', cond = vim.fn.executable 'make' == 1 }
+  use {
+    "folke/which-key.nvim",
+    config = function()
+      vim.o.timeout = true
+      vim.o.timeoutlen = 300
+    end
+  }
+  use "kyazdani42/nvim-tree.lua"
   use "nvim-treesitter/nvim-treesitter"
   use "lewis6991/gitsigns.nvim"
   use "numToStr/Comment.nvim"
