@@ -80,6 +80,9 @@ main() {
 
   # (re)start polybar
   restart_polybar
+  
+  # restart picom
+  pkill -x picom ; picom &
 
   # reoirder desktops
   case "$state" in
