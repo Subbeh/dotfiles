@@ -1,3 +1,5 @@
+# vim: set ft=sh:
+
 export HISTCONTROL=ignoredups:erasedups   # no duplicate entries
 
 [[ $- != *i* ]] && return

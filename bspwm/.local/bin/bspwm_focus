@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+ids=($(bspc query -N))
+for id in "${ids[@]}" ; do 
+  app=$(xprop -id $id | awk '/WM_CLASS/ { gsub(/"/, "", $4); print $4 }')
+  if [[ "$app" == "$1" ]] ; then
+    bspc node -f $id
+  fi
+done 2> /dev/null

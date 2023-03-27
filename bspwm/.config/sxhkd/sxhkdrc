@@ -53,12 +53,13 @@ super + @space
 alt + @space
   bash -ic 'launcher'
 
-# Win+r application launcher
-super + r ; {t,f,o}
+# Win+r application focus
+super + r ; {t,f,m,o}
   { \
-  alacritty, \
-  firefox, \
-  obsidian \
+  bspwm_focus Alacritty, \
+  bspwm_focus firefox, \
+  bspwm_focus mpv, \
+  bspwm_focus obsidian \
   }
 
 XF86Calculator

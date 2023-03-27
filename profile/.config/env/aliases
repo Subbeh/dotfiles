@@ -1,3 +1,5 @@
+# vim: set ft=sh:
+
 # various
 alias sudo='sudo '
 alias vi=nvim
