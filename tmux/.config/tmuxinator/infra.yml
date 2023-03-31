@@ -12,13 +12,16 @@ windows:
         -
         -
         -
+  - k8s:
+      pre: cd /data/workspace/homelab/infra/k8s
+      layout: 8eb0,266x54,0,0{170x54,0,0[170x26,0,0,1,170x27,0,27,7],95x54,171,0[95x26,171,0,5,95x27,171,27,8]}
+      panes:
+        - k9s
+        -
+        -
+        -
   - various:
       layout: main-vertical
       panes:
         -
         -
-  # - k8s:
-  #     layout: main-horizontal
-  #     panes:
-  #       - k9s
-  #       - cd /data/workspace/homelab/infra/k8s

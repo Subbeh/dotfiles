@@ -16,7 +16,7 @@ alias pb="curl -F 'f:1=<-' ix.io"
 alias lip='curl ifconfig.me'
 alias rb='sudo systemctl restart bluetooth.service'
 alias dot="$HOME/.dotfiles/dot"
-alias x="startx $XDG_CONFIG_HOME/x11/xinitrc -- -keeptty &> $XDG_CACHE_HOME/.xorg.log"
+alias x="startx $XDG_CONFIG_HOME/x11/xinitrc -- -verbose 6 -logverbose 6 -keeptty &> $XDG_CACHE_HOME/.xorg.log"
 alias dm="dmenu_run -nb '#303030' -nf '#b2b2b2' -sf '#444444' -sb '#d7afd7' -h 24 -p run: -dim 0.5 -i -q -fn 'Misc Tamzen:size=10'"
 alias launcher="rofi -show drun -show-icons -icon-theme Papirus-Dark"
 alias xc="xclip -i -selection clipboard"
