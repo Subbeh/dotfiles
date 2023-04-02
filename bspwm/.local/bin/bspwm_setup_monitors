@@ -4,9 +4,9 @@ set -x
 export DISPLAY_ENV DISPL_0 DISPL_1 DISPL_2
 
 DISPL_0="eDP-1" # laptop display
-DISPL_1="DP-1"  # external monitor 1
-DISPL_2="DP-2"  # external monitor 2
-DISPLAYS_DOCKED=(DP-1 DP-2 eDP-1)
+DISPL_1="DP-2-2"  # external monitor 1
+DISPL_2="DP-2-3"  # external monitor 2
+DISPLAYS_DOCKED=(DP-2-2 DP-2-3 eDP-1)
 
 change_docked() {
   xrandr --output $DISPL_1 --mode 1920x1080 --pos 0x0    --rotate normal \

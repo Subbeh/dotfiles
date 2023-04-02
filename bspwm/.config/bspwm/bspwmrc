@@ -52,8 +52,8 @@ bspc query -D | xargs -I {} bspc desktop {} -l monocle
 # Multi monitor config on first load
 if [[ "$1" = 0 ]] ; then
   if [[ "$DISPLAY_ENV" -eq "docked" ]] ; then
-    bspc rule -a Alacritty  -o monitor="DP-2"; alacritty --hold -e tmuxinator start infra &
-    bspc rule -a firefox    -o monitor="DP-2"; firefox &
-    bspc rule -a obsidian   -o monitor="DP-1"; obsidian &
+    bspc rule -a Alacritty  -o monitor="DP-2-3"; alacritty --hold -e tmuxinator start infra &
+    bspc rule -a firefox    -o monitor="DP-2-3"; firefox &
+    bspc rule -a obsidian   -o monitor="DP-2-2"; obsidian &
   fi
 fi
