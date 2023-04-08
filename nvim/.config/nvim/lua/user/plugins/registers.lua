@@ -3,4 +3,6 @@ if not status_ok then
   return
 end
 
-registers.setup()
+registers.setup({
+  modes = {':', '/', '?'}
+})

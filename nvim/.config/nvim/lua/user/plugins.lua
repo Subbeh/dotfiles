@@ -59,9 +59,14 @@ return packer.startup(function(use)
   use "jose-elias-alvarez/null-ls.nvim" -- inject LSP diagnostics, code actions, and more via Lua
   use "j-hui/fidget.nvim" -- Useful status updates for LSP
 
+  -- git
+  use "tpope/vim-fugitive" -- git wrapper
+  use "lewis6991/gitsigns.nvim" -- git decorations
+
   -- various
   use { 'nvim-telescope/telescope.nvim', branch = '0.1.x', requires = { 'nvim-lua/plenary.nvim' } }
   use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make', cond = vim.fn.executable 'make' == 1 }
+  use "gelguy/wilder.nvim" -- Wildmenu extension
   use {
     "folke/which-key.nvim",
     config = function()
@@ -71,7 +76,6 @@ return packer.startup(function(use)
   }
   use "kyazdani42/nvim-tree.lua"
   use "nvim-treesitter/nvim-treesitter"
-  use "lewis6991/gitsigns.nvim"
   use "numToStr/Comment.nvim"
   use "alexghergh/nvim-tmux-navigation"
   use "tversteeg/registers.nvim" -- Show register content when you try to access it in Neovim
