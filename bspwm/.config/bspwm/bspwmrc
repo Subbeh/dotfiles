@@ -1,6 +1,7 @@
 #!/bin/sh
 set -x
 
+pgrep -x picom > /dev/null || picom &
 pgrep -x sxhkd > /dev/null || sxhkd &
 
 # Set desktops on first load

@@ -44,9 +44,6 @@ command -v nitrogen && $_ --restore &
 # start urxvt daemon
 command -v urxvtd   && pgrep -x $_ || $_ &
 
-# start compositor
-command -v picom    && pgrep -x $_ || $_ -f &
-
 # start bspwm window manager
 exec bspwm
 #exec bspwm </dev/null >/var/tmp/polybar-primary.log 2>&1 200>&- &
