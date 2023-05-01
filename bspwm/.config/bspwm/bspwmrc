@@ -37,7 +37,7 @@ bspc rule -a 'Org.gnome.Nautilus' state=floating focus=on follow=on
 bspc rule -a 'VirtualBox Machine' state=floating focus=on follow=on
 
 # Load external rules (mainly for Spotify)
-bspc config external_rules_command "${XDG_CONFIG_HOME}/bspwm/bspwm-external-rules"
+# bspc config external_rules_command "${XDG_CONFIG_HOME}/bspwm/bspwm-external-rules"
 
 # Mouse bindings
 bspc config pointer_modifier mod4
@@ -56,5 +56,6 @@ if [[ "$1" = 0 ]] ; then
     bspc rule -a Alacritty  -o monitor="DP-2-3"; alacritty --hold -e tmuxinator start infra &
     bspc rule -a firefox    -o monitor="DP-2-3"; firefox &
     bspc rule -a obsidian   -o monitor="DP-2-2"; obsidian &
+    bspc rule -a Spotify    -o monitor="eDP-1"
   fi
 fi
