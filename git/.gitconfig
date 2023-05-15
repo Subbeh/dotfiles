@@ -7,3 +7,4 @@
 	ignoreSubmodules = dirty
 [safe]
 	directory = /mnt/workspace/notes
+	directory = /drone/src

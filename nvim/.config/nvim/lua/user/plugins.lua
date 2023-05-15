@@ -81,7 +81,9 @@ return packer.startup(function(use)
   use "tversteeg/registers.nvim" -- Show register content when you try to access it in Neovim
   use "RRethy/vim-illuminate" -- Automatically highlighting other uses of the word under the cursor
   use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
-
+  use "lambdalisue/suda.vim" -- allow to read/write with sudo
+  -- markdown
+  use({ "iamcco/markdown-preview.nvim", run = "cd app && npm install", setup = function() vim.g.mkdp_filetypes = { "markdown" } end, ft = { "markdown" }, })
   -- theme
   use "navarasu/onedark.nvim"
   use 'nvim-lualine/lualine.nvim' -- Fancier statusline

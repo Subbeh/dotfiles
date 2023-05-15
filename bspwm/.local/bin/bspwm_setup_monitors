@@ -3,10 +3,10 @@ set -x
 
 export DISPLAY_ENV DISPL_0 DISPL_1 DISPL_2
 
-DISPL_0="eDP-1" # laptop display
-DISPL_1="DP-2-2"  # external monitor 1
-DISPL_2="DP-2-3"  # external monitor 2
-DISPLAYS_DOCKED=(DP-2-2 DP-2-3 eDP-1)
+DISPL_0="${DISPL_LT:?not set}" # laptop display
+DISPL_1="${DISPL_L:?not set}"  # external monitor 1
+DISPL_2="${DISPL_M:?not set}"  # external monitor 2
+DISPLAYS_DOCKED=($DISPL_1 $DISPL_2 $DISPL_0)
 
 change_docked() {
   xrandr --output $DISPL_1 --mode 1920x1080 --pos 0x0    --rotate normal \
@@ -82,7 +82,7 @@ main() {
   restart_polybar
   
   # restart picom
-  pkill -x picom ; picom &
+  # pkill -x picom ; picom &
 
   # reoirder desktops
   case "$state" in

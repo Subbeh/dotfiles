@@ -107,3 +107,6 @@ function kube-toggle() {
   fi
 }
 zle -N kube-toggle
+
+# enable direnv
+eval "$(direnv hook zsh)"

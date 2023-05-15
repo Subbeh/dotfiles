@@ -1,6 +1,10 @@
 #!/bin/sh
 set -x
 
+export DISPL_LT=eDP-1
+export DISPL_L=DP-1-2
+export DISPL_M=DP-1-3
+
 pgrep -x picom > /dev/null || picom &
 pgrep -x sxhkd > /dev/null || sxhkd &
 
@@ -35,6 +39,7 @@ bspc rule -a scrcpy               state=floating focus=on follow=on
 bspc rule -a 'VirtualBox Manager' state=floating focus=on follow=on
 bspc rule -a 'Org.gnome.Nautilus' state=floating focus=on follow=on
 bspc rule -a 'VirtualBox Machine' state=floating focus=on follow=on
+bspc rule -a Spotify              -o monitor="eDP-1"
 
 # Load external rules (mainly for Spotify)
 # bspc config external_rules_command "${XDG_CONFIG_HOME}/bspwm/bspwm-external-rules"
@@ -53,9 +58,8 @@ bspc query -D | xargs -I {} bspc desktop {} -l monocle
 # Multi monitor config on first load
 if [[ "$1" = 0 ]] ; then
   if [[ "$DISPLAY_ENV" -eq "docked" ]] ; then
-    bspc rule -a Alacritty  -o monitor="DP-2-3"; alacritty --hold -e tmuxinator start infra &
-    bspc rule -a firefox    -o monitor="DP-2-3"; firefox &
-    bspc rule -a obsidian   -o monitor="DP-2-2"; obsidian &
-    bspc rule -a Spotify    -o monitor="eDP-1"
+    bspc rule -a Alacritty  -o monitor="${DISPL_M:?not set}"; alacritty --hold -e tmuxinator start infra &
+    bspc rule -a firefox    -o monitor="${DISPL_M:?not set}"; firefox &
+    bspc rule -a obsidian   -o monitor="${DISPL_L:?not set}"; obsidian "obsidian://open?vault=notes" &
   fi
 fi
