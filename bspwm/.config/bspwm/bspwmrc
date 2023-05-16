@@ -2,8 +2,8 @@
 set -x
 
 export DISPL_LT=eDP-1
-export DISPL_L=DP-1-2
-export DISPL_M=DP-1-3
+export DISPL_L=DP-2-2
+export DISPL_M=DP-2-3
 
 pgrep -x picom > /dev/null || picom &
 pgrep -x sxhkd > /dev/null || sxhkd &
@@ -58,7 +58,7 @@ bspc query -D | xargs -I {} bspc desktop {} -l monocle
 # Multi monitor config on first load
 if [[ "$1" = 0 ]] ; then
   if [[ "$DISPLAY_ENV" -eq "docked" ]] ; then
-    bspc rule -a Alacritty  -o monitor="${DISPL_M:?not set}"; alacritty --hold -e tmuxinator start infra &
+    bspc rule -a Alacritty  -o monitor="${DISPL_M:?not set}"; for i in {1..5} ; do test -e /tmp/tmux-1000/default && break || sleep 1; done ; alacritty --hold -e tmuxinator start infra &
     bspc rule -a firefox    -o monitor="${DISPL_M:?not set}"; firefox &
     bspc rule -a obsidian   -o monitor="${DISPL_L:?not set}"; obsidian "obsidian://open?vault=notes" &
   fi
