@@ -63,10 +63,39 @@ return packer.startup(function(use)
   use "tpope/vim-fugitive" -- git wrapper
   use "lewis6991/gitsigns.nvim" -- git decorations
 
-  -- various
+  -- telescope
   use { 'nvim-telescope/telescope.nvim', branch = '0.1.x', requires = { 'nvim-lua/plenary.nvim' } }
   use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make', cond = vim.fn.executable 'make' == 1 }
+
+  -- Treesitter
+  use {
+    "nvim-treesitter/nvim-treesitter",
+    opt = true,
+    event = "BufRead",
+    run = ":TSUpdate",
+    requires = {
+      { "nvim-treesitter/nvim-treesitter-textobjects" },
+    },
+  }
+
+  -- markdown
+  use({ "iamcco/markdown-preview.nvim", run = "cd app && npm install", setup = function() vim.g.mkdp_filetypes = { "markdown" } end, ft = { "markdown" }, })
+
+  -- theme
+  use "navarasu/onedark.nvim"
+  use 'nvim-lualine/lualine.nvim' -- Fancier statusline
+  use {'akinsho/bufferline.nvim', tag = "v3.*", requires = 'nvim-tree/nvim-web-devicons'}
+
+  -- various
   use "gelguy/wilder.nvim" -- Wildmenu extension
+  use "kyazdani42/nvim-tree.lua"
+  use "numToStr/Comment.nvim"
+  use "alexghergh/nvim-tmux-navigation"
+  use "tversteeg/registers.nvim" -- Show register content when you try to access it in Neovim
+  use "RRethy/vim-illuminate" -- Automatically highlighting other uses of the word under the cursor
+  use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
+  use "lambdalisue/suda.vim" -- allow to read/write with sudo
+  use "chaoren/vim-wordmotion"
   use {
     "folke/which-key.nvim",
     config = function()
@@ -74,20 +103,6 @@ return packer.startup(function(use)
       vim.o.timeoutlen = 300
     end
   }
-  use "kyazdani42/nvim-tree.lua"
-  use "nvim-treesitter/nvim-treesitter"
-  use "numToStr/Comment.nvim"
-  use "alexghergh/nvim-tmux-navigation"
-  use "tversteeg/registers.nvim" -- Show register content when you try to access it in Neovim
-  use "RRethy/vim-illuminate" -- Automatically highlighting other uses of the word under the cursor
-  use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
-  use "lambdalisue/suda.vim" -- allow to read/write with sudo
-  -- markdown
-  use({ "iamcco/markdown-preview.nvim", run = "cd app && npm install", setup = function() vim.g.mkdp_filetypes = { "markdown" } end, ft = { "markdown" }, })
-  -- theme
-  use "navarasu/onedark.nvim"
-  use 'nvim-lualine/lualine.nvim' -- Fancier statusline
-  use {'akinsho/bufferline.nvim', tag = "v3.*", requires = 'nvim-tree/nvim-web-devicons'}
 
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins

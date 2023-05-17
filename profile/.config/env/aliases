@@ -28,6 +28,7 @@ alias screenrec="ffmpeg -video_size 1920x1080 -framerate 30 -f x11grab -i :0.0+1
 alias pg="pgrep -fa"
 alias pk="pkill -f"
 alias qr="xclip -o | qrencode -t utf8"
+alias reset="reset && printf '\e[3J'"
 
 # systemd
 alias jrnl="sudo journalctl -b"
@@ -68,6 +69,7 @@ alias l='ls -l --color'
 alias ll='ls -la --color'
 alias lt='ls -ltra --color'
 alias lsd='ls -ld */'
+alias lsl='readlink -f'
 alias cd.="cd $DOT"
 alias cdb="cd $HOME/.local/bin"
 alias cdc="cd $XDG_CONFIG_HOME"
@@ -134,13 +136,3 @@ alias dr='dot remote'
 alias drs='dot remote show'
 alias dlo='dot log --pretty="oneline"'
 alias dlol='dot log --graph --oneline --decorate'
-
-# infra
-alias infra="tmuxinator start infra"
-alias i="cd /data/workspace/homelab"
-alias a="cd /data/workspace/homelab/ansible"
-alias ap="ansible-playbook"
-alias k="kubecolor"
-alias kctx="kubectx"
-alias kns="kubens"
-alias task="go-task"

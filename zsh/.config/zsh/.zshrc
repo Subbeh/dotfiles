@@ -108,5 +108,9 @@ function kube-toggle() {
 }
 zle -N kube-toggle
 
+# enable auto-completion for kubecolor
+source <(kubectl completion zsh)
+compdef kubecolor=kubectl
+
 # enable direnv
 eval "$(direnv hook zsh)"

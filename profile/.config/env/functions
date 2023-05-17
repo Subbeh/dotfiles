@@ -66,13 +66,11 @@ ex ()
 
 # source
 src() {
-  env_files=()
-  env_files+=("/etc/profile" "/etc/environment")
+  env_files=(/etc/profile /etc/environment $XDG_CONFIG_HOME/env/*)
   
   case $PSHELL in
-    *bash) env_files+=( $HOME/.bashrc ) ;;
-    *zsh)  env_files+=( $HOME/.zshenv )
-           env_files+=( $XDG_CONFIG_HOME/zsh/.zshrc ) ;;
+    *bash) env_files+=("$HOME/.bashrc" "$XDG_CONFIG_HOME/bash/bash_profile") ;;
+    *zsh)  env_files+=("$HOME/.zshenv" "$XDG_CONFIG_HOME/zsh/.zshrc") ;;
   esac
 
   for f in ${env_files[@]}; do
@@ -80,6 +78,7 @@ src() {
     . "$f"
   done
 
+  direnv status | grep -q Loaded && direnv reload
   xmodmap $XDG_CONFIG_HOME/x11/xmodmap
   xrdb -merge -I$HOME $XDG_CONFIG_HOME/x11/xresources
 }

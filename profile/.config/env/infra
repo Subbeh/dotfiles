@@ -1,0 +1,17 @@
+# vim: set ft=sh:
+
+# aliases
+alias infra="tmuxinator start infra"
+alias i="cd /data/workspace/homelab"
+alias a="cd /data/workspace/homelab/ansible"
+alias 8="cd /data/workspace/homelab/k8s"
+alias ap="ansible-playbook"
+alias k="kubecolor"
+alias kctx="kubectx"
+alias kns="kubens"
+alias task="go-task"
+
+# functions
+kubetest() {
+  kubectl run -i --tty --rm debug --image=${1:-busybox} --restart=Never -- sh
+}
