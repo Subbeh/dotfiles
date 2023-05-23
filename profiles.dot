@@ -1,23 +1,27 @@
 def=(
-  fonts
-  gtk
-  git
-  fzf
-  picom
-  bspwm
-  polybar
-  dotmanager
-  rofi
-  pulse
-  zsh
-  x11
-  vifm
   alacritty
-  root_xps
-  tmux
-  nitrogen
-  profile
-  dunst
+  bspwm
   btop
+  dotmanager
+  dunst
+  fzf
+  git
+  gtk
+  k9s
+  nitrogen
+  nvim
+  picom
+  polybar
+  profile
+  pulse
+  rofi
+  tmux
+  vifm
   vim
+  x11
+  zsh
+)
+
+root=(
+  root_xps
 )
