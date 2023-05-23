@@ -1,9 +1,0 @@
-[Unit]
-Description=automount workspace NFS share
-
-[Automount]
-Where=/mnt/workspace
-TimeoutIdleSec=0
-
-[Install]
-WantedBy=multi-user.target
