@@ -1,17 +1,40 @@
 # vim: set ft=sh:
 
+export INFRA=/data/workspace/homelab
+
 # aliases
 alias infra="tmuxinator start infra"
-alias i="cd /data/workspace/homelab"
-alias a="cd /data/workspace/homelab/ansible"
-alias 8="cd /data/workspace/homelab/k8s"
+alias i="cd ${INFRA}"
+alias a="cd ${INFRA}/ansible"
+alias 8="cd ${INFRA}/k8s"
 alias ap="ansible-playbook"
 alias k="kubecolor"
 alias kctx="kubectx"
 alias kns="kubens"
 alias task="go-task"
 
-# functions
+# run test pod
 kubetest() {
-  kubectl run -i --tty --rm debug --image=${1:-busybox} --restart=Never -- sh
+  case "$1" in
+    dns)     image="registry.k8s.io/e2e-test-images/jessie-dnsutils:1.3" ;;
+    network) image="wbitt/network-multitool" ;;
+    *)       image="${1:?not set}" ;;
+  esac
+
+  kubectl run -i --tty --rm debug --image="$image" --restart=Never -- sh
+}
+
+# sync secrets
+syncsecrets() {
+  _ns=$(ls -d $INFRA/k8s/apps/*/drone | awk -F'/' '{print $(NF-1) }')
+  kubectl annotate es doppler-${1:?not set} force-sync=$(date +%s) --overwrite -n ${_ns}
+}
+
+# decrypt ansible vault value
+ansdc() {
+  if [ $# -gt 1 ] ; then
+    _host=$1
+    shift
+  fi
+  ansible ${_host:-localhost} -m debug -a var=${1:?not set}
 }

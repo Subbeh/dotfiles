@@ -50,8 +50,8 @@ zplug check --verbose || zplug install  # install missing plugins
 zplug load                              # load plugins
 
 # source env files
-for file in environment aliases functions ; do
-  test -f "${XDG_CONFIG_HOME:-$HOME/.config}/env/$file" && . $_
+for file in "${XDG_CONFIG_HOME:-$HOME/.config}/env/"* ; do
+  . "$file"
 done
 
 # key bindings

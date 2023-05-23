@@ -4,7 +4,6 @@ def=(
   git
   fzf
   picom
-  secure
   bspwm
   polybar
   dotmanager
@@ -12,9 +11,9 @@ def=(
   pulse
   zsh
   x11
-  root_xps
   vifm
   alacritty
+  root_xps
   tmux
   nitrogen
   profile
