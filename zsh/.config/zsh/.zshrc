@@ -13,7 +13,7 @@ export HISTFILE=${XDG_CACHE_HOME:?not set}/zsh_history
 export HISTSIZE=100000
 export SAVEHIST=100000
 setopt INC_APPEND_HISTORY          # Write to the history file immediately, not when the shell exits.
-setopt HIST_IGNORE_DUPS						 # Don't record an entry that was just recorded again.
+setopt HIST_IGNORE_DUPS            # Don't record an entry that was just recorded again.
 setopt HIST_SAVE_NO_DUPS           # do not write a duplicate event to the history file.
 setopt EXTENDED_HISTORY            # Write the history file in the ":start:elapsed;command" format.
 setopt HIST_IGNORE_SPACE           # Don't record an entry starting with a space.

@@ -2,14 +2,14 @@
 
 trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
 
-readonly WIFI=wlan0 WIFI_ICON=
-readonly WIRED=enp WIRED_ICON=
-readonly VPN=wg-mullvad VPN_ICON=
-readonly TAILSCALE_ICON=
-readonly PIHOLE_ICON=
-readonly PIHOLE_URL="https://pihole.sbbh.cloud/admin/api.php?auth=$(<$HOME/.pihole_api)"
-readonly PIHOLE_DISABLE_TIME=1800
-readonly CLR=#87d7ff
+WIFI=wlan0 WIFI_ICON=
+WIRED=enp WIRED_ICON=
+VPN=(wg-mullvad nordlynx) VPN_CLR=#ff5f5f VPN_ICON=
+TAILSCALE_ICON=
+PIHOLE_ICON=
+PIHOLE_URL="https://pihole.sbbh.cloud/admin/api.php?auth=$(<$HOME/.pihole_api)"
+PIHOLE_DISABLE_TIME=1800
+CLR=#87d7ff
 
 main() {
   while getopts vpt flag
@@ -55,8 +55,18 @@ get_link_status() {
 }
 
 get_vpn_status() {
-  mullvad status | grep -q Connected
-  return $?
+  for dev in "${VPN[@]}" ; do
+    if ip link show $dev > /dev/null 2>&1 ; then
+      case "$dev" in
+        *nord*)
+          nordvpn status | grep -q Connected && return 1
+          ;;
+        *mullvad*)
+          mullvad status | grep -q Connected && return 1
+          ;;
+      esac
+    fi
+  done
 }
 
 get_tailscale_status() {
@@ -113,7 +123,7 @@ update_bar() {
 
   # vpn
   echo -n "%{A1:$0 -v:}"
-  (($vpn_status)) && echo -n "$VPN_ICON " || echo -n "%{F$CLR}$VPN_ICON%{F-} "
+  (($vpn_status)) && echo -n "%{F$VPN_CLR}$VPN_ICON%{F-} "
   echo -n "%{A}"
 
   # network interfaces

@@ -18,13 +18,14 @@ export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR:?not set}/ssh-agent.socket"
 export SOPS_AGE_KEY_FILE=${HOME}/.sops/key.txt
 
 # History
-HISTFILE=${XDG_CACHE_HOME}/bash_history
-HISTSIZE=50000
-SAVEHIST=50000
+export HISTFILE=${XDG_CACHE_HOME}/bash_history
+export HISTSIZE=50000
+export SAVEHIST=50000
 
 # Zsh
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#717171"
-ADOTDIR="$XDG_DATA_HOME/zsh/antigen"
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#717171"
+export ADOTDIR="$XDG_DATA_HOME/zsh/antigen"
+export POWERLEVEL9K_INSTANT_PROMPT=quiet
 
 # Vim
 # export VIMINIT="let \$MYVIMRC='${XDG_CONFIG_HOME}/vim/vimrc' | source \$MYVIMRC"
