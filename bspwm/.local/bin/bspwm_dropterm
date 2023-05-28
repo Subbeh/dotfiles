@@ -2,7 +2,7 @@
 set -x
 
 speed=15
-size=1500x500+220+10
+size=1500x500+217+7
 name=${1:-dropbar}
 
 main() {
@@ -12,7 +12,8 @@ main() {
       # bspc rule -a URxvt:$name sticky=on state=floating rectangle=$size
       bspc rule -a "*:Alacritty:$name" sticky=on state=floating rectangle=$size
     # fi
-    alacritty --title $name -e zsh -c "tmux new-session -A -s $name" & disown
+    # alacritty --title $name -o window.padding.y=30 -e zsh -c "tmux new-session -A -s $name" & disown
+    alacritty --title $name -o window.decorations=none -e zsh -c "tmux new-session -A -s $name" & disown
     xdo above -N Polybar -t $(xdo id -a $name) 2> /dev/null
     # while [ $? -ne 0 ] ; do !! ; done
   else

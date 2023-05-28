@@ -29,6 +29,7 @@ alias pg="pgrep -fa"
 alias pk="pkill -f"
 alias qr="xclip -o | qrencode -t utf8"
 alias reset="reset && printf '\e[3J'"
+alias sdiff="diff --color=always --side-by-side"
 
 # systemd
 alias jrnl="sudo journalctl -b"
