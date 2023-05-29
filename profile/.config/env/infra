@@ -29,7 +29,7 @@ kubetest() {
 # sync secrets
 syncsecrets() {
   _ns=$(ls -d $INFRA/k8s/apps/*/${1:?not set} | awk -F'/' '{print $(NF-1) }')
-  kubectl annotate es doppler-${1:?not set} force-sync=$(date +%s) --overwrite -n ${_ns}
+  kubectl annotate externalsecret doppler-${1:?not set} force-sync=$(date +%s) --overwrite -n ${_ns}
 }
 
 # get ansible value
@@ -51,3 +51,9 @@ ansiblesetup() {
   fi
   popd
 }
+
+# get tailscale IPs
+ts() {
+  tailscale status --json | jq '.Peer | .[] | .HostName + " " + .TailscaleIPs[1]' | tr -d '"' | column -t
+}
+

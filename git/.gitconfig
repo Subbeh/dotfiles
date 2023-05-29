@@ -1,10 +1,39 @@
 [user]
 	email = steven001@gmail.com
 	name = Steven
+
 [credential]
 	helper = store
-[diff]
-	ignoreSubmodules = dirty
+
 [safe]
 	directory = /mnt/workspace/notes
 	directory = /drone/src
+	directory = /drone/src
+	directory = /drone/src
+	directory = /drone/src
+	directory = /drone/src
+	directory = /drone/src
+	directory = /drone/src
+	directory = /drone/src
+	directory = /drone/src
+
+[include]
+  path = ~/.config/delta/themes.gitconfig
+
+[diff]
+	ignoreSubmodules = dirty
+  colorMoved = default
+
+[core]
+  pager = delta
+
+[interactive]
+  diffFilter = delta --color-only
+
+[delta]
+  navigate = true    # use n and N to move between diff sections
+  light = false      # set to true if you're in a terminal w/ a light background color (e.g. the default macOS terminal)
+  features = theme
+
+[merge]
+  conflictstyle = diff3
