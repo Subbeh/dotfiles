@@ -60,7 +60,7 @@ return packer.startup(function(use)
   use "j-hui/fidget.nvim" -- Useful status updates for LSP
 
   -- git
-  use "tpope/vim-fugitive" -- git wrapper
+  use "kdheepak/lazygit.nvim" -- git wrapper
   use "lewis6991/gitsigns.nvim" -- git decorations
 
   -- telescope
@@ -69,15 +69,12 @@ return packer.startup(function(use)
 
   -- Treesitter
   use {
-    "nvim-treesitter/nvim-treesitter",
-    opt = true,
-    event = "BufRead",
-    run = ":TSUpdate",
-    requires = {
-      { "nvim-treesitter/nvim-treesitter-textobjects" },
-    },
+      'nvim-treesitter/nvim-treesitter',
+      run = function()
+          local ts_update = require('nvim-treesitter.install').update({ with_sync = true })
+          ts_update()
+      end,
   }
-
   -- markdown
   use({ "iamcco/markdown-preview.nvim", run = "cd app && npm install", setup = function() vim.g.mkdp_filetypes = { "markdown" } end, ft = { "markdown" }, })
 
@@ -95,6 +92,8 @@ return packer.startup(function(use)
   use "RRethy/vim-illuminate" -- Automatically highlighting other uses of the word under the cursor
   use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
   use "lambdalisue/suda.vim" -- allow to read/write with sudo
+  use "Einenlum/yaml-revealer" -- easily navigate through YAML files
+  use {"cuducos/yaml.nvim", ft = { "yaml "}, }
   use "chaoren/vim-wordmotion"
   use {
     "folke/which-key.nvim",

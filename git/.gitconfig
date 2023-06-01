@@ -8,17 +8,9 @@
 [safe]
 	directory = /mnt/workspace/notes
 	directory = /drone/src
-	directory = /drone/src
-	directory = /drone/src
-	directory = /drone/src
-	directory = /drone/src
-	directory = /drone/src
-	directory = /drone/src
-	directory = /drone/src
-	directory = /drone/src
 
-[include]
-  path = ~/.config/delta/themes.gitconfig
+; [include]
+;   path = ~/.config/delta/themes.gitconfig
 
 [diff]
 	ignoreSubmodules = dirty

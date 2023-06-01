@@ -27,7 +27,7 @@ xset fp rehash
 [ -f $XDG_CONFIG_HOME/x11/xmodmap ] && xmodmap $XDG_CONFIG_HOME/x11/xmodmap
 
 # start tmux daemon
-command -v tmux     && pgrep -x $_ || $_ start-server &
+# command -v tmux     && pgrep -x $_ || $_ start-server &
 
 # set cursor
 command -v xsetroot && $_ -cursor_name left_ptr
@@ -36,13 +36,13 @@ command -v xsetroot && $_ -cursor_name left_ptr
 command -v numlockx && $_ &
 
 # start notification manager
-command -v dunst    && pgrep -x $_ || $_ &
+# command -v dunst    && pgrep -x $_ || $_ &
 
 # set wallpaper
-command -v nitrogen && $_ --restore &
+# command -v nitrogen && $_ --restore &
 
 # start urxvt daemon
-command -v urxvtd   && pgrep -x $_ || $_ &
+# command -v urxvtd   && pgrep -x $_ || $_ &
 
 # start bspwm window manager
 exec bspwm

@@ -1,12 +1,14 @@
 #!/bin/sh
 set -x
 
-export DISPL_LT=eDP-1
-export DISPL_L=DP-2-2
-export DISPL_M=DP-2-3
+export DISPL_LT=eDP1
+export DISPL_L=DP2-2
+export DISPL_M=DP2-3
 
+pgrep -x nitrogen || nitrogen --restore &
 pgrep -x picom > /dev/null || picom &
 pgrep -x sxhkd > /dev/null || sxhkd &
+pgrep -x dunst || dunst &
 
 # Set desktops on first load
 [ "$1" = 0 ] && bspc monitor -d 0 1 2 3 4 5
