@@ -2,8 +2,8 @@
 set -x
 
 export DISPL_LT=eDP1
-export DISPL_L=DP2-2
-export DISPL_M=DP2-3
+export DISPL_L=DP1-2
+export DISPL_M=DP1-3
 
 pgrep -x nitrogen || nitrogen --restore &
 pgrep -x picom > /dev/null || picom &

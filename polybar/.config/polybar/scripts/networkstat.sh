@@ -3,27 +3,30 @@
 trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
 
 WIFI=wlan0 WIFI_ICON=
-WIRED=enp WIRED_ICON=
+WIRED=eth0 WIRED_ICON=
 VPN=(wg-mullvad nordlynx) VPN_CLR=#ff5f5f VPN_ICON=
 TAILSCALE_ICON=
-PIHOLE_ICON=
-PIHOLE_URL="https://pihole.sbbh.cloud/admin/api.php?auth=$(<$HOME/.pihole_api)"
-PIHOLE_DISABLE_TIME=1800
+ADGUARD_ICON=
+ADGUARD_URL="http://10.11.254.1:5380/control"
+ADGUARD_USER="sysadm"
+ADGUARD_PASSWORD="$(<$HOME/.adguard_api)"
+ADGUARD_DISABLE_TIME=1800
 CLR=#87d7ff
+CLR_ERR=#ff5f5f
 
 main() {
-  while getopts vpt flag
+  while getopts vat flag
   do
     case "${flag}" in
       v) toggle_vpn ;;
-      p) toggle_pihole ;;
+      a) toggle_adguard ;;
       t) toggle_tailscale ;;
     esac
   done
 
   get_inet_status ; inet_status=$?
   get_vpn_status ; vpn_status=$?
-  get_pihole_status ; pihole_status=$?
+  get_adguard_status ; adguard_status=$?
   get_tailscale_status ; tailscale_status=$?
   inet_dev=$(get_inet_dev)
   get_link_status
@@ -47,7 +50,7 @@ get_link_status() {
     ip=$(ip -4 -o addr show $link | awk '{sub(/\/.*/, "", $4); print $4}')
     case $link in
       $WIFI) [[ "$inet_dev" == "$WIFI" && $inet_status == 0 ]] && icon=%{F$CLR}$WIFI_ICON%{F-} || icon=$WIFI_ICON ;;
-      $WIRED*) [[ "$inet_dev" == "$WIRED"* && $inet_status == 0 ]] && icon=%{F$CLR}$WIRED_ICON%{F-} || icon=$WIRED_ICON ;;
+      $WIRED) [[ "$inet_dev" == "$WIRED" && $inet_status == 0 ]] && icon=%{F$CLR}$WIRED_ICON%{F-} || icon=$WIRED_ICON ;;
       *) icon= ;;
     esac
     connections+=($icon $ip)
@@ -74,9 +77,22 @@ get_tailscale_status() {
   return $?
 }
 
-get_pihole_status() {
-  curl -sf "${PIHOLE_URL}&status" | grep -q enabled 2>/dev/null
-  # return 1
+get_adguard_cookie() {
+  curl -si -X POST "${ADGUARD_URL}/login" \
+    -H 'Content-Type: application/json' \
+    -d "{\"name\":\"$ADGUARD_USER\",\"password\":\"$ADGUARD_PASSWORD\"}" | grep -oE 'agh_session=\w+' > /tmp/adguard_cookie
+}
+
+get_adguard_status() {
+  [ -f /tmp/adguard_cookie ] || get_adguard_cookie
+  _status=$(
+    curl -is --cookie "$(</tmp/adguard_cookie)" "${ADGUARD_URL}/status" | \
+      awk '/403 Forbidden/ { system("get_adguard_cookie") } NR==7' | jq '.protection_enabled')
+  case "$_status" in
+    true)  return 0 ;;
+    false) return 1 ;;
+    *)     return 2 ;;
+  esac
 }
 
 toggle_vpn() {
@@ -99,21 +115,30 @@ toggle_tailscale() {
   fi
 }
 
-toggle_pihole() {
-  if get_pihole_status ; then
-    action="disable=${PIHOLE_DISABLE_TIME}"
-    notify-send "Pi-hole" "Disabling .."
-  else
-    action=enable
-    notify-send "Pi-hole" "Enabling .."
-  fi
-  curl -sf "${PIHOLE_URL}&${action}"
+toggle_adguard() {
+  get_adguard_status
+  case "$?" in
+    0) _body="{\"duration\":$((ADGUARD_DISABLE_TIME * 1000)),\"enabled\":false}"
+       notify-send "AdGuard" "Disabling .."
+       ;;
+    1) _body="{\"enabled\":true}"
+       notify-send "AdGuard" "Enabling .."
+       ;;
+    *) return 1 ;;
+  esac
+  curl -is --cookie "$(</tmp/adguard_cookie)" -X POST "${ADGUARD_URL}/protection" \
+    -H 'Content-Type: application/json' \
+    -d "$_body"
 }
 
 update_bar() {
-  # pihole
-  echo -n "%{A1:$0 -p:}"
-  (($pihole_status)) && echo -n "$PIHOLE_ICON " || echo -n "%{F$CLR}$PIHOLE_ICON%{F-} "
+  # adguard
+  echo -n "%{A1:$0 -a:}"
+  case "$adguard_status" in
+    0) echo -n "%{F$CLR}$ADGUARD_ICON%{F-} ";;
+    1) echo -n "$ADGUARD_ICON ";;
+    *) echo -n "%{F$CLR_ERR}$ADGUARD_ICON%{F-} ";;
+  esac
   echo -n "%{A}"
 
   # tailscale
@@ -130,4 +155,5 @@ update_bar() {
   echo ${connections[*]}
 }
 
+export -f get_adguard_cookie
 main $*
