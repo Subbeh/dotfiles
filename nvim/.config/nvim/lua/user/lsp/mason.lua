@@ -5,7 +5,6 @@ local servers = {
   "lua_ls",
   "marksman",
   "pyright",
-  "terraformls",
   "yamlls",
 }
 
