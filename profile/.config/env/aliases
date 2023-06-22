@@ -1,36 +1,36 @@
 # vim: set ft=sh:
 
 # various
-alias sudo='sudo '
-alias vi=nvim
-# alias nvim='$HOME/nvim/nvim'
-alias vifm=vifmrun
-alias open=xdg-open
-alias h='history 0'
-alias f="fd --hidden --follow"
-alias c=cat
+alias backup="borgmatic --verbosity 1"
 alias b=bat
+alias c=cat
+alias cc="fc -ln -1 | xclip -i -selection clipboard"
+alias dm="dmenu_run -nb '#303030' -nf '#b2b2b2' -sf '#444444' -sb '#d7afd7' -h 24 -p run: -dim 0.5 -i -q -fn 'Misc Tamzen:size=10'"
+alias dot="$HOME/.dotfiles/dot"
+alias f="fd --hidden --follow"
 alias g="rg --ignore-case --hidden --follow --one-file-system --no-ignore-vcs --search-zip -g '!{node_modules/*,.git/*}'"
+alias h='history 0'
+alias httpserver="python3 -m http.server"
+alias http=xh
+alias keys="curl https://raw.githubusercontent.com/Subbeh/dotfiles/master/keys"
+alias launcher="rofi -show drun -show-icons -icon-theme Papirus-Dark"
+alias lip='curl ifconfig.me'
+alias open=xdg-open
 alias pa='ps -eaf'
 alias pb="curl -F 'f:1=<-' ix.io"
-alias lip='curl ifconfig.me'
-alias rb='sudo systemctl restart bluetooth.service'
-alias dot="$HOME/.dotfiles/dot"
-alias x="startx $XDG_CONFIG_HOME/x11/xinitrc -- -verbose 6 -logverbose 6 -keeptty &> $XDG_CACHE_HOME/.xorg.log"
-alias dm="dmenu_run -nb '#303030' -nf '#b2b2b2' -sf '#444444' -sb '#d7afd7' -h 24 -p run: -dim 0.5 -i -q -fn 'Misc Tamzen:size=10'"
-alias launcher="rofi -show drun -show-icons -icon-theme Papirus-Dark"
-alias xc="xclip -i -selection clipboard"
-alias cc="fc -ln -1 | xclip -i -selection clipboard"
-alias http=xh
-alias httpserver="python3 -m http.server"
-alias speedtest="curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python -"
-alias screenrec="ffmpeg -video_size 1920x1080 -framerate 30 -f x11grab -i :0.0+1920,0 -c:v libx264rgb -crf 0 -preset ultrafast /data/temp/screenrec_$(date +"%Y%m%d_%H%M%S").mkv"
 alias pg="pgrep -fa"
 alias pk="pkill -f"
 alias qr="xclip -o | qrencode -t utf8"
+alias rb='sudo systemctl restart bluetooth.service'
 alias reset="reset && printf '\e[3J'"
+alias screenrec="ffmpeg -video_size 1920x1080 -framerate 30 -f x11grab -i :0.0+1920,0 -c:v libx264rgb -crf 0 -preset ultrafast /data/temp/screenrec_$(date +"%Y%m%d_%H%M%S").mkv"
 alias sdiff="diff --color=always --side-by-side"
-alias keys="curl https://raw.githubusercontent.com/Subbeh/dotfiles/master/keys"
+alias speedtest="curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python -"
+alias sudo='sudo '
+alias vifm=vifmrun
+alias vi=nvim
+alias xc="xclip -i -selection clipboard"
+alias x="startx $XDG_CONFIG_HOME/x11/xinitrc -- -verbose 6 -logverbose 6 -keeptty &> $XDG_CACHE_HOME/.xorg.log"
 
 # systemd
 alias jrnl="sudo journalctl -b"
