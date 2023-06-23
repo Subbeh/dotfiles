@@ -84,7 +84,7 @@ get_adguard_cookie() {
 }
 
 get_adguard_status() {
-  [ -f /tmp/adguard_cookie ] || get_adguard_cookie
+  [ ! -s /tmp/adguard_cookie ] && get_adguard_cookie
   _status=$(
     curl -is --cookie "$(</tmp/adguard_cookie)" "${ADGUARD_URL}/status" | \
       awk '/403 Forbidden/ { system("get_adguard_cookie") } NR==7' | jq '.protection_enabled')
