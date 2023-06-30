@@ -74,7 +74,7 @@ src() {
     *zsh)  env_files+=("$HOME/.zshenv" "$XDG_CONFIG_HOME/zsh/.zshrc") ;;
   esac
 
-  for f in "${XDG_CONFIG_HOME:-$HOME/.config}/env"; do
+  for f in "${XDG_CONFIG_HOME:-$HOME/.config}"/env/* ; do
     echo sourcing $f
     . "$f"
   done

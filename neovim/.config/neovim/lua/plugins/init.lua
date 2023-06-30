@@ -1,0 +1,119 @@
+return {
+  "nvim-lua/plenary.nvim",
+  "MunifTanjim/nui.nvim",
+  {
+    "nvim-tree/nvim-web-devicons",
+    dependencies = { "DaikyXendo/nvim-material-icon" },
+    config = function()
+      require("nvim-web-devicons").setup {
+        override = require("nvim-material-icon").get_icons(),
+      }
+    end,
+  },
+  { "yamatsum/nvim-nonicons", config = true, enabled = false },
+  { "tpope/vim-repeat", event = "VeryLazy" },
+  { "nacro90/numb.nvim", event = "BufReadPre", config = true },
+  {
+    "lukas-reineke/indent-blankline.nvim",
+    event = { "BufReadPost", "BufNewFile" },
+    opts = {
+      -- char = "▏",
+      char = "│",
+      filetype_exclude = { "help", "alpha", "dashboard", "NvimTree", "Trouble", "lazy", "mason" },
+      show_trailing_blankline_indent = false,
+      show_current_context = false,
+    },
+  },
+  {
+    "stevearc/dressing.nvim",
+    event = "VeryLazy",
+    opts = {
+      input = { relative = "editor" },
+      select = {
+        backend = { "telescope", "fzf", "builtin" },
+      },
+    },
+  },
+  {
+    "rcarriga/nvim-notify",
+    event = "VeryLazy",
+    opts = {
+      -- background_colour = "#A3CCBE",
+      timeout = 3000,
+      max_height = function()
+        return math.floor(vim.o.lines * 0.75)
+      end,
+      max_width = function()
+        return math.floor(vim.o.columns * 0.75)
+      end,
+    },
+    config = function(_, opts)
+      require("notify").setup(opts)
+      vim.notify = require "notify"
+    end,
+  },
+  {
+    "monaqa/dial.nvim",
+    keys = { { "<C-a>", mode = { "n", "v" } }, { "<C-x>", mode = { "n", "v" } }, { "g<C-a>", mode = { "v" } }, { "g<C-x>", mode = { "v" } } },
+    -- stylua: ignore
+    init = function()
+      vim.api.nvim_set_keymap("n", "<C-a>", require("dial.map").inc_normal(), { desc = "Increment", noremap = true })
+      vim.api.nvim_set_keymap("n", "<C-x>", require("dial.map").dec_normal(), { desc = "Decrement", noremap = true })
+      vim.api.nvim_set_keymap("v", "<C-a>", require("dial.map").inc_visual(), { desc = "Increment", noremap = true })
+      vim.api.nvim_set_keymap("v", "<C-x>", require("dial.map").dec_visual(), { desc = "Decrement", noremap = true })
+      vim.api.nvim_set_keymap("v", "g<C-a>", require("dial.map").inc_gvisual(), { desc = "Increment", noremap = true })
+      vim.api.nvim_set_keymap("v", "g<C-x>", require("dial.map").dec_gvisual(), { desc = "Decrement", noremap = true })
+    end,
+  },
+  {
+    "andymass/vim-matchup",
+    event = { "BufReadPost" },
+    config = function()
+      vim.g.matchup_matchparen_offscreen = { method = "popup" }
+    end,
+  },
+  { "tpope/vim-surround", event = "BufReadPre" },
+  {
+    "numToStr/Comment.nvim",
+    dependencies = { "JoosepAlviste/nvim-ts-context-commentstring" },
+    keys = { { "gc", mode = { "n", "v" } }, { "gcc", mode = { "n", "v" } }, { "gbc", mode = { "n", "v" } } },
+    config = function(_, _)
+      local opts = {
+        ignore = "^$",
+        pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
+      }
+      require("Comment").setup(opts)
+    end,
+  },
+  -- session management
+  {
+    "folke/persistence.nvim",
+    event = "BufReadPre",
+    opts = { options = { "buffers", "curdir", "tabpages", "winsize", "help" } },
+    -- stylua: ignore
+    keys = {
+      { "<leader>qs", function() require("persistence").load() end, desc = "Restore Session" },
+      { "<leader>ql", function() require("persistence").load({ last = true }) end, desc = "Restore Last Session" },
+      { "<leader>qd", function() require("persistence").stop() end, desc = "Don't Save Current Session" },
+    },
+  },
+  -- tmux integration
+  {
+    "alexghergh/nvim-tmux-navigation",
+    event = "VeryLazy",
+    config = function()
+      local nvim_tmux_nav = require "nvim-tmux-navigation"
+
+      nvim_tmux_nav.setup {
+        disable_when_zoomed = true, -- defaults to false
+      }
+
+      vim.keymap.set("n", "<C-h>", nvim_tmux_nav.NvimTmuxNavigateLeft)
+      vim.keymap.set("n", "<C-j>", nvim_tmux_nav.NvimTmuxNavigateDown)
+      vim.keymap.set("n", "<C-k>", nvim_tmux_nav.NvimTmuxNavigateUp)
+      vim.keymap.set("n", "<C-l>", nvim_tmux_nav.NvimTmuxNavigateRight)
+      vim.keymap.set("n", "<C-\\>", nvim_tmux_nav.NvimTmuxNavigateLastActive)
+      vim.keymap.set("n", "<C-Space>", nvim_tmux_nav.NvimTmuxNavigateNext)
+    end,
+  },
+}
