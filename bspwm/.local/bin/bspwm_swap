@@ -1,0 +1,12 @@
+#!/bin/bash
+
+MONITOR_1="${DISPL_M:?not set}"
+MONITOR_2="${DISPL_L:?not set}"
+
+WINDOW_1=$(bspc query -N -n .active -m ${MONITOR_1:?not set})
+WINDOW_2=$(bspc query -N -n .active -m ${MONITOR_2:?not set})
+
+bspc node ${WINDOW_1:?not set} --to-monitor "$DISPL_L"
+bspc node --focus ${WINDOW_1:?not set}
+bspc node ${WINDOW_2:?not set} --to-monitor "$DISPL_M"
+bspc node --focus ${WINDOW_2:?not set}

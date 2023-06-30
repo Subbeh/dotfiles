@@ -38,9 +38,10 @@ bspc rule -a Thunar               state=floating focus=on follow=on
 bspc rule -a qBittorrent          state=floating focus=on follow=on
 bspc rule -a Virt-manager         state=floating focus=on follow=on
 bspc rule -a scrcpy               state=floating focus=on follow=on
+bspc rule -a VirtualBox           state=floating focus=on follow=on
 bspc rule -a 'VirtualBox Manager' state=floating focus=on follow=on
-bspc rule -a 'Org.gnome.Nautilus' state=floating focus=on follow=on
 bspc rule -a 'VirtualBox Machine' state=floating focus=on follow=on
+bspc rule -a 'Org.gnome.Nautilus' state=floating focus=on follow=on
 bspc rule -a Spotify              -o monitor="eDP-1"
 
 # Load external rules (mainly for Spotify)

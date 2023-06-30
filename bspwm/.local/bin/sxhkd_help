@@ -1,5 +1,9 @@
 #!/bin/bash
 
-awk '/^[^# X]/ && last {print "<small>",$0,"\t",last,"</small>"} /^#/{last=$0}' ~/.config/sxhkd/sxhkdrc |
-    column -t -s $'\t' |
-    rofi -dmenu -i -markup-rows -no-show-icons -width 1000 -lines 15 -yoffset 40
+if [[ $1 == "-r" ]] ; then
+  awk '/^[^# X]/ && last {print "<small>",$0,"\t",last,"</small>"} /^#/{last=$0}' ~/.config/sxhkd/sxhkdrc |
+      column -t -s $'\t' |
+      rofi -dmenu -i -markup-rows -no-show-icons -width 1000 -lines 50 -yoffset 40
+else
+  awk '/^#/ { comment=$0 } /^[^# ]/ { print $0,"\t",comment }' ~/.config/sxhkd/sxhkdrc | column -t -s $'\t' | sort --version-sort
+fi

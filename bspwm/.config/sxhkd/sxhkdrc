@@ -6,7 +6,7 @@
 
 # Show help
 super + slash
-  sxhkd_help
+  sxhkd_help -r
 
 # reload sxhkd
 super + shift + r
@@ -78,16 +78,20 @@ ctrl + alt + @Escape
   xkill
 
 # bsp-layout: cycle through layouts
-F7
+F6
   bsp-layout cycle --layouts tall,tiled; \
   notify-send "BSPWM Layout" "$(bsp-layout get $(bspc query -D -d focused --names))"
 
 # bsp-layout: remove layout
-F8
+F7
   bsp-layout remove
 
 # alternate between the tiled and monocle layout
-F9
+F8
+  bspwm_swap
+
+# swap windows in monitor $DIPL_M and $DIPL_L
+F8
   bspc desktop -l next
 
 # toggle fullscreen
@@ -107,9 +111,9 @@ super + {m,x,y,z}
 ########################
 
 # focus/swap the node in the given direction
-super + {_,shift + }{Left,Down,Up,Right}
+super + {_,shift + } {Left,Down,Up,Right}
   bspc node -{f,s} {west,south,north,east}.!sticky.!hidden
-super + {_,shift + }{h,j,k,l}
+super + {_,shift + } {h,j,k,l}
   bspc node -{f,s} {west,south,north,east}.!sticky.!hidden
 
 # focus or send to the next/previous desktop
@@ -136,8 +140,6 @@ super + ctrl + alt {_,shift + } {l, h}
   bspc {monitor -f,node -m} {next, prev} --follow
 
 # cycle through nodes
-# alt + {_,shift +} Tab
-#   bspc node -f {next,prev}.local.!hidden.window.!sticky
 alt + {_,shift +} Tab
   bspc node -f {last,next}.local.!hidden.window.!sticky
 
