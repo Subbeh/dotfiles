@@ -27,8 +27,9 @@ export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#717171"
 export ADOTDIR="$XDG_DATA_HOME/zsh/antigen"
 export POWERLEVEL9K_INSTANT_PROMPT=quiet
 
-# Vim
-# export VIMINIT="let \$MYVIMRC='${XDG_CONFIG_HOME}/vim/vimrc' | source \$MYVIMRC"
+# Nvim
+export NVIM_APPNAME=neovim
+export NVIM_HOME="$HOME/.config/$NVIM_APPNAME"
 
 # Java fonts
 export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=setting'
@@ -39,7 +40,6 @@ export SOPS_AGE_KEY_FILE="${XDG_CONFIG_HOME}/sops/age/keys.txt"
 # Various
 export PSHELL=$(ps -hp $$|awk '{print $NF}')
 export DOT=$HOME/.dotfiles
-# export MANPAGER="/bin/sh -c \"col -b | vim --not-a-term -c 'set ft=man ts=8 nomod nolist noma nonumber norelativenumber' -\""
 
 # Less command colors
 export LESS_TERMCAP_mb=$'\E[1;31m'     # begin bold
@@ -51,12 +51,10 @@ export LESS_TERMCAP_us=$'\E[1;32m'     # begin underline
 export LESS_TERMCAP_ue=$'\E[0m'        # reset underline
 
 ( $(type src-hilite-lesspipe.sh >/dev/null 2>&1) ) && export LESSOPEN='|src-hilite-lesspipe.sh %s'
-#export LESS=' --RAW-CONTROL-CHARS --ignore-case --status-column --LONG-PROMPT --HILITE-UNREAD --tabs=4 '
 export LESS=' --RAW-CONTROL-CHARS --ignore-case --LONG-PROMPT --tabs=4 '
 
 # FZF
 export FZF_BASE=${XDG_CONFIG_HOME}/fzf
-#export FZF_DEFAULT_COMMAND="fd --hidden --follow --no-ignore"
 export FZF_DEFAULT_COMMAND='rg --files --follow --no-ignore-vcs --hidden -g "!{node_modules/*,.git/*}"'
 export FZF_CTRL_T_COMMAND=${FZF_DEFAULT_COMMAND}
 export FZF_COMPLETION_TRIGGER='**'

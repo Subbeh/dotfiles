@@ -49,11 +49,6 @@ zplug "romkatv/powerlevel10k",     as:theme, depth:1 # powerlevel10k prompt
 zplug check --verbose || zplug install  # install missing plugins
 zplug load                              # load plugins
 
-# source env files
-for file in "${XDG_CONFIG_HOME:-$HOME/.config}/env/"* ; do
-  . "$file"
-done
-
 # key bindings
 bindkey -e                          # use emacs keys
 bindkey -s '\e[15~' 'src'         # run src with F5
