@@ -1,32 +1,25 @@
 return {
+  -- manage window with buffer text overview
   {
     "echasnovski/mini.map",
     opts = {},
-    keys = {
-      --stylua: ignore
-      { "<leader>vm", function() require("mini.map").toggle {} end, desc = "Toggle Minimap", },
-    },
     config = function(_, opts)
       require("mini.map").setup(opts)
     end,
   },
-  -- {
-  --   "echasnovski/mini.jump",
-  --   opts = {},
-  --   keys = { "f", "F", "t", "T" },
-  --   config = function(_, opts)
-  --     require("mini.jump").setup(opts)
-  --   end,
-  -- },
+
+  -- move any selection in any direction
   {
     "echasnovski/mini.move",
     enabled = false,
     opts = {},
-    keys = { "<<M-h>", "<M-l>", "<M-j>", "<M-k>" },
+    keys = { "<M-h>", "<M-l>", "<M-j>", "<M-k>" },
     config = function(_, opts)
       require("mini.move").setup(opts)
     end,
   },
+
+  -- extend and create `a`/`i` textobjects
   {
     "echasnovski/mini.ai",
     event = "VeryLazy",
@@ -91,16 +84,13 @@ return {
       end
     end,
   },
+
+  -- remove buffers
   {
     "echasnovski/mini.bufremove",
-    -- stylua: ignore
-    keys = {
-      { "<leader>br", "<cmd>e!<cr>", desc = "Reload Buffer" },
-      { "<leader>bc", "<cmd>close<cr>", desc = "Close Buffer" },
-      { "<leader>bd", function() require("mini.bufremove").delete(0, false) end, desc = "Delete Buffer" },
-      { "<leader>bD", function() require("mini.bufremove").delete(0, true) end, desc = "Delete Buffer (Force)" },
-    },
   },
+
+  -- animate common Neovim actions
   {
     "echasnovski/mini.animate",
     event = "VeryLazy",
@@ -109,27 +99,8 @@ return {
       require("mini.animate").setup()
     end,
   },
-  -- {
-  --   "echasnovski/mini.comment",
-  --   event = "VeryLazy",
-  --   opts = {
-  --     hooks = {
-  --       pre = function()
-  --         require("ts_context_commentstring.internal").update_commentstring {}
-  --       end,
-  --     },
-  --   },
-  --   config = function(_, opts)
-  --     require("mini.comment").setup(opts)
-  --   end,
-  -- },
-  -- {
-  --   "echasnovski/mini.pairs",
-  --   event = "VeryLazy",
-  --   config = function(_, opts)
-  --     require("mini.pairs").setup(opts)
-  --   end,
-  -- },
+
+  -- visualize and operate on indent scope
   {
     "echasnovski/mini.indentscope",
     event = { "BufReadPre", "BufNewFile" },
@@ -149,19 +120,28 @@ return {
       require("mini.indentscope").setup(opts)
     end,
   },
+
+  -- miscellaneous useful functions
   {
     "echasnovski/mini.misc",
     config = true,
-    --stylua: ignore
-    keys = {
-      { "<leader>vz", function() require("mini.misc").zoom() end, desc = "Toggle Zoom" },
-    },
   },
+
+  -- go forward/backward with square brackets
   {
     "echasnovski/mini.bracketed",
     event = "VeryLazy",
     config = function()
       require("mini.bracketed").setup()
+    end,
+  },
+
+  -- work with trailing whitespace
+  {
+    "echasnovski/mini.trailspace",
+    event = "VeryLazy",
+    config = function()
+      require("mini.trailspace").setup()
     end,
   },
 }

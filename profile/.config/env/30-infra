@@ -6,7 +6,7 @@ export INFRA=/data/workspace/homelab
 alias infra="tmuxinator start infra"
 alias i="cd ${INFRA}"
 alias a="cd ${INFRA}/ansible"
-alias 8="cd ${INFRA}/k8s"
+alias 88="cd ${INFRA}/k8s"
 alias j="cd ${INFRA}/../justyamlguys"
 alias ap="ansible-playbook"
 alias k="kubecolor"
@@ -17,15 +17,15 @@ alias mc="mcli"
 
 # get tailscale IPs
 ts() {
-  tailscale status --json | jq '.Peer | .[] | .HostName + " " + .TailscaleIPs[1]' | tr -d '"' | column -t
+	tailscale status --json | jq '.Peer | .[] | .HostName + " " + .TailscaleIPs[1]' | tr -d '"' | column -t
 }
 
 # git commit --amend
 gcmp() {
-  if git fetch --dry-run 2>&1 | grep -Eq '\w+\.\.\w+' ; then
-    echo ERROR: remote branch is ahead
-  else
-    git commit --amend
-    git push -f
-  fi
+	if git fetch --dry-run 2>&1 | grep -Eq '\w+\.\.\w+'; then
+		echo ERROR: remote branch is ahead
+	else
+		git commit --amend
+		git push -f
+	fi
 }

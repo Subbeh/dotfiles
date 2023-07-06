@@ -8,7 +8,7 @@ windows:
       pre: cd /data/workspace/homelab; clear
       layout: c6b7,311x65,0,0{102x65,0,0,6,208x65,103,0[208x32,103,0{104x32,103,0,11,103x32,208,0,12},208x32,103,33,7]}
       panes:
-        - nvim
+        - XDG_DATA_HOME=$NVIM_HOME/share XDG_CACHE_HOME=$NVIM_HOME/cache nvim
         -
         -
         -

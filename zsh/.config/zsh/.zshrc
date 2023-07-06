@@ -9,17 +9,22 @@ fi
 export ZSHZ_DATA=${XDG_CACHE_HOME:?not set}/.z
 export KEYTIMEOUT=1
 export ZPLUG_HOME="${XDG_DATA_HOME:?not set}/zsh/plugins/zplug"
-export HISTFILE=${XDG_CACHE_HOME:?not set}/zsh_history
-export HISTSIZE=100000
-export SAVEHIST=100000
+export HISTFILE=${XDG_CACHE_HOME:?not set}/.zsh_history
+export HISTSIZE=1000000
+export SAVEHIST=1000000
 setopt INC_APPEND_HISTORY          # Write to the history file immediately, not when the shell exits.
 setopt HIST_IGNORE_DUPS            # Don't record an entry that was just recorded again.
+setopt HIST_REDUCE_BLANKS          # Remove unnecessary blanks
 setopt HIST_SAVE_NO_DUPS           # do not write a duplicate event to the history file.
-setopt EXTENDED_HISTORY            # Write the history file in the ":start:elapsed;command" format.
-setopt HIST_IGNORE_SPACE           # Don't record an entry starting with a space.
+setopt EXTENDED_HISTORY            # Write the history with timestamp
 setopt GLOB_DOTS                   # enable glob expansion
 _comp_options+=(globdots)          # with hidden files
 autoload -U colors && colors
+
+# directory history
+setopt AUTO_PUSHD           # Push the current directory visited on the stack.
+setopt PUSHD_IGNORE_DUPS    # Do not store duplicates in the stack.
+setopt PUSHD_SILENT         # Do not print the directory stack after pushd or popd.
 
 # plugins
 test -f /usr/share/fzf/key-bindings.zsh && source $_

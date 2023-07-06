@@ -45,6 +45,10 @@ alias mnta="systemctl list-units -t mount --all | awk '/loaded\s+failed/{ print 
 
 # ZSH
 if [[ $PSHELL =~ zsh ]] ; then
+  # directory aliases
+  alias d='dirs -v'
+  for index ({1..9}) alias "$index"="cd +${index}"; unset index
+
   # global aliases
   alias -g Z='| fzf'
   alias -g L='| less'

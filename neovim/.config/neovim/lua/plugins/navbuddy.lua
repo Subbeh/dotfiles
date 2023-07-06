@@ -1,4 +1,5 @@
 return {
+  -- popup display that provides breadcrumbs feature using LSP server
   {
     "neovim/nvim-lspconfig",
     dependencies = {
@@ -10,10 +11,6 @@ return {
         },
         opts = { lsp = { auto_attach = true } },
       },
-    },
-    --stylua: ignore
-    keys = {
-      { "<leader>vO", function() require("nvim-navbuddy").open() end, desc = "Code Outline (navbuddy)", },
     },
   },
 }
