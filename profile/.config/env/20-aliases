@@ -44,20 +44,20 @@ alias svc="systemctl --type=service"
 alias mnta="systemctl list-units -t mount --all | awk '/loaded\s+failed/{ print \"Mounting \"\$2 ; system(\"sudo systemctl start \" \$2) }'"
 
 # ZSH
-if [[ $PSHELL =~ zsh ]] ; then
-  # directory aliases
-  alias d='dirs -v'
-  for index ({1..9}) alias "$index"="cd +${index}"; unset index
+if [[ $PSHELL =~ zsh ]]; then
+	# directory aliases
+	alias d='dirs -v'
+	for index in {1..9}; do alias "$index"="cd +${index}"; done
 
-  # global aliases
-  alias -g Z='| fzf'
-  alias -g L='| less'
-  alias -g G='| grep --color'
-  
-  # suffix aliases
-  alias -s {log,txt}=less
-  alias -s pdf=firefox
-  alias -s {mp4,MP4,mov,MOV}='vlc'
+	# global aliases
+	alias -g Z='| fzf'
+	alias -g L='| less'
+	alias -g G='| grep --color'
+
+	# suffix aliases
+	alias -s {log,txt}=less
+	alias -s pdf=firefox
+	alias -s {mp4,MP4,mov,MOV}='vlc'
 fi
 
 # packages
@@ -69,7 +69,7 @@ cleanup='sudo pacman -Rns $(pacman -Qtdq)'
 
 # navigation
 alias p='pwd'
-alias ..='cd ..' 
+alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias -- -='cd -'
@@ -90,15 +90,15 @@ alias cdw='cd /data/workspace'
 
 # exa
 if [ -x "$(command -v exa)" ]; then
-  alias l="exa --long --group-directories-first --group --icons"
-  alias ll="exa --long --all --group-directories-first --group --icons --git"
-  alias lt="exa --long --all --sort=modified --group-directories-first --group --icons --git"
-  alias ltree="exa --long --all --sort=modified --group-directories-first --group --icons --git --tree --level=2"
+	alias l="exa --long --group-directories-first --group --icons"
+	alias ll="exa --long --all --group-directories-first --group --icons --git"
+	alias lt="exa --long --all --sort=modified --group-directories-first --group --icons --git"
+	alias ltree="exa --long --all --sort=modified --group-directories-first --group --icons --git --tree --level=2"
 fi
 
 # filemanager
 if [ -x "$(command -v ranger)" ]; then
-  alias fm="ranger"
+	alias fm="ranger"
 fi
 
 # git

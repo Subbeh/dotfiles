@@ -7,15 +7,12 @@ export XDG_DATA_HOME=${HOME}/.local/share
 export DATA_DIR=/data
 export TEMP_DIR=${DATA_DIR}/temp
 export BIN_DIR=${HOME}/.local/bin
-export PATH=${BIN_DIR}:/usr/bin:${PATH}:${HOME/.krew}/bin
+export PATH=${BIN_DIR}:/usr/bin:${PATH}:${HOME/.krew/}/bin
 export EDITOR=nvim
 export TERMINAL=alacritty
 export PAGER=less
 export XINITRC=${XDG_CONFIG_HOME}/X11/.config/X11/xinitrc
 export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR:?not set}/ssh-agent.socket"
-
-# SOPS
-export SOPS_AGE_KEY_FILE=${HOME}/.sops/key.txt
 
 # History
 export HISTFILE=${XDG_CACHE_HOME}/bash_history
@@ -38,19 +35,19 @@ export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=setting'
 export SOPS_AGE_KEY_FILE="${XDG_CONFIG_HOME}/sops/age/keys.txt"
 
 # Various
-export PSHELL=$(ps -hp $$|awk '{print $NF}')
+export PSHELL=$(ps -hp $$ | awk '{print $NF}')
 export DOT=$HOME/.dotfiles
 
 # Less command colors
-export LESS_TERMCAP_mb=$'\E[1;31m'     # begin bold
-export LESS_TERMCAP_md=$'\E[1;36m'     # begin blink
-export LESS_TERMCAP_me=$'\E[0m'        # reset bold/blink
-export LESS_TERMCAP_so=$'\e[1;30;45m'  # begin reverse video
-export LESS_TERMCAP_se=$'\E[0m'        # reset reverse video
-export LESS_TERMCAP_us=$'\E[1;32m'     # begin underline
-export LESS_TERMCAP_ue=$'\E[0m'        # reset underline
+export LESS_TERMCAP_mb=$'\E[1;31m'    # begin bold
+export LESS_TERMCAP_md=$'\E[1;36m'    # begin blink
+export LESS_TERMCAP_me=$'\E[0m'       # reset bold/blink
+export LESS_TERMCAP_so=$'\e[1;30;45m' # begin reverse video
+export LESS_TERMCAP_se=$'\E[0m'       # reset reverse video
+export LESS_TERMCAP_us=$'\E[1;32m'    # begin underline
+export LESS_TERMCAP_ue=$'\E[0m'       # reset underline
 
-( $(type src-hilite-lesspipe.sh >/dev/null 2>&1) ) && export LESSOPEN='|src-hilite-lesspipe.sh %s'
+($(type src-hilite-lesspipe.sh >/dev/null 2>&1)) && export LESSOPEN='|src-hilite-lesspipe.sh %s'
 export LESS=' --RAW-CONTROL-CHARS --ignore-case --LONG-PROMPT --tabs=4 '
 
 # FZF

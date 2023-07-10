@@ -4,12 +4,12 @@ return {
     "hrsh7th/nvim-cmp",
     event = "InsertEnter",
     dependencies = {
-      "hrsh7th/cmp-nvim-lsp",     -- nvim-cmp source for neovim builtin LSP client 
-      "saadparwaiz1/cmp_luasnip", -- luasnip completion source for nvim-cmp 
-      "hrsh7th/cmp-buffer",       -- nvim-cmp source for buffer words
-      "hrsh7th/cmp-path",         -- nvim-cmp source for path 
-      "hrsh7th/cmp-cmdline",      -- nvim-cmp source for vim's cmdline 
-      "petertriho/cmp-git",       -- Git source for nvim-cmp
+      "hrsh7th/cmp-nvim-lsp", -- nvim-cmp source for neovim builtin LSP client
+      "saadparwaiz1/cmp_luasnip", -- luasnip completion source for nvim-cmp
+      "hrsh7th/cmp-buffer", -- nvim-cmp source for buffer words
+      "hrsh7th/cmp-path", -- nvim-cmp source for path
+      "hrsh7th/cmp-cmdline", -- nvim-cmp source for vim's cmdline
+      "petertriho/cmp-git", -- Git source for nvim-cmp
     },
     opts = function()
       local cmp = require "cmp"
@@ -60,16 +60,17 @@ return {
           ["<C-f>"] = cmp.mapping.scroll_docs(4),
           ["<C-Space>"] = cmp.mapping.complete(),
           ["<C-e>"] = cmp.mapping.abort(),
-          ["<CR>"] = cmp.mapping {
-            i = cmp.mapping.confirm { behavior = cmp.ConfirmBehavior.Replace, select = false },
-            c = function(fallback)
-              if cmp.visible() then
-                cmp.confirm { behavior = cmp.ConfirmBehavior.Replace, select = false }
-              else
-                fallback()
-              end
-            end,
-          },
+          ["<Tab>"] = cmp.mapping.confirm { select = true },
+          -- ["<Tab>"] = cmp.mapping {
+          --   i = cmp.mapping.confirm { behavior = cmp.ConfirmBehavior.Replace, select = false },
+          --   c = function(fallback)
+          --     if cmp.visible() then
+          --       cmp.confirm { behavior = cmp.ConfirmBehavior.Replace, select = false }
+          --     else
+          --       fallback()
+          --     end
+          --   end,
+          -- },
           ["<C-j>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_next_item()
@@ -143,4 +144,3 @@ return {
     end,
   },
 }
-

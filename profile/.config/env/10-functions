@@ -131,6 +131,6 @@ unlockbw() { eval $(bw unlock | sed -n 's/^$ //;/export/p'); }
 
 # add SSH key to agent
 addkeys() {
-  local bwpass=$(bw get item ssh | jq -r '.fields[1].value')
-  sshpass -P assphrase -p "$bwpass" ssh-add ~/.ssh/id_ed25519
+  local bwpass=$(bw get item ssh | jq -r '.fields[]|select(.name=="passphrase-github")|.value')
+  sshpass -P assphrase -p "$bwpass" ssh-add ~/.ssh/github
 }
