@@ -21,9 +21,6 @@ setopt GLOB_DOTS                   # enable glob expansion
 _comp_options+=(globdots)          # with hidden files
 autoload -U colors && colors
 
-# bitwarden completion
-eval "$(bw completion --shell zsh); compdef _bw bw;"
-
 # directory history
 setopt AUTO_PUSHD           # Push the current directory visited on the stack.
 setopt PUSHD_IGNORE_DUPS    # Do not store duplicates in the stack.

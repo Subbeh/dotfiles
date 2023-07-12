@@ -68,7 +68,7 @@ ex ()
 # source
 src() {
   env_files=(/etc/profile /etc/environment $XDG_CONFIG_HOME/env/*)
-  
+
   case $PSHELL in
     *bash) env_files+=("$HOME/.bashrc" "$XDG_CONFIG_HOME/bash/bash_profile") ;;
     *zsh)  env_files+=("$HOME/.zshenv" "$XDG_CONFIG_HOME/zsh/.zshrc") ;;
@@ -129,8 +129,12 @@ ffs() { sudo $(fc -ln -1); }
 # unlock bitwarden vault
 unlockbw() { eval $(bw unlock | sed -n 's/^$ //;/export/p'); }
 
-# add SSH key to agent
+# add SSH keys to agent
 addkeys() {
-  local bwpass=$(bw get item ssh | jq -r '.fields[]|select(.name=="passphrase-github")|.value')
-  sshpass -P assphrase -p "$bwpass" ssh-add ~/.ssh/github
+  IFS=$'\n' read -r main github <<< "$(bw get item ssh | jq -r '.fields[]|select(.name=="passphrase" or .name=="passphrase-github")|.value')"
+  sshpass -P assphrase -p "$main" ssh-add ~/.ssh/id_ed25519
+  sshpass -P assphrase -p "$github" ssh-add ~/.ssh/github
 }
+
+# calculator
+_calc() { printf "%s\n" "$*" | bc -l; }
