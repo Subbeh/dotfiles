@@ -131,9 +131,9 @@ unlockbw() { eval $(bw unlock | sed -n 's/^$ //;/export/p'); }
 
 # add SSH keys to agent
 addkeys() {
-  IFS=$'\n' read -r main github <<< "$(bw get item ssh | jq -r '.fields[]|select(.name=="passphrase" or .name=="passphrase-github")|.value')"
-  sshpass -P assphrase -p "$main" ssh-add ~/.ssh/id_ed25519
-  sshpass -P assphrase -p "$github" ssh-add ~/.ssh/github
+  sshpass=("${(@f)$(bw get item ssh | jq -r '.fields[]|select(.name=="passphrase" or .name=="passphrase-github")|.value')}")
+  sshpass -P assphrase -p "${sshpass[1]}" ssh-add ~/.ssh/id_ed25519
+  sshpass -P assphrase -p "${sshpass[2]}" ssh-add ~/.ssh/github
 }
 
 # calculator
