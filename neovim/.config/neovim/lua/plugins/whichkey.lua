@@ -74,6 +74,7 @@ return {
       },
 
       mappings = {
+        ["/"] = { "<cmd>Telescope current_buffer_fuzzy_find<cr>", "Find" },
         ["<space>"] = { "<cmd>Telescope find_files<cr>", "Find File" },
         e = { "<cmd>NvimTreeToggle<cr>", "Explorer" },
         -- w = { "<cmd>update!<cr>", "Save" },
