@@ -147,5 +147,5 @@ alias dlo='dot log --pretty="oneline"'
 alias dlol='dot log --graph --oneline --decorate'
 
 # notes
-alias notes="addkeys && obsidian 'obsidian://open?vault=notes' &"
+alias notes="obsidian 'obsidian://open?vault=notes' &"
 alias study="addkeys && obsidian 'obsidian://open?vault=study' &"

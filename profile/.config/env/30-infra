@@ -1,19 +1,25 @@
 # vim: set ft=sh:
 
-export INFRA=/data/workspace/homelab
+export WS=/data/workspace
+export INFRA=$WS/homelab
 
-# aliases
+## aliases
 alias infra="tmuxinator start infra"
 alias i="cd ${INFRA}"
 alias a="cd ${INFRA}/ansible"
-alias 88="cd ${INFRA}/k8s"
 alias j="cd ${INFRA}/../justyamlguys"
+alias kk="cd ${INFRA}/k8s"
+alias gg="cd ${WS}/go"
+# infra
+alias task="go-task"
+# ansible
 alias ap="ansible-playbook"
+# k8s
 alias k="kubecolor"
 alias kctx="kubectx"
 alias kns="kubens"
-alias task="go-task"
-alias mc="mcli"
+
+## functions
 
 # get tailscale IPs
 ts() {

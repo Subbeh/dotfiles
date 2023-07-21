@@ -3,7 +3,7 @@ Description=mount media NFS share
 
 [Mount]
 What=10.11.10.10:/volume1/media
-Where=/mnt/media
+Where=/mnt/nas/media
 Type=nfs
 Options=defaults
 TimeoutSec=5

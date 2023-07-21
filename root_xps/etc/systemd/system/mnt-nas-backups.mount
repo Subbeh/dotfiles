@@ -1,9 +1,11 @@
 [Unit]
-Description=mount backup NFS share
+Description=mount backups NFS share
+After=network-online.target
+Wants=network-online.target
 
 [Mount]
 What=10.11.10.10:/volume1/backups
-Where=/mnt/backup
+Where=/mnt/nas/backups
 Type=nfs
 Options=defaults
 TimeoutSec=5

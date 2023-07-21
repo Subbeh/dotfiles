@@ -1,8 +1,8 @@
 [Unit]
-Description=automount backup NFS share
+Description=automount backups NFS share
 
 [Automount]
-Where=/mnt/backup
+Where=/mnt/nas/backups
 TimeoutIdleSec=0
 
 [Install]

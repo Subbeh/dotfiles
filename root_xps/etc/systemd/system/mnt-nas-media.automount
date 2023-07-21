@@ -2,7 +2,7 @@
 Description=automount media NFS share
 
 [Automount]
-Where=/mnt/media
+Where=/mnt/nas/media
 TimeoutIdleSec=0
 
 [Install]

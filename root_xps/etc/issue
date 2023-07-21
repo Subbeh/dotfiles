@@ -4,11 +4,11 @@
                `+oooo:[;0;0m  	██╔══██║██╔══██╗██║     ██╔══██║[1;34m
               `+oooooo:[;0;0m 	██║  ██║██║  ██║╚██████╗██║  ██║[1;34m
               -+oooooo+:[;0;0m	╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝[1;34m
-            `/:-:++oooo+:[;0;0m	\e{cyan}OS\e{reset}     \e{lightred}|\e{reset}   \e{white}\s\e{reset}[1;34m
-           `/++++/+++++++:[;0;0m	\e{cyan}TTY\e{reset}    \e{lightred}|\e{reset}   \e{white}\l\e{reset}[1;34m
-          `/++++++++++++++:[;0;0m	\e{cyan}Host\e{reset}   \e{lightred}|\e{reset}   \e{white}\n\e{reset}[1;34m
-         `/+++o[0;34moooooooo[1;34moooo/`[;0;0m	\e{cyan}Arch\e{reset}   \e{lightred}|\e{reset}   \e{white}\m\e{reset}[1;34m
-        ./[0;34mooosssso++osssssso[1;34m+`[;0;0m	\e{cyan}Kernel\e{reset} \e{lightred}|\e{reset}   \e{white}\r\e{reset}[0;34m
+            `/:-:++oooo+:[;0;0m	\e{cyan}OS\e{reset}     \e{lightred}|\e{reset}   \s\e{reset}[1;34m
+           `/++++/+++++++:[;0;0m	\e{cyan}TTY\e{reset}    \e{lightred}|\e{reset}   \l\e{reset}[1;34m
+          `/++++++++++++++:[;0;0m	\e{cyan}Host\e{reset}   \e{lightred}|\e{reset}   \n\e{reset}[1;34m
+         `/+++o[0;34moooooooo[1;34moooo/`[;0;0m	\e{cyan}Arch\e{reset}   \e{lightred}|\e{reset}   \m\e{reset}[1;34m
+        ./[0;34mooosssso++osssssso[1;34m+`[;0;0m	\e{cyan}Kernel\e{reset} \e{lightred}|\e{reset}   \r\e{reset}[0;34m
        .oossssso-````/ossssss+`[;0;0m[0;34m
       -osssssso.      :ssssssso.[;0;0m[0;34m
      :osssssss/        osssso+++.[;0;0m[0;34m
