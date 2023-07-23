@@ -129,6 +129,7 @@ return {
         },
         m = {
           name = "+Misc",
+          c = { "<cmd>ColorizerToggle<cr>", "Toggle Colorizer" },
           l = { "<cmd>Legendary<cr>", "Key mappings" },
           m = {
             function()
