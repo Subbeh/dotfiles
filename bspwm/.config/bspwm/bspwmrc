@@ -1,9 +1,15 @@
 #!/bin/sh
 set -x
 
-export DISPL_LT=eDP1
-export DISPL_L=DP2-2
-export DISPL_M=DP2-3
+if [[ "$(xrandr --current | awk '/ connected/ { print $1 }' | sort)" == DP1* ]]; then
+	export DISPL_LT=eDP1
+	export DISPL_L=DP1-2
+	export DISPL_M=DP1-3
+else
+	export DISPL_LT=eDP1
+	export DISPL_L=DP2-2
+	export DISPL_M=DP2-3
+fi
 
 pgrep -x nitrogen || nitrogen --restore &
 pgrep -x picom >/dev/null || picom &

@@ -7,8 +7,10 @@ WIRED=eth0
 VPN=proton
 ICON_WIFI=
 ICON_WIRED=
+ICON_HOME=
+ICON_WEB=
 ICON_VPN=
-ICON_TAILSCALE=
+ICON_TAILSCALE=
 ICON_ADGUARD=
 CLR=#87d7ff
 CLR_ERR=#ff5f5f
@@ -16,6 +18,8 @@ ADGUARD_URL="http://10.11.254.1:5380/control"
 ADGUARD_USER="sysadm"
 ADGUARD_PASSWORD="$(<$HOME/.adguard_api)"
 ADGUARD_DISABLE_TIME=1800
+
+test -f $HOME/.config/polybar/scripts/env && . $_
 
 main() {
 	while getopts vat flag; do
@@ -28,6 +32,8 @@ main() {
 
 	get_inet_status
 	inet_status=$?
+	get_home_status
+	home_status=$?
 	get_vpn_status
 	vpn_status=$?
 	get_adguard_status
@@ -43,7 +49,18 @@ get_inet_dev() {
 	ip route get 8.8.8.8 | grep -Po '(?<=(dev ))(\S+)'
 }
 
+get_home_status() {
+	if [[ -n "$HOME_IP" ]]; then
+		if [[ $ip_addr != $HOME_IP ]]; then
+			return 1
+		fi
+	else
+		return 2
+	fi
+}
+
 get_inet_status() {
+	ip_addr=$(curl -s ifconfig.me)
 	(ping -c 1 8.8.8.8 || ping -c 1 1.1.1.1) &>/dev/null
 	return $?
 }
@@ -64,18 +81,6 @@ get_link_status() {
 }
 
 get_vpn_status() {
-	# for dev in "${VPN[@]}"; do
-	# 	if ip link show $dev >/dev/null 2>&1; then
-	# 		case "$dev" in
-	# 		*nord*)
-	# 			nordvpn status | grep -q Connected && return 1
-	# 			;;
-	# 		*mullvad*)
-	# 			mullvad status | grep -q Connected && return 1
-	# 			;;
-	# 		esac
-	# 	fi
-	# done
 	ip link show ${VPN:?not set} &>/dev/null
 }
 
@@ -167,6 +172,13 @@ update_bar() {
 	1) echo -n "$ICON_VPN " ;;
 	esac
 	echo -n "%{A}"
+
+	# home
+	case "$home_status" in
+	0) echo -n "%{F$CLR}$ICON_HOME%{F-} " ;;
+	1) echo -n "%{F$CLR}$ICON_WEB%{F-} $ip_addr " ;;
+	*) echo -n "%{F$CLR_ERR}$ICON_HOME%{F-} " ;;
+	esac
 
 	# network interfaces
 	echo ${connections[*]}
