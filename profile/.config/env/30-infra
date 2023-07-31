@@ -10,6 +10,8 @@ alias a="cd ${INFRA}/ansible"
 alias j="cd ${INFRA}/../justyamlguys"
 alias kk="cd ${INFRA}/k8s"
 alias gg="cd ${WS}/go"
+alias aa="cd ${WS}/aws"
+alias activate="source .venv/bin/activate"
 # infra
 alias task="go-task"
 # ansible
@@ -18,6 +20,9 @@ alias ap="ansible-playbook"
 alias k="kubecolor"
 alias kctx="kubectx"
 alias kns="kubens"
+# aws
+alias ave="aws-vault exec --duration 8h"
+alias avl="aws-vault list"
 
 ## functions
 

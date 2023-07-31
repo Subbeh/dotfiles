@@ -62,6 +62,7 @@
     # context                   # user@host
     vcs                       # git status
     kubecontext
+    aws
     # time                    # current time
   )
 

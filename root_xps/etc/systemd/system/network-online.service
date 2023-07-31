@@ -1,5 +1,5 @@
 [Unit]
-Description=Wait until NM actually online
+Description=Wait until NM is actually online
 Requires=NetworkManager-wait-online.service
 After=NetworkManager-wait-online.service
 

@@ -5,6 +5,8 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+test -f "${HOME}/.profile" && source $_ || echo ERROR: Unable to load .profile file
+
 # env
 export ZSHZ_DATA=${XDG_CACHE_HOME:?not set}/.z
 export KEYTIMEOUT=1
@@ -49,6 +51,7 @@ zplug "plugins/command-not-found", from:oh-my-zsh # provide package suggestions 
 zplug "plugins/alias-finder",      from:oh-my-zsh # alias suggestions
 zplug "plugins/docker",            from:oh-my-zsh # add docker completions and aliases
 zplug "plugins/kubtctl",           from:oh-my-zsh # add kubectl completions and aliases
+zplug "plugins/aws",               from:oh-my-zsh # add aws completions and aliases
 zplug "romkatv/powerlevel10k",     as:theme, depth:1 # powerlevel10k prompt
 
 zplug check --verbose || zplug install  # install missing plugins
@@ -108,9 +111,15 @@ function kube-toggle() {
 }
 zle -N kube-toggle
 
-# enable auto-completion for kubecolor
-source <(kubectl completion zsh)
-compdef kubecolor=kubectl
-
 # enable direnv
 eval "$(direnv hook zsh)"
+
+# enable autocompletion prerequisites
+autoload -Uz compinit bashcompinit && compinit && bashcompinit
+
+# enable aws autocompletion
+complete -C '/usr/bin/aws_completer' aws
+
+# enable kubecolor autocompletion
+source <(kubectl completion zsh)
+compdef kubecolor=kubectl
