@@ -3,7 +3,7 @@
 # various
 alias backup="borgmatic --verbosity 1"
 alias b=bat
-alias c=cat
+# alias c=cat
 alias calc="noglob _calc"
 alias cc="fc -ln -1 | xclip -i -selection clipboard"
 alias dm="dmenu_run -nb '#303030' -nf '#b2b2b2' -sf '#444444' -sb '#d7afd7' -h 24 -p run: -dim 0.5 -i -q -fn 'Misc Tamzen:size=10'"

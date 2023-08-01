@@ -1,3 +1,7 @@
+if not require("config").pde.markdown then
+  return {}
+end
+
 return {
   -- correctly setup lspconfig
   {

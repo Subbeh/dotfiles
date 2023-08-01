@@ -16,6 +16,7 @@ export HISTSIZE=1000000
 export SAVEHIST=1000000
 setopt INC_APPEND_HISTORY          # Write to the history file immediately, not when the shell exits.
 setopt HIST_IGNORE_DUPS            # Don't record an entry that was just recorded again.
+setopt HIST_IGNORE_SPACE           # Remove command lines from the history list when the first character on the line is a space
 setopt HIST_REDUCE_BLANKS          # Remove unnecessary blanks
 setopt HIST_SAVE_NO_DUPS           # do not write a duplicate event to the history file.
 setopt EXTENDED_HISTORY            # Write the history with timestamp
