@@ -106,6 +106,8 @@ return {
             end,
             "Delete Buffer (Force)",
           },
+          h = { "<cmd>BufferLineMovePrev<cr>", "Move buffer left" },
+          l = { "<cmd>BufferLineMoveNext<cr>", "Move buffer right" },
         },
         c = {
           name = "+Code",

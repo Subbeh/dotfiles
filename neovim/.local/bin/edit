@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+XDG_DATA_HOME=/home/sysadm/.config/neovim/share XDG_CACHE_HOME=/home/sysadm/.config/neovim/cache nvim "$@"

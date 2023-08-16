@@ -4,12 +4,12 @@
 alias backup="borgmatic --verbosity 1"
 alias b=bat
 # alias c=cat
-alias calc="noglob _calc"
 alias cc="fc -ln -1 | xclip -i -selection clipboard"
+alias calc="noglob _calc"
 alias dm="dmenu_run -nb '#303030' -nf '#b2b2b2' -sf '#444444' -sb '#d7afd7' -h 24 -p run: -dim 0.5 -i -q -fn 'Misc Tamzen:size=10'"
 alias dot="$HOME/.dotfiles/dot"
 alias f="fd --hidden --follow"
-alias g="rg --ignore-case --hidden --follow --one-file-system --no-ignore-vcs --search-zip -g '!{node_modules/*,.git/*}'"
+alias g="rg --ignore-case --hidden --follow --one-file-system --no-ignore-vcs --search-zip -g '!{node_modules/*,.git/*,.direnv/*,.venv/*}'"
 alias h='history 0'
 alias httpserver="python3 -m http.server"
 alias http=xh
@@ -31,7 +31,7 @@ alias sudo='sudo '
 alias vifm=vifmrun
 # alias vi=nvim
 # alias vi="XDG_DATA_HOME=$NVIM_HOME/share XDG_CACHE_HOME=$NVIM_HOME/cache XDG_CONFIG_HOME=$NVIM_HOME nvim"
-alias vi="XDG_DATA_HOME=$NVIM_HOME/share XDG_CACHE_HOME=$NVIM_HOME/cache nvim"
+alias vi=edit
 alias xc="xclip -i -selection clipboard"
 alias x="startx $XDG_CONFIG_HOME/x11/xinitrc -- -verbose 6 -logverbose 6 -keeptty &> $XDG_CACHE_HOME/.xorg.log"
 

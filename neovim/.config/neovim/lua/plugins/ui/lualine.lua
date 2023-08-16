@@ -40,7 +40,13 @@ return {
             components.lsp_client,
           },
           lualine_x = { "filename", components.spaces, "encoding", "fileformat", "filetype", "progress" },
-          lualine_y = {},
+          lualine_y = {
+            {
+              require("lazy.status").updates,
+              cond = require("lazy.status").has_updates,
+              color = { fg = "#ff9e64" },
+            },
+          },
           lualine_z = { "location" },
         },
         inactive_sections = {

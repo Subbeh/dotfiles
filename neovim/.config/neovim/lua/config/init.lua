@@ -1,6 +1,7 @@
 return {
   pde = {
     ansible = true,
+    terraform = true,
     docker = false,
     go = true,
     html = true,

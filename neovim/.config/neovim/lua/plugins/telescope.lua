@@ -2,7 +2,7 @@ return {
   -- fuzzy finder over lists
   {
     "nvim-telescope/telescope.nvim",
-    branch = '0.1.x',
+    branch = "0.1.x",
     dependencies = {
       { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
       "nvim-lua/plenary.nvim",
@@ -100,7 +100,14 @@ return {
             },
             previewer = true,
             hidden = true,
-            find_command = { "rg", "--files", "--hidden", "--unrestricted", "-g", "!.git" },
+            find_command = {
+              "rg",
+              "--files",
+              "--hidden",
+              "--unrestricted",
+              "-g", "!.git",
+              "-g", "!.direnv",
+            },
           },
           git_files = {
             theme = "dropdown",

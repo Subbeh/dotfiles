@@ -26,7 +26,7 @@ require("lazy").setup {
   },
   defaults = { lazy = true, version = nil },
   install = { missing = true, colorscheme = { "github_dark" } },
-  checker = { enabled = true },
+  checker = { enabled = true, notify = false },
   performance = {
     cache = {
       enabled = true,

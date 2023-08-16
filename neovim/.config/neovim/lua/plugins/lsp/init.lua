@@ -7,7 +7,7 @@ return {
       "williamboman/mason.nvim", -- LSP package manager
       "williamboman/mason-lspconfig.nvim", -- use lspconfig with mason.nvim
       "jay-babu/mason-null-ls.nvim", -- closes some gaps that exist between mason.nvim and null-ls
-      "dundalek/lazy-lsp.nvim", -- auto install LSP servers
+      -- "dundalek/lazy-lsp.nvim", -- auto install LSP servers
       { "folke/neoconf.nvim", cmd = "Neoconf", config = true },
       { "folke/neodev.nvim", opts = {} }, -- Neovim setup for init.lua and plugin development
       { "j-hui/fidget.nvim", config = true, tag = "legacy" }, -- Standalone UI for nvim-lsp progress
@@ -144,5 +144,10 @@ return {
         enable = false,
       },
     },
+  },
+
+  -- auto install servers
+  {
+    "dundalek/lazy-lsp.nvim",
   },
 }
