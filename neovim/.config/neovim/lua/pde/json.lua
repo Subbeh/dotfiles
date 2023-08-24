@@ -13,6 +13,14 @@ return {
   },
 
   {
+    "numToStr/Comment.nvim",
+    opts = function()
+      local ft = require "Comment.ft"
+      ft.json5 = { "//%s", "/*%s*/" }
+    end,
+  },
+
+  {
     "neovim/nvim-lspconfig",
     dependencies = {
       "b0o/SchemaStore.nvim",

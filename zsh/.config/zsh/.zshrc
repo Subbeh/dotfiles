@@ -8,6 +8,7 @@ fi
 test -f "${HOME}/.profile" && source $_ || echo ERROR: Unable to load .profile file
 
 # env
+# setopt xtrace                    # enable debugging
 export ZSHZ_DATA=${XDG_CACHE_HOME:?not set}/.z
 export KEYTIMEOUT=1
 export ZPLUG_HOME="${XDG_DATA_HOME:?not set}/zsh/plugins/zplug"
@@ -67,6 +68,7 @@ bindkey "[F" end-of-line          # enable END key
 bindkey '[A' history-substring-search-up
 bindkey '[B' history-substring-search-down
 bindkey '^F' fzf-file-widget
+bindkey '^Z' fancy-ctrl-z
 
 # Z plugin
 zstyle ':completion:*' menu select
@@ -80,6 +82,9 @@ export bgnotify_threshold=3
 
 # enable alias-finder
 ZSH_ALIAS_FINDER_AUTOMATIC=true
+
+# enable fancy-ctrl-z
+zle -N fancy-ctrl-z
 
 # dynamic window titles
 DISABLE_AUTO_TITLE="true"
