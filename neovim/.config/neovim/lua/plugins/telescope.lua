@@ -3,6 +3,7 @@ return {
   {
     "nvim-telescope/telescope.nvim",
     branch = "0.1.x",
+    lazy = false,
     dependencies = {
       { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
       "nvim-lua/plenary.nvim",
@@ -128,6 +129,9 @@ return {
           project = {
             hidden_files = false,
             theme = "dropdown",
+          },
+          advanced_git_search = {
+            diff_plugin = "fugitive",
           },
         },
       }

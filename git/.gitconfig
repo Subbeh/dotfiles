@@ -8,21 +8,6 @@
 [safe]
 	directory = /mnt/workspace/notes
 	directory = /drone/src
-	directory = /drone/src
-	directory = /drone/src
-	directory = /drone/src
-	directory = /drone/src
-	directory = /drone/src
-	directory = /drone/src
-	directory = /drone/src
-	directory = /drone/src
-	directory = /drone/src
-	directory = /drone/src
-	directory = /drone/src
-	directory = /drone/src
-	directory = /drone/src
-	directory = /drone/src
-	directory = /drone/src
 
 ; [include]
 ;   path = ~/.config/delta/themes.gitconfig
@@ -42,5 +27,9 @@
 ;   light = false      # set to true if you're in a terminal w/ a light background color (e.g. the default macOS terminal)
 ;   features = theme
 ;
-; [merge]
-;   conflictstyle = diff3
+[merge]
+	tool = fugitive
+  conflictstyle = diff3
+  layout = "LOCAL,BASE,REMOTE / MERGED + BASE,LOCAL + BASE,REMOTE + (LOCAL/BASE/REMOTE),MERGED"
+[mergetool "fugitive"]
+	cmd = nvim -f -c \"Gvdiffsplit!\" \"$MERGED\"

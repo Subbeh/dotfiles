@@ -76,19 +76,15 @@ return {
       mappings = {
         ["/"] = { "<cmd>Telescope current_buffer_fuzzy_find<cr>", "Find" },
         ["<space>"] = { "<cmd>Telescope find_files<cr>", "Find File" },
-        e = { "<cmd>NvimTreeToggle<cr>", "Explorer" },
-        -- w = { "<cmd>update!<cr>", "Save" },
+        E = { "<cmd>NvimTreeToggle<cr>", "Explorer" },
+        G = { "<cmd>Git<cr>", "Git" },
         L = { "<cmd>Lazy<cr>", "Lazy" },
         M = { "<cmd>Mason<cr>", "Mason" },
-        q = {
-          name = "+Quit/Session",
-          q = {
-            function()
-              require("utils").quit()
-            end,
-            "Quit",
-          },
-          t = { "<cmd>tabclose<cr>", "Close Tab" },
+        Q = {
+          function()
+            require("utils").quit()
+          end,
+          "Quit",
         },
         b = {
           name = "+Buffer",
@@ -119,40 +115,41 @@ return {
         },
         f = {
           name = "+Find",
-          b = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
-          c = { "<cmd>Telescope commands<cr>", "Commands" },
           f = { "<cmd>Telescope current_buffer_fuzzy_find<cr>", "Search in buffer" },
           g = { "<cmd>Telescope live_grep<cr>", "Grep" },
-          h = { "<cmd>Telescope help_tags<cr>", "Find Help" },
-          m = { "<cmd>Telescope man_pages<cr>", "Man Pages" },
           r = { "<cmd>Telescope oldfiles<cr>", "Open Recent File" },
           R = { "<cmd>Telescope registers<cr>", "Registers" },
+        },
+        g = {
+          name = "+Git",
+          C = { "<cmd>Git commit<cr>", "Commit" },
+          P = { "<cmd>Git push<cr>", "Push" },
+          h = {
+            name = "+Hunk",
+            s = { "<cmd>:Gitsigns stage_hunk<cr>", "Stage Hunk" },
+            r = { "<cmd>:Gitsigns reset_hunk<cr>", "Reset Hunk" },
+          },
+          b = { "<cmd>Git blame<cr>", "Blame" },
+          d = { "<cmd>Gvdiffsplit!<cr>", "Diff" },
+          l = { "<cmd>Git log<cr>", "Log" },
+          g = { "<cmd>AdvancedGitSearch<cr>", "Search" },
+          s = { "<cmd>Neogit kind=tab<cr>", "Status" },
+        },
+        h = {
+          name = "+Help",
+          c = { "<cmd>Telescope commands<cr>", "Commands" },
+          h = { "<cmd>Telescope help_tags<cr>", "Find Help" },
           k = { "<cmd>Telescope keymaps<cr>", "Keymaps" },
+          l = { "<cmd>Legendary<cr>", "Keymaps (Legendary)" },
+          m = { "<cmd>Telescope man_pages<cr>", "Man Pages" },
         },
         m = {
           name = "+Misc",
           c = { "<cmd>ColorizerToggle<cr>", "Toggle Colorizer" },
-          l = { "<cmd>Legendary<cr>", "Key mappings" },
-          m = {
-            function()
-              require("mini.map").toggle {}
-            end,
-            "Toggle Minimap",
-          },
-          n = {
-            function()
-              require("nvim-navbuddy").open()
-            end,
-            "Code Outline (navbuddy)",
-          },
-          z = {
-            function()
-              require("mini.misc").zoom()
-            end,
-            "Toggle Zoom",
-          },
         },
-        r = { name = "+Refactor" },
+        r = {
+          name = "+Refactor",
+        },
         s = {
           name = "+Session",
           s = {
@@ -176,7 +173,25 @@ return {
         },
         w = {
           name = "+Window",
+          m = {
+            function()
+              require("mini.map").toggle {}
+            end,
+            "Toggle Minimap",
+          },
+          n = {
+            function()
+              require("nvim-navbuddy").open()
+            end,
+            "Code Outline (navbuddy)",
+          },
           s = { "<cmd>vsplit<cr>", "Split Window" },
+          z = {
+            function()
+              require("mini.misc").zoom()
+            end,
+            "Toggle Zoom",
+          },
         },
       },
     },
