@@ -10,11 +10,14 @@ return {
     lazy = false,
     config = function()
       local components = require "plugins.ui.utils.lualine"
+      local custom_onedark = require "lualine.themes.onedark"
+
+      custom_onedark.normal.c.bg = "#303030"
 
       require("lualine").setup {
         options = {
           icons_enabled = true,
-          theme = "onedark",
+          theme = custom_onedark,
           component_separators = {},
           section_separators = {},
           disabled_filetypes = {
@@ -29,8 +32,9 @@ return {
         },
         sections = {
           lualine_a = { { "fancy_mode", width = 3 } },
-          lualine_b = { components.git_repo, "branch" },
+          lualine_b = { "branch" },
           lualine_c = {
+            "filename",
             { "fancy_cwd", substitute_home = true },
             components.diff,
             { "fancy_diagnostics" },
@@ -39,7 +43,7 @@ return {
             components.separator,
             components.lsp_client,
           },
-          lualine_x = { "filename", components.spaces, "encoding", "fileformat", "filetype", "progress" },
+          lualine_x = { components.spaces, "encoding", "fileformat", "filetype", "progress" },
           lualine_y = {
             {
               require("lazy.status").updates,

@@ -15,7 +15,7 @@ alias httpserver="python3 -m http.server"
 alias http=xh
 alias keys="curl https://raw.githubusercontent.com/Subbeh/dotfiles/master/keys"
 alias launcher="rofi -show drun -show-icons -icon-theme Papirus-Dark"
-alias lip='curl ifconfig.me'
+alias lip='curl -w "\n" ifconfig.me'
 alias open=xdg-open
 alias pa='ps -eaf'
 alias pb="curl -F 'f:1=<-' ix.io"
@@ -89,12 +89,12 @@ alias cdp='cd /data/programfiles'
 alias cdt='cd /data/temp'
 alias cdw='cd /data/workspace'
 
-# exa
-if [ -x "$(command -v exa)" ]; then
-	alias l="exa --long --group-directories-first --group --icons"
-	alias ll="exa --long --all --group-directories-first --group --icons --git"
-	alias lt="exa --long --all --sort=modified --group-directories-first --group --icons --git"
-	alias ltree="exa --long --all --sort=modified --group-directories-first --group --icons --git --tree --level=2"
+# eza
+if [ -x "$(command -v eza)" ]; then
+	alias l="eza --long --group-directories-first --group --icons"
+	alias ll="eza --long --all --group-directories-first --group --icons --git"
+	alias lt="eza --long --all --sort=modified --group-directories-first --group --icons --git"
+	alias ltree="eza --long --all --sort=modified --group-directories-first --group --icons --git --tree --level=2"
 fi
 
 # filemanager
@@ -148,4 +148,4 @@ alias dlol='dot log --graph --oneline --decorate'
 
 # notes
 alias notes="obsidian 'obsidian://open?vault=notes' &"
-alias study="addkeys && obsidian 'obsidian://open?vault=study' &"
+alias study="obsidian 'obsidian://open?vault=study' &"

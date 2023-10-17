@@ -76,7 +76,7 @@ return {
       mappings = {
         ["/"] = { "<cmd>Telescope current_buffer_fuzzy_find<cr>", "Find" },
         ["<space>"] = { "<cmd>Telescope find_files<cr>", "Find File" },
-        E = { "<cmd>NvimTreeToggle<cr>", "Explorer" },
+        e = { "<cmd>NvimTreeToggle<cr>", "Explorer" },
         G = { "<cmd>Git<cr>", "Git" },
         L = { "<cmd>Lazy<cr>", "Lazy" },
         M = { "<cmd>Mason<cr>", "Mason" },
@@ -130,7 +130,7 @@ return {
             r = { "<cmd>:Gitsigns reset_hunk<cr>", "Reset Hunk" },
           },
           b = { "<cmd>Git blame<cr>", "Blame" },
-          d = { "<cmd>Gvdiffsplit!<cr>", "Diff" },
+          d = { "<cmd>Gvdiffsplit<cr>", "Diff" },
           l = { "<cmd>Git log<cr>", "Log" },
           g = { "<cmd>AdvancedGitSearch<cr>", "Search" },
           s = { "<cmd>Neogit kind=tab<cr>", "Status" },

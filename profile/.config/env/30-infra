@@ -3,17 +3,17 @@
 export WS=/data/workspace
 export INFRA=$WS/homelab
 
-## aliases
-alias infra="tmuxinator start infra"
+## nav
 alias i="cd ${INFRA}"
-alias a="cd ${INFRA}/ansible"
-alias j="cd ${INFRA}/../justyamlguys"
-alias kk="cd ${INFRA}/k8s"
+alias ia="cd ${INFRA}/ansible"
+alias iaa="cd ${INFRA}/ansible/apps"
+alias it="cd ${INFRA}/terraform"
+alias ik="cd ${INFRA}/k8s"
 alias gg="cd ${WS}/go"
-# alias aa="cd ${WS}/aws"
 alias c="cd ${WS}/cloud"
 alias activate="source .venv/bin/activate"
 # infra
+alias infra="tmuxinator start infra"
 alias task="go-task"
 # ansible
 alias ap="ansible-playbook"
@@ -40,4 +40,8 @@ gcmp() {
 		git commit --amend
 		git push -f
 	fi
+}
+
+gen_mac() {
+	cat /dev/urandom | tr -d -c '[:digit:]a-f' | fold -w 12 | sed -E -n -e '/^.[26ae]/s/(..)/\1:/gp' | sed -e 's/:$//g'
 }

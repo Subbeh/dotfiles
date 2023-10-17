@@ -93,6 +93,16 @@ return {
           -- borderchars = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
           color_devicons = true,
           path_display = { "smart" },
+          vimgrep_arguments = {
+            'rg',
+            '--no-heading',
+            '--with-filename',
+            '--line-number',
+            '--column',
+            '--smart-case',
+            '--hidden',
+            '-L',
+          },
         },
         pickers = {
           find_files = {
@@ -106,6 +116,7 @@ return {
               "--files",
               "--hidden",
               "--unrestricted",
+              "-L",
               "-g", "!.git",
               "-g", "!.direnv",
             },
@@ -139,6 +150,7 @@ return {
       telescope.setup(opts)
       telescope.load_extension "fzf"
       telescope.load_extension "file_browser"
+      telescope.load_extension "remote-sshfs"
     end,
   },
 }

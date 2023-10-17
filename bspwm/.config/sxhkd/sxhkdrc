@@ -47,7 +47,9 @@ F12
 
 # dmenu
 super + @space
-  bash -ic 'dm'
+  zsh -ic '. rofi-all-commands'
+  #rofi -e "$(zsh -i -c $(. rofi-all-commands | rofi -dmenu -p 'Run command' -theme-str 'listview {lines: 5;}') 2>&1 )"
+  #bash -ic 'dm'
 
 # rofi application launcher
 alt + @space
@@ -111,14 +113,10 @@ super + {m,x,y,z}
 ########################
 
 # focus/swap the node in the given direction
-super + {_,shift + } {Left,Down,Up,Right}
-  bspc node -{f,s} {west,south,north,east}.!sticky.!hidden
 super + {_,shift + } {h,j,k,l}
   bspc node -{f,s} {west,south,north,east}.!sticky.!hidden
 
 # focus or send to the next/previous desktop
-super + ctrl + {_,shift + } {Left,Right}
-  bspc {desktop -f,node -d} {prev,next} --follow
 super + ctrl + {_,shift + } {h,l}
   bspc {desktop -f,node -d} {prev,next} --follow
 
@@ -134,8 +132,6 @@ F11
   bspc desktop -f last
 
 # focus next/previous monitor
-super + ctrl + alt {_,shift + } {Right, Left}
-  bspc {monitor -f,node -m} {next, prev} --follow
 super + ctrl + alt {_,shift + } {l, h}
   bspc {monitor -f,node -m} {next, prev} --follow
 
@@ -204,6 +200,12 @@ XF86AudioMute
 
 XF86AudioPlay
   playerctl play-pause spotify
+
+XF86AudioNext
+  playerctl next
+
+XF86AudioPrev
+  playerctl previous
 
 #XF86MonBrightnessUp
 

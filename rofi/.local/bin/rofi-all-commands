@@ -1,0 +1,10 @@
+rofi -e "$(
+  zsh -i -c $(
+    {
+      alias | awk -F'=' '{ print $1 "=(a)", $2 }'
+      awk 'match($0, /^# (.*)/, c) { comment=c[1] } match($0, /^(\w+)\(\)/, a) { print a[1] "=(f)", comment }' "${XDG_CONFIG_HOME:?not set}/env/10-functions"
+      print -l ${(k)commands} | awk '{ print $1 "=(c)" }'
+      print -l ${(k)builtins} | awk '{ print $1 "=(b)" }'
+    } | column -t -s '=' | rofi -dmenu -p 'Run command'
+  )
+)"
