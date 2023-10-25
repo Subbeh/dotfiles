@@ -71,7 +71,7 @@ if [[ "$1" = 0 ]]; then
 		for i in {1..5}; do test -e /tmp/tmux-1000/default && break || sleep 1; done
 		alacritty --hold -e tmuxinator start infra &
 		bspc rule -a firefox -o monitor="${DISPL_M:?not set}"
-		firefox &
+		firefox -P default &
 		# bspc rule -a obsidian   -o monitor="${DISPL_L:?not set}"; obsidian "obsidian://open?vault=notes" &
 	fi
 fi
