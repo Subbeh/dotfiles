@@ -69,6 +69,8 @@ bindkey '[A' history-substring-search-up
 bindkey '[B' history-substring-search-down
 bindkey '^F' fzf-file-widget
 bindkey '^Z' fancy-ctrl-z
+bindkey "\eh" dirhistory_zle_dirhistory_back &> /dev/null
+bindkey "\el" dirhistory_zle_dirhistory_future &> /dev/null
 
 # Z plugin
 zstyle ':completion:*' menu select

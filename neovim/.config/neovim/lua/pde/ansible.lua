@@ -17,9 +17,12 @@ return {
                 path = "ansible",
                 useFullyQualifiedCollectionNames = true,
               },
-              ansibleLint = {
+              validation = {
                 enabled = true,
-                path = "ansible-lint",
+                lint = {
+                  enabled = false,
+                  path = "ansible-lint",
+                },
               },
               executionEnvironment = {
                 enabled = false,

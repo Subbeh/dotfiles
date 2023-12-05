@@ -34,7 +34,7 @@ return {
           lualine_a = { { "fancy_mode", width = 3 } },
           lualine_b = { "branch" },
           lualine_c = {
-            "filename",
+            { require("yaml_nvim").get_yaml_key },
             { "fancy_cwd", substitute_home = true },
             components.diff,
             { "fancy_diagnostics" },

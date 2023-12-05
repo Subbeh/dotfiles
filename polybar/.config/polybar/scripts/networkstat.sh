@@ -46,7 +46,7 @@ main() {
 }
 
 get_inet_dev() {
-	ip route get 8.8.8.8 | grep -Po '(?<=(dev ))(\S+)'
+	ip route get 8.8.8.8 2>/dev/null | grep -Po '(?<=(dev ))(\S+)'
 }
 
 get_home_status() {
@@ -60,7 +60,7 @@ get_home_status() {
 }
 
 get_inet_status() {
-	ip_addr=$(curl -s ifconfig.me)
+	ip_addr=$(curl -s --connect-timeout 3 ifconfig.io)
 	(ping -c 1 8.8.8.8 || ping -c 1 1.1.1.1) &>/dev/null
 	return $?
 }
@@ -90,7 +90,7 @@ get_tailscale_status() {
 }
 
 get_adguard_cookie() {
-	curl -si -X POST "${ADGUARD_URL}/login" \
+	curl -si --connect-timeout 3 -X POST "${ADGUARD_URL}/login" \
 		-H 'Content-Type: application/json' \
 		-d "{\"name\":\"$ADGUARD_USER\",\"password\":\"$ADGUARD_PASSWORD\"}" | grep -oE 'agh_session=\w+' >/tmp/adguard_cookie
 }
@@ -98,7 +98,7 @@ get_adguard_cookie() {
 get_adguard_status() {
 	[ ! -s /tmp/adguard_cookie ] && get_adguard_cookie
 	_status=$(
-		curl -is --cookie "$(</tmp/adguard_cookie)" "${ADGUARD_URL}/status" |
+		curl -is --connect-timeout 3 --cookie "$(</tmp/adguard_cookie)" "${ADGUARD_URL}/status" |
 			awk '/403 Forbidden/ { system("get_adguard_cookie") } NR==7' | jq '.protection_enabled'
 	)
 	case "$_status" in

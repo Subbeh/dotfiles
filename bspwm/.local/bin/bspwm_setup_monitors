@@ -9,96 +9,105 @@ DISPL_2="${DISPL_M:?not set}"  # external monitor 2
 DISPLAYS_DOCKED=($DISPL_1 $DISPL_2 $DISPL_0)
 
 change_docked() {
-  xrandr --output $DISPL_1 --mode 1920x1080 --pos 0x0    --rotate normal \
-         --output $DISPL_2 --mode 1920x1080 --pos 1920x0 --rotate normal --primary \
-         --output $DISPL_0 --mode 1920x1080 --pos 3840x0 --rotate normal 
-  DISPLAY_ENV=docked
+	xrandr --output $DISPL_1 --mode 1920x1080 --pos 0x0 --rotate normal \
+		--output $DISPL_2 --mode 1920x1080 --pos 1920x0 --rotate normal --primary \
+		--output $DISPL_0 --mode 1920x1080 --pos 3840x0 --rotate normal
+	# xrandr --dpi 192 --fb 7680x2160 --output eDP1 --mode 3840x2160 --pos 0x0 --output DP1 --mode 1920x1080 --scale 2x2 --pos 3840x0 --panning 3840x2160+3840+0
+	# xrandr --output eDP1 --scale 1x1 --pos 3840x0 ; xrandr --output HDMI1 --scale 2x2 --mode 1920x1080 --fb 7680x2160 --pos 0x0
+	# xrandr --output eDP-1 --auto --output HDMI-1 --auto --panning [C*E]x[D*F]+[A]+0 --scale [E]x[F] --right-of eDP-1
+	# xrandr \
+	# 	--output $DISPL_0 --auto \
+	# 	--output $DISPL_1 --auto --left-of $DISPL_0 --scale 2x2 --primary \
+	# 	--output $DISPL_2 --auto --left-of $DISPL_1
+	DISPLAY_ENV=docked
 
-  # move desktop 0 to DISPL_1
-  bspc desktop 0 --to-monitor "$DISPL_1"
+	# move desktop 0 to DISPL_1
+	bspc desktop 0 --to-monitor "$DISPL_1"
 
-  # move desktop 1-4 to DISPL_2
-  for desktop in {1..4} ; do
-    bspc desktop $desktop --to-monitor "$DISPL_2"
-  done
+	# move desktop 1-4 to DISPL_2
+	for desktop in {1..4}; do
+		bspc desktop $desktop --to-monitor "$DISPL_2"
+	done
 
-  # move desktop 5 to DISPL_0
-  bspc desktop 5 --to-monitor "$DISPL_0"
+	# move desktop 5 to DISPL_0
+	bspc desktop 5 --to-monitor "$DISPL_0"
 
-  # change padding
-  for display in $DISPL_0 $DISPL_1 ; do
-    bspc config -m "$display" top_padding 0
-    bspc config -m "$display" bottom_padding 0
-  done
+	# change padding
+	for display in $DISPL_0 $DISPL_1; do
+		bspc config -m "$display" top_padding 0
+		bspc config -m "$display" bottom_padding 0
+	done
 }
 
 change_undocked() {
-  xrandr --output $DISPL_1 --off \
-         --output $DISPL_2 --off \
-         --output $DISPL_0 --mode 1920x1080 --pos 3840x0 --rotate normal --primary
-  DISPLAY_ENV=undocked
+	xrandr --output $DISPL_1 --off \
+		--output $DISPL_2 --off \
+		--output $DISPL_0 --mode 1920x1080 --pos 3840x0 --rotate normal --primary
+	DISPLAY_ENV=undocked
 
-  # move all desktops to DISPL_0
-  for desktop in {0..5} ; do
-    bspc desktop "$desktop" --to-monitor "$DISPL_0"
-  done
+	# move all desktops to DISPL_0
+	for desktop in {0..5}; do
+		bspc desktop "$desktop" --to-monitor "$DISPL_0"
+	done
 }
 
 restart_polybar() {
-  pkill -q polybar 2> /dev/null
+	pkill -q polybar 2>/dev/null
 
-  while pgrep -u $UID -x polybar > /dev/null; do 
-    sleep 1
-    ((++i % 4)) || {
-      # polybar-msg cmd quit
-      pkill -f -9 polybar
-      break
-    }
-  done
+	while pgrep -u $UID -x polybar >/dev/null; do
+		sleep 1
+		((++i % 4)) || {
+			# polybar-msg cmd quit
+			pkill -f -9 polybar
+			break
+		}
+	done
 
-  rm -f /tmp/polybar_* 2> /dev/null
-  polybar --reload top -c ~/.config/polybar/config.ini </dev/null >/var/tmp/polybar-primary.log 2>&1 200>&- &
-  polybar --reload bottom -c ~/.config/polybar/config.ini </dev/null >/var/tmp/polybar-secondary.log 2>&1 200>&- &
+	rm -f /tmp/polybar_* 2>/dev/null
+	polybar --reload top -c ~/.config/polybar/config.ini </dev/null >/var/tmp/polybar-primary.log 2>&1 200>&- &
+	polybar --reload bottom -c ~/.config/polybar/config.ini </dev/null >/var/tmp/polybar-secondary.log 2>&1 200>&- &
 }
 
 get_displays() {
-  # list currently connected displays
-  xrandr --current | awk '/ connected/ { print $1 }' | sort
+	# list currently connected displays
+	xrandr --current | awk '/ connected/ { print $1 }' | sort
 }
 
 main() {
-  IFS=$'\n'
+	IFS=$'\n'
 
-  # check if laptop is docked
-  if [ "$(printf '%s\n' "${DISPLAYS_DOCKED[*]}"|sort)" = "$(get_displays)" ] ; then
-    state=docked
-    change_docked
-  else
-    state=undocked
-    change_undocked
-  fi
+	# check if laptop is docked
+	if [ "$(printf '%s\n' "${DISPLAYS_DOCKED[*]}" | sort)" = "$(get_displays)" ]; then
+		state=docked
+		change_docked
+	else
+		state=undocked
+		change_undocked
+	fi
 
-  # (re)start polybar
-  restart_polybar
-  
-  # restart picom
-  # pkill -x picom ; picom &
+	# (re)start polybar
+	restart_polybar
 
-  # reoirder desktops
-  case "$state" in
-    undocked)
-      bspc monitor "$DISPL_0" -d 0 1 2 3 4 5 ;;
-    docked)
-      bspc monitor "$DISPL_1" -d 0
-      bspc monitor "$DISPL_2" -d 1 2 3 4
-      bspc monitor "$DISPL_0" -d 5 ;;
-  esac
+	# restart picom
+	# pkill -x picom ; picom &
 
-  # reset wallpaper
-  nitrogen --restore &
+	# reoirder desktops
+	case "$state" in
+	undocked)
+		bspc monitor "$DISPL_0" -d 0 1 2 3 4 5
+		;;
+	docked)
+		bspc monitor "$DISPL_1" -d 0
+		bspc monitor "$DISPL_2" -d 1 2 3 4
+		bspc monitor "$DISPL_0" -d 5
+		;;
+	esac
 
-  # remove default desktop
-  bspc desktop Desktop --remove
+	# reset wallpaper
+	nitrogen --restore &
+
+	# remove default desktop
+	bspc desktop Desktop --remove
 }
 
 main "$@"
