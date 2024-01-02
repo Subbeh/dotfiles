@@ -1,0 +1,58 @@
+[colors.bright]
+black = "#303030"
+blue = "#87d7ff"
+cyan = "#87d7af"
+green = "#afd787"
+magenta = "#d7afd7"
+red = "#ff5f5f"
+white = "#d7d7d7"
+yellow = "#d7d7af"
+
+[colors.cursor]
+cursor = "#87afd7"
+text = "#303030"
+
+[colors.normal]
+black = "#303030"
+blue = "#87d7ff"
+cyan = "#87d7af"
+green = "#afd787"
+magenta = "#d7afd7"
+red = "#ff5f5f"
+white = "#d7d7d7"
+yellow = "#d7d7af"
+
+[colors.primary]
+background = "#303030"
+foreground = "#d7d7d7"
+
+[colors.selection]
+background = "#005f87"
+text = "#d7d7d7"
+
+[font]
+size = 7.5
+
+[font.bold]
+family = "FuraMono Nerd Font Mono"
+style = "Bold"
+
+[font.bold_italic]
+family = "FuraMono Nerd Font Mono"
+style = "Bold Italic"
+
+[font.italic]
+family = "FuraMono Nerd Font Mono"
+style = "Italic"
+
+[font.normal]
+family = "FiraCode Nerd Font Mono"
+style = "Regular"
+
+[window]
+dynamic_title = true
+title = "terminal"
+
+[window.padding]
+x = 15
+y = 15

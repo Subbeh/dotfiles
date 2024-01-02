@@ -28,6 +28,10 @@ export POWERLEVEL9K_INSTANT_PROMPT=quiet
 export NVIM_APPNAME=neovim
 export NVIM_HOME="$HOME/.config/$NVIM_APPNAME"
 
+# Go
+export GOPATH="$HOME/go"
+export PATH="$PATH:${GOPATH:?not set}/bin"
+
 # Java fonts
 export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=setting'
 

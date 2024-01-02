@@ -4,23 +4,29 @@ export WS=/data/workspace
 export INFRA=$WS/homelab
 
 ## nav
-alias i="cd ${INFRA}"
-alias ia="cd ${INFRA}/ansible"
-alias iaa="cd ${INFRA}/ansible/apps"
-alias it="cd ${INFRA}/terraform"
-alias ik="cd ${INFRA}/k8s"
-alias gg="cd ${WS}/go"
-alias c="cd ${WS}/cloud"
+alias cdi="cd ${INFRA}"
+alias cdia="cd ${INFRA}/ansible"
+alias cdiaa="cd ${INFRA}/ansible/apps"
+alias cdit="cd ${INFRA}/terraform"
+alias cdik="cd ${INFRA}/k8s"
+alias cdg="cd ${WS}/go"
+alias cdc="cd ${WS}/cloud"
+
+# python
 alias activate="source .venv/bin/activate"
+
 # infra
 alias infra="tmuxinator start infra"
 alias task="go-task"
+
 # ansible
 alias ap="ansible-playbook"
+
 # k8s
 alias k="kubecolor"
 alias kctx="kubectx"
 alias kns="kubens"
+
 # aws
 alias ave="aws-vault exec --duration 8h"
 alias avl="aws-vault list"
