@@ -34,6 +34,7 @@ alias vifm=vifmrun
 alias vi=edit
 alias xc="xclip -i -selection clipboard"
 alias x="startx $XDG_CONFIG_HOME/x11/xinitrc -- -verbose 6 -logverbose 6 -keeptty &> $XDG_CACHE_HOME/.xorg.log"
+alias ffpm="firefox -ProfileManager"
 
 # systemd
 alias jrnl="sudo journalctl -b"
@@ -88,6 +89,7 @@ alias cdm='cd /mnt'
 alias cdp='cd /data/programfiles'
 alias cdt='cd /data/temp'
 alias cdw='cd /data/workspace'
+alias cds='cd /data/study'
 
 # eza
 if [ -x "$(command -v eza)" ]; then

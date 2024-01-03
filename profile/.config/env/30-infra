@@ -10,7 +10,7 @@ alias cdiaa="cd ${INFRA}/ansible/apps"
 alias cdit="cd ${INFRA}/terraform"
 alias cdik="cd ${INFRA}/k8s"
 alias cdg="cd ${WS}/go"
-alias cdc="cd ${WS}/cloud"
+alias cdcl="cd ${WS}/cloud"
 
 # python
 alias activate="source .venv/bin/activate"

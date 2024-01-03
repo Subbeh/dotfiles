@@ -12,4 +12,14 @@ return {
       require("Comment").setup(opts)
     end,
   },
+
+  {
+    "JoosepAlviste/nvim-ts-context-commentstring",
+    config = function(_, _)
+      local opts = {
+        enable_autocmd = false,
+      }
+      require("ts_context_commentstring").setup(opts)
+    end,
+  },
 }

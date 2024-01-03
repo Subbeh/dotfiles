@@ -29,7 +29,7 @@ export NVIM_APPNAME=neovim
 export NVIM_HOME="$HOME/.config/$NVIM_APPNAME"
 
 # Go
-export GOPATH="$HOME/go"
+export GOPATH="${XDG_DATA_HOME:?not set}/go"
 export PATH="$PATH:${GOPATH:?not set}/bin"
 
 # Java fonts

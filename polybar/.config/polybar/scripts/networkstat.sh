@@ -99,7 +99,7 @@ get_adguard_status() {
 	[ ! -s /tmp/adguard_cookie ] && get_adguard_cookie
 	_status=$(
 		curl -is --connect-timeout 3 --cookie "$(</tmp/adguard_cookie)" "${ADGUARD_URL}/status" |
-			awk '/403 Forbidden/ { system("get_adguard_cookie") } NR==7' | jq '.protection_enabled'
+			awk '/403 Forbidden/ { system("get_adguard_cookie") } /protection_enabled/' | jq '.protection_enabled'
 	)
 	case "$_status" in
 	true) return 0 ;;
