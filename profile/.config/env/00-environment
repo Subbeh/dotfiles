@@ -25,7 +25,7 @@ export ADOTDIR="$XDG_DATA_HOME/zsh/antigen"
 export POWERLEVEL9K_INSTANT_PROMPT=quiet
 
 # Nvim
-export NVIM_APPNAME=neovim
+export NVIM_APPNAME=nvim
 export NVIM_HOME="$HOME/.config/$NVIM_APPNAME"
 
 # Go
@@ -70,7 +70,7 @@ export FZF_DEFAULT_OPTS="
 --bind '?:toggle-preview'
 --bind 'ctrl-a:select-all'
 --bind 'ctrl-y:execute-silent(echo {+} | pbcopy)'
---bind 'ctrl-e:execute(echo {+} | xargs -o vim)'
+--bind 'ctrl-e:execute(echo {+} | xargs -o nvim)'
 --bind 'ctrl-v:execute(code {+})'
 --bind 'alt-k:up,alt-j:down'
 "

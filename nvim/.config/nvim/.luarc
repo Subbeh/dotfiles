@@ -1,0 +1,6 @@
+{      
+  "workspace": {
+    "checkThirdParty": false,
+    "preLoadFileSize": 1000
+  }
+}
