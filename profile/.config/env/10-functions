@@ -149,3 +149,6 @@ addkeys() {
 
 # calculator
 _calc() { printf "%s\n" "$*" | bc -l; }
+
+# get monitor names
+getmons() { ls /sys/class/drm/*/edid | xargs -i{} sh -c "echo {}; parse-edid < {} 2>/dev/null" | awk 'match($0, /card1-(.*)\//, a) { dp=a[1] } /ModelName/ { $1=""; print dp, $0 }' }

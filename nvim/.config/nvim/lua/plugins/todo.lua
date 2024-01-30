@@ -5,6 +5,8 @@ local M = {
   config = true,
   -- stylua: ignore
   keys = {
+    { "<leader>ct", "<cmd>TodoTrouble<cr>", desc = "ToDo (Trouble)" },
+    { "<leader>cT", "<cmd>TodoTelescope<cr>", desc = "ToDo" },
     { "]t", function() require("todo-comments").jump_next() end, desc = "Next ToDo" },
     { "[t", function() require("todo-comments").jump_prev() end, desc = "Previous ToDo" },
   },

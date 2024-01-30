@@ -29,9 +29,8 @@ alias sdiff="diff --color=always --side-by-side"
 alias speedtest="curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python -"
 alias sudo='sudo '
 alias vifm=vifmrun
-# alias vi=nvim
-# alias vi="XDG_DATA_HOME=$NVIM_HOME/share XDG_CACHE_HOME=$NVIM_HOME/cache XDG_CONFIG_HOME=$NVIM_HOME nvim"
-alias vi=edit
+alias vi="XDG_DATA_HOME=$HOME/.config/nvim/share XDG_CACHE_HOME=$HOME/.config/nvim/cache nvim"
+# alias vi=edit
 alias xc="xclip -i -selection clipboard"
 alias x="startx $XDG_CONFIG_HOME/x11/xinitrc -- -verbose 6 -logverbose 6 -keeptty &> $XDG_CACHE_HOME/.xorg.log"
 alias ffpm="firefox -ProfileManager"
@@ -89,7 +88,7 @@ alias cdm='cd /mnt'
 alias cdp='cd /data/programfiles'
 alias cdt='cd /data/temp'
 alias cdw='cd /data/workspace'
-alias cds='cd /data/study'
+alias cdn='cd /data/notes'
 
 # eza
 if [ -x "$(command -v eza)" ]; then

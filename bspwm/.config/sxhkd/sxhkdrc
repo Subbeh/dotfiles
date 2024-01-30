@@ -18,7 +18,7 @@ ctrl + alt + {q,r}
 
 # reload xrandr
 ctrl + alt + shift + r
-  source $XDG_CONFIG_HOME/x11/setxrandr; notify-send 'X11' 'reloaded config'; \
+  source $BIN_DIR/bspwm_setup_monitors; notify-send 'X11' 'reloaded config'; \
   bspc wm -r; notify-send 'bspwm' 'reloaded config'
 
 # lock screen
@@ -93,7 +93,7 @@ F8
   bspwm_swap
 
 # swap windows in monitor $DIPL_M and $DIPL_L
-F8
+F9
   bspc desktop -l next
 
 # toggle fullscreen
@@ -137,7 +137,7 @@ super + ctrl + alt {_,shift + } {l, h}
 
 # cycle through nodes
 alt + {_,shift +} Tab
-  bspc node -f {last,next}.local.!hidden.window.!sticky
+  bspc node -f {next,last}.local.!hidden.window.!sticky
 
 # rofi alt-tab
 alt + grave

@@ -1,14 +1,9 @@
 local M = {
   "folke/trouble.nvim",
+  keys = {
+    { "<leader>cd", "<cmd>TroubleToggle document_diagnostics<cr>", desc = "Document Diagnostics" },
+    { "<leader>cD", "<cmd>TroubleToggle document_diagnostics<cr>", desc = "Workspace Diagnostics" },
+  },
 }
 
-function M.config()
-  local wk = require "which-key"
-  wk.register {
-    ["<leader>ld"] = { "<cmd>Trouble<cr>", "Diagnostics" },
-    ["<leader>lt"] = { "<cmd>TodoTrouble<cr>", "TODO" },
-  }
-end
-
 return M
-

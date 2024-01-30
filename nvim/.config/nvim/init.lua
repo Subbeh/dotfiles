@@ -53,6 +53,8 @@ spec "plugins.autotag" -- auto close and rename HTML tags
 spec "plugins.indent" -- add indentation guides
 spec "plugins.dial" -- enhanced increments/decrements
 spec "plugins.matchup" -- highlight, navigate, and operate on matching text
+spec "plugins.refactoring" -- refactoring library
+spec "plugins.treesj" -- split/join treesitter nodes
 
 -- git
 spec "plugins.fugitive" -- git wrapper

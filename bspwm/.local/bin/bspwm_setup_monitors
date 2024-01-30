@@ -9,9 +9,9 @@ DISPL_2="${DISPL_M:?not set}"  # external monitor 2
 DISPLAYS_DOCKED=($DISPL_1 $DISPL_2 $DISPL_0)
 
 change_docked() {
-	xrandr --output $DISPL_1 --mode 1920x1080 --pos 0x0 --rotate normal \
-		--output $DISPL_2 --mode 1920x1080 --pos 1920x0 --rotate normal --primary \
-		--output $DISPL_0 --mode 1920x1080 --pos 3840x0 --rotate normal
+	xrandr --output $DISPL_1 --mode 1920x1080 --pos 0x0 --rotate normal && \
+	xrandr --output $DISPL_2 --mode 1920x1080 --pos 1920x0 --rotate normal --primary && \
+	xrandr --output $DISPL_0 --mode 1920x1080 --pos 3840x0 --rotate normal
 	# xrandr --dpi 192 --fb 7680x2160 --output eDP1 --mode 3840x2160 --pos 0x0 --output DP1 --mode 1920x1080 --scale 2x2 --pos 3840x0 --panning 3840x2160+3840+0
 	# xrandr --output eDP1 --scale 1x1 --pos 3840x0 ; xrandr --output HDMI1 --scale 2x2 --mode 1920x1080 --fb 7680x2160 --pos 0x0
 	# xrandr --output eDP-1 --auto --output HDMI-1 --auto --panning [C*E]x[D*F]+[A]+0 --scale [E]x[F] --right-of eDP-1
@@ -91,7 +91,7 @@ main() {
 	# restart picom
 	# pkill -x picom ; picom &
 
-	# reoirder desktops
+	# reorder desktops
 	case "$state" in
 	undocked)
 		bspc monitor "$DISPL_0" -d 0 1 2 3 4 5
@@ -102,6 +102,11 @@ main() {
 		bspc monitor "$DISPL_0" -d 5
 		;;
 	esac
+
+  # move all to desktop 1
+  for id in $(bspc query -N) ; do
+    bspc node $id -d 1
+  done
 
 	# reset wallpaper
 	nitrogen --restore &

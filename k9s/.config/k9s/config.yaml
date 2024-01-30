@@ -1,0 +1,58 @@
+k9s:
+  liveViewAutoRefresh: false
+  refreshRate: 2
+  maxConnRetry: 5
+  enableMouse: false
+  enableImageScan: false
+  headless: false
+  logoless: false
+  crumbsless: false
+  readOnly: false
+  noExitOnCtrlC: false
+  noIcons: false
+  shellPod:
+    image: busybox:1.35.0
+    namespace: default
+    limits:
+      cpu: 100m
+      memory: 100Mi
+  skipLatestRevCheck: false
+  logger:
+    tail: 100
+    buffer: 5000
+    sinceSeconds: 60
+    fullScreenLogs: false
+    textWrap: false
+    showTime: false
+  currentContext: kubernetes-admin@k8s-homelab
+  currentCluster: k8s-homelab
+  keepMissingClusters: false
+  clusters:
+    k8s-homelab:
+      namespace:
+        active: drone
+        lockFavorites: false
+        favorites:
+        - drone
+        - prometheus
+        - kube-node-lease
+        - linkerd
+        - cert-manager
+        - traefik
+        - external-secrets
+        - argocd
+        - kube-system
+      view:
+        active: context
+      featureGates:
+        nodeShell: false
+      portForwardAddress: localhost
+  thresholds:
+    cpu:
+      critical: 90
+      warn: 70
+    memory:
+      critical: 90
+      warn: 70
+  screenDumpDir: /tmp/k9s-screens-sysadm
+  disablePodCounting: false
