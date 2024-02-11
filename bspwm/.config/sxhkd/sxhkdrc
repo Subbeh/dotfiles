@@ -45,7 +45,7 @@ super + Return
 F12
    bspwm_dropterm
 
-# dmenu
+# rofi command launcher
 super + @space
   zsh -ic '. rofi-all-commands'
   #rofi -e "$(zsh -i -c $(. rofi-all-commands | rofi -dmenu -p 'Run command' -theme-str 'listview {lines: 5;}') 2>&1 )"
@@ -54,6 +54,10 @@ super + @space
 # rofi application launcher
 alt + @space
   bash -ic 'launcher'
+
+# dmenu
+super + alt+ @space
+  bash -ic 'dm'
 
 # Win+r application focus
 super + r ; {t,f,m,o}

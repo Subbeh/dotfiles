@@ -9,7 +9,7 @@ alias calc="noglob _calc"
 alias dm="dmenu_run -nb '#303030' -nf '#b2b2b2' -sf '#444444' -sb '#d7afd7' -h 24 -p run: -dim 0.5 -i -q -fn 'Misc Tamzen:size=10'"
 alias dot="$HOME/.dotfiles/dot"
 alias f="fd --hidden --follow"
-alias g="rg --ignore-case --hidden --follow --one-file-system --no-ignore-vcs --search-zip -g '!{node_modules/*,.git/*,.direnv/*,.venv/*}'"
+alias g="rg --ignore-case --hidden --follow --one-file-system --no-ignore-vcs --search-zip -g '!{node_modules/*,.git/*,.direnv/*,.venv/*,.terraform/*}'"
 alias h='history 0'
 alias httpserver="python3 -m http.server"
 alias http=xh
@@ -34,6 +34,8 @@ alias vi="XDG_DATA_HOME=$HOME/.config/nvim/share XDG_CACHE_HOME=$HOME/.config/nv
 alias xc="xclip -i -selection clipboard"
 alias x="startx $XDG_CONFIG_HOME/x11/xinitrc -- -verbose 6 -logverbose 6 -keeptty &> $XDG_CACHE_HOME/.xorg.log"
 alias ffpm="firefox -ProfileManager"
+alias mux="tmuxinator start tmux-main"
+alias gpt="chatblade"
 
 # systemd
 alias jrnl="sudo journalctl -b"
@@ -148,5 +150,6 @@ alias dlo='dot log --pretty="oneline"'
 alias dlol='dot log --graph --oneline --decorate'
 
 # notes
-alias notes="obsidian 'obsidian://open?vault=notes' &"
-alias study="obsidian 'obsidian://open?vault=study' &"
+alias studynotes="obsidian 'obsidian://open?vault=study' &"
+alias technotes="obsidian 'obsidian://open?vault=tech' &"
+alias worknotes="obsidian 'obsidian://open?vault=work' &"

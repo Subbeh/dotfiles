@@ -69,7 +69,7 @@ if [[ "$1" = 0 ]]; then
 	if [[ "$DISPLAY_ENV" -eq "docked" ]]; then
 		bspc rule -a Alacritty -o monitor="${DISPL_M:?not set}"
 		for i in {1..5}; do test -e /tmp/tmux-1000/default && break || sleep 1; done
-		alacritty --hold -e tmuxinator start infra &
+		alacritty --hold -e tmuxinator start tmux-main &
 		bspc rule -a firefox -o monitor="${DISPL_M:?not set}"
 		firefox -P default &
 		# bspc rule -a obsidian   -o monitor="${DISPL_L:?not set}"; obsidian "obsidian://open?vault=notes" &

@@ -1,14 +1,19 @@
-# /home/sysadm/.config/tmuxinator/infra.yml
+# /home/sysadm/.config/tmuxinator/tmux-main.yml
 
-name: infra
+name: tmux-main
 root: ~/
+startup_window: infra
 
 windows:
+  - notes:
+      pre: cd /data/notes/tech; clear
+      layout: even-horizontal
+      panes:
+        - vi
   - infra:
       pre: cd /data/workspace/homelab; clear
       layout: c6b7,311x65,0,0{102x65,0,0,6,208x65,103,0[208x32,103,0{104x32,103,0,11,103x32,208,0,12},208x32,103,33,7]}
       panes:
-        # - XDG_DATA_HOME=$NVIM_HOME/share XDG_CACHE_HOME=$NVIM_HOME/cache nvim
         -
         -
         -
@@ -21,14 +26,14 @@ windows:
   #       -
   #       -
   #       -
-  - various:
-      layout: f59b,311x65,0,0{194x65,0,0[194x32,0,0,2,194x32,0,33,10],116x65,195,0,9}
-      panes:
-        -
-        -
   - workspace:
       pre: cd /data/workspace/go; clear
       layout: b995,311x70,0,0{217x70,0,0,11,93x70,218,0,13}
+      panes:
+        -
+        -
+  - various:
+      layout: f59b,311x65,0,0{194x65,0,0[194x32,0,0,2,194x32,0,33,10],116x65,195,0,9}
       panes:
         -
         -

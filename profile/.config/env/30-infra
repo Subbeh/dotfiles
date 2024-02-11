@@ -16,7 +16,6 @@ alias cdcl="cd ${WS}/cloud"
 alias activate="source .venv/bin/activate"
 
 # infra
-alias infra="tmuxinator start infra"
 alias task="go-task"
 
 # ansible
