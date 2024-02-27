@@ -24,11 +24,13 @@ local M = {
     { "<leader>fh", "<cmd>Telescope help_tags<cr>", desc = "Help" },
     { "<leader>fH", "<cmd>Telescope highlights<cr>", desc = "Highlights" },
     { "<leader>fk", "<cmd>Telescope keymaps<cr>", desc = "Keymaps" },
+    { "<leader>fl", "<cmd>Telescope current_buffer_fuzzy_find<cr>", desc = "Find local" },
     { "<leader>fo", "<cmd>Telescope oldfiles<cr>", desc = "Recent Files" },
     { "<leader>fp", "<cmd>lua require('telescope').extensions.projects.projects()<cr>", desc = "Projects" },
     { "<leader>fr", "<cmd>Telescope repo list<cr>", desc = "Repositories" },
     { "<leader>fR", "<cmd>Telescope registers<cr>", desc = "Registers" },
-    { "<leader>fs", "<cmd>Telescope grep_string<cr>", desc = "Find String" },
+    -- { "<leader>fs", require("auto-session.session-lens").search_session, desc = "Sessions" },
+    -- { "<leader>fs", "<cmd>Telescope grep_string<cr>", desc = "Find String" },
 
     { "<leader>go", "<cmd>Telescope git_status<cr>", desc = "Open changed file" },
     { "<leader>gb", "<cmd>Telescope git_branches<cr>", desc = "Checkout branch" },
@@ -93,6 +95,9 @@ function M.config()
         "--smart-case",
         "--hidden",
         "--glob=!.git/",
+        "--glob=!.obsidian/",
+        "--glob=!.terraform/",
+        "--glob=!node_modules/",
       },
 
       mappings = {
@@ -113,19 +118,30 @@ function M.config()
     },
     pickers = {
       live_grep = {
-        theme = "dropdown",
+        -- theme = "dropdown",
       },
 
       grep_string = {
-        theme = "dropdown",
+        -- theme = "dropdown",
       },
 
       find_files = {
-        find_command = { "rg", "--files", "--hidden", "-g", "!.git" },
-        theme = "dropdown",
+        find_command = {
+          "rg",
+          "--files",
+          "--hidden",
+          "--glob=!.git/",
+          "--glob=!.obsidian/",
+          "--glob=!.terraform/",
+          "--glob=!node_modules/",
+        },
+        -- theme = "dropdown",
         previewer = true,
         hidden = true,
         path_display = filenameFirst,
+        layout_config = {
+          height = 0.70,
+        },
       },
 
       buffers = {
@@ -140,11 +156,6 @@ function M.config()
             ["dd"] = actions.delete_buffer,
           },
         },
-      },
-
-      planets = {
-        show_pluto = true,
-        show_moon = true,
       },
 
       colorscheme = {
@@ -181,14 +192,14 @@ function M.config()
       repo = {
         list = {
           fd_opts = {
-            "--no-ignore-vcs"
+            "--no-ignore-vcs",
           },
           search_dirs = {
-            "/data/workspace"
-          }
-        }
-      }
-    }
+            "/data/workspace",
+          },
+        },
+      },
+    },
   }
 end
 

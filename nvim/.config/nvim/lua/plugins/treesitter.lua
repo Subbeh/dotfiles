@@ -17,22 +17,25 @@ return {
       ensure_installed = {
         "bash",
         "dockerfile",
+        "go",
         "html",
+        "json",
         "lua",
         "luadoc",
         "luap",
         "markdown",
         "markdown_inline",
         "org",
+        "python",
         "query",
         "regex",
+        "terraform",
         "vim",
         "vimdoc",
         "yaml",
       },
       highlight = { enable = true, additional_vim_regex_highlighting = { "org", "markdown" } },
       indent = { enable = true },
-      -- context_commentstring = { enable = true, enable_autocmd = false }, -- deprecated
       incremental_selection = {
         enable = true,
         keymaps = {

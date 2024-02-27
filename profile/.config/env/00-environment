@@ -41,6 +41,7 @@ export SOPS_AGE_KEY_FILE="${XDG_CONFIG_HOME}/sops/age/keys.txt"
 # Various
 export PSHELL=$(ps -hp $$ | awk '{print $NF}')
 export DOT=$HOME/.dotfiles
+export RIPGREP_CONFIG_PATH="${XDG_CONFIG_HOME}/ripgrep/.ripgreprc" 
 
 # Less command colors
 export LESS_TERMCAP_mb=$'\E[1;31m'    # begin bold

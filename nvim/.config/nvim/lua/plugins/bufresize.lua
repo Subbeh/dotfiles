@@ -6,8 +6,8 @@ return {
       require("bufresize").setup {
         register = {
           keys = {
-            { "n", "=", ":horizontal resize +5<cr>", opts },
-            { "n", "-", ":horizontal resize -5<cr>", opts },
+            { "n", "g=", ":horizontal resize +5<cr>", opts },
+            { "n", "g-", ":horizontal resize -5<cr>", opts },
             { "n", "+", ":vertical resize +5<cr>", opts },
             { "n", "_", ":vertical resize -5<cr>", opts },
           },

@@ -58,6 +58,7 @@ function M.config()
       L = { "<cmd>Lazy<cr>", "Lazy" },
     },
     m = { name = "Misc" },
+    n = { name = "Notes" },
     p = { name = "Plugins" },
     r = { name = "Refactor" },
     t = { name = "Test" },

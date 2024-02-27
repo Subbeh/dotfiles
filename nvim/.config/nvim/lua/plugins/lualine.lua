@@ -48,6 +48,10 @@ function M.config()
       },
       lualine_x = {
         { "fancy_cwd", substitute_home = true },
+        {
+          "filename",
+          path = 1,
+        },
         "fileformat",
       },
       lualine_y = { "diagnostics" },

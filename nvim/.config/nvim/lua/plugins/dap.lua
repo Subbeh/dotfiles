@@ -23,7 +23,7 @@ return {
       { "<leader>dr", "<cmd>lua require'dap'.repl.toggle()<cr>", desc = "Toggle Repl" },
       { "<leader>ds", "<cmd>lua require'dap'.continue()<cr>", desc = "Start" },
       { "<leader>dq", "<cmd>lua require'dap'.close()<cr>", desc = "Quit" },
-      { "<leader>dU", "<cmd>lua require'dapui'.toggle({reset = true})<cr>", desc = "Toggle UI" },
+      { "<leader>du", "<cmd>lua require'dapui'.toggle({reset = true})<cr>", desc = "Toggle UI" },
 
     },
     opts = {
@@ -32,6 +32,15 @@ return {
     config = function(plugin, opts)
       local icons = require "core.icons"
       vim.api.nvim_set_hl(0, "DapStoppedLine", { default = true, link = "Visual" })
+      vim.api.nvim_exec(
+        [[
+        augroup DAPMouse
+          autocmd!
+          autocmd WinEnter * if &filetype == 'dap-repl' | set mouse=a | else | set mouse= | endif
+        augroup END
+      ]],
+        false
+      )
 
       for name, sign in pairs(icons.diagnostics) do
         sign = type(sign) == "table" and sign or { sign }

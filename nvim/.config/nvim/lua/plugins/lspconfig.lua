@@ -73,7 +73,6 @@ function M.config()
     ["<leader>lj"] = { "<cmd>lua vim.diagnostic.goto_next()<cr>", "Next Diagnostic" },
     ["<leader>lh"] = { "<cmd>lua require('plugins.lspconfig').toggle_inlay_hints()<cr>", "Hints" },
     ["<leader>lk"] = { "<cmd>lua vim.diagnostic.goto_prev()<cr>", "Prev Diagnostic" },
-    ["<leader>ll"] = { "<cmd>lua vim.lsp.codelens.run()<cr>", "CodeLens Action" },
     ["<leader>lq"] = { "<cmd>lua vim.diagnostic.setloclist()<cr>", "Quickfix" },
     ["<leader>lr"] = { "<cmd>lua vim.lsp.buf.rename()<cr>", "Rename" },
   }
@@ -89,15 +88,19 @@ function M.config()
   local icons = require "core.icons"
 
   local servers = {
-    "lua_ls",
-    "cssls",
-    "html",
-    "pyright",
+    "ansiblels",
     "bashls",
-    "jsonls",
-    "yamlls",
-    "marksman",
+    "cssls",
+    "eslint",
     "gopls",
+    "html",
+    "jsonls",
+    "lua_ls",
+    "marksman",
+    "pyright",
+    "terraformls",
+    "tsserver",
+    "yamlls",
   }
 
   local default_diagnostic_config = {
@@ -113,7 +116,7 @@ function M.config()
     virtual_text = false,
     update_in_insert = false,
     underline = false,
-    severity_sort = true,
+    -- severity_sort = true,
     float = {
       focusable = true,
       style = "minimal",

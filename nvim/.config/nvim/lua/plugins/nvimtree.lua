@@ -4,7 +4,6 @@ local M = {
 }
 
 function M.config()
-
   local wk = require "which-key"
   wk.register {
     ["<leader>e"] = { "<cmd>NvimTreeToggle<CR>", "Explorer" },
@@ -82,7 +81,7 @@ function M.config()
           },
         },
       },
-      special_files = { "Cargo.toml", "Makefile", "README.md", "readme.md" },
+      special_files = { "Makefile", "README.md", "readme.md" },
       symlink_destination = true,
     },
     update_focused_file = {

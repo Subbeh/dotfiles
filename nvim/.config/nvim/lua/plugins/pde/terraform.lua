@@ -1,0 +1,5 @@
+return {
+  {
+    "hashivim/vim-terraform",
+  },
+}

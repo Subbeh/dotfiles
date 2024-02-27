@@ -10,8 +10,7 @@ return {
       usePlaceholders = true,
       analyses = {
         unusedparams = true,
-      }
-    }
-  }
+      },
+    },
+  },
 }
-
