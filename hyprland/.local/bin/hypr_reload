@@ -1,0 +1,193 @@
+#!/usr/bin/env bash
+
+set -x
+set -eo pipefail
+
+declare -A MON=(
+  [internal]="eDP-1"
+  [dell_4k]="desc:Dell Inc. DELL U2723QE"
+  [lg_4k]="desc:LG Electronics LG HDR 4K 308NTTQFK265"
+)
+
+WAYBAR_CONFIG_DIR="$HOME/.config/waybar"
+WAYBAR_TEMPLATE="$WAYBAR_CONFIG_DIR/launcher.tmpl"
+WAYBAR_TMP="/tmp/waybar_config"
+
+main() {
+  mons=("${MON[internal]}")
+  reload_only=false
+
+  if [[ $# -eq 0 ]]; then
+    profile=$(select_profile)
+    [[ -z "$profile" ]] && exit 1
+  else
+    while getopts p:rh opt; do
+      case "$opt" in
+        p) profile="${OPTARG}" ;;
+        r) reload_only=true ;;
+        h)
+          handle_monitor_hotplug
+          exit 0
+          ;;
+        *)
+          echo "Usage: $(basename "$0") [-p profile] [-r] [-h]"
+          echo "  -p profile   Set monitor profile"
+          echo "  -r           Reload Hyprland and Waybar only"
+          echo "  -h           Handle monitor hotplug event"
+          exit 1
+          ;;
+      esac
+    done
+  fi
+
+  pgrep -x waybar >/dev/null && killall -q waybar
+  hyprctl reload
+
+  if ! $reload_only; then
+    [[ -n "$profile" ]] && set_profile "${profile}"
+  fi
+
+  set_workspaces
+  launch_waybar
+}
+
+select_profile() {
+  printf "%s\n" "  󰶐  󰶐   undocked" "  󰍹  󰍹   docked" "󰛧  󰍹  󰍹   docked-ext" "  󰍹  󰶐   docked-dell" "  󰶐  󰍹   docked-lg" |
+    rofi -theme "${XDG_CONFIG_HOME}/rofi/profiles.rasi" -dmenu -p "Select profile" -i |
+    awk '{print $NF}'
+}
+
+map_output() {
+  if [[ "${MON[$1]}" =~ ^desc: ]]; then
+    local desc="${MON[$1]#desc:}"
+    hyprctl monitors all -j | jq -r --arg desc "$desc" '.[] | select(.description==$desc) | .name'
+  fi
+}
+
+set_profile() {
+  for mon in $(hyprctl monitors -j | jq -r '.[].name'); do
+    [[ "$mon" != "${MON[internal]}" ]] && hyprctl keyword monitor "$mon, disable"
+  done
+
+  case "$1" in
+    "docked")
+      hyprctl keyword monitor "${MON[internal]}, 1920x1200, 0x0,        1" >/dev/null
+      hyprctl keyword monitor "${MON[dell_4k]},  3840x2160, 0x-1440,    1.5" >/dev/null
+      hyprctl keyword monitor "${MON[lg_4k]},    3840x2160, 2560x-1440, 1.5" >/dev/null
+      mons=("internal" "dell_4k" "lg_4k")
+      ;;
+    "docked-ext")
+      hyprctl keyword monitor "${MON[dell_4k]}, 3840x2160, 0x0,        1.5" >/dev/null
+      hyprctl keyword monitor "${MON[lg_4k]},   3840x2160, 2560x0,     1.5" >/dev/null
+      if [[ "$(hyprctl monitors -j | jq -r '.|length')" -gt 1 ]]; then
+        hyprctl keyword monitor "${MON[internal]}, disable"
+      fi
+      mons=("dell_4k" "lg_4k")
+      ;;
+    "docked-dell")
+      hyprctl keyword monitor "${MON[internal]},  1920x1200, 0x0,        1" >/dev/null
+      hyprctl keyword monitor "${MON[dell_4k]},   3840x2160, 0x-1440,    1.5" >/dev/null
+      mons=("internal" "dell_4k")
+      ;;
+    "docked-lg")
+      hyprctl keyword monitor "${MON[internal]},  1920x1200, 0x0,        1" >/dev/null
+      hyprctl keyword monitor "${MON[lg_4k]},     3840x2160, 1920x0,     1.5" >/dev/null
+      mons=("internal" "lg_4k")
+      ;;
+    *)
+      hyprctl keyword monitor "${MON[internal]},  1920x1200, 0x0,        1" >/dev/null
+      ;;
+  esac
+}
+
+set_workspaces() {
+  len="${#mons[@]}"
+
+  # Store the active workspace, but only if it's one of our defined workspaces (1-3)
+  active_workspace=$({ hyprctl activeworkspace -j | jq -r .id; } || echo 2)
+  if ((active_workspace > 3)); then
+    active_workspace=2
+  fi
+
+  # Define workspace assignments for each monitor configuration
+  declare -A ws_assignments=(
+    [1]="${mons[0]} ${mons[0]} ${mons[0]}" # All workspaces to single monitor
+    [2]="${mons[0]} ${mons[1]} ${mons[1]}" # One to first, two to second
+    [3]="${mons[0]} ${mons[1]} ${mons[2]}" # One workspace per monitor
+  )
+
+  # Get the assignment string for current number of monitors
+  IFS=' ' read -r -a assignments <<<"${ws_assignments[$len]}"
+
+  # First ensure we're on a valid workspace
+  hyprctl dispatch workspace 2
+
+  # Move all windows from workspaces >3 to workspace 2
+  while read -r window_data; do
+    workspace=$(echo "$window_data" | jq -r '.workspace.id')
+    address=$(echo "$window_data" | jq -r '.address')
+    if ((workspace > 3)); then
+      hyprctl dispatch movetoworkspacesilent 2,address:$address
+    fi
+  done < <(hyprctl clients -j | jq -c '.[]')
+
+  # Force close any workspaces beyond our defined set
+  while read -r workspace; do
+    if ((workspace > 3)); then
+      # Try to force close the workspace by moving to it and back
+      hyprctl dispatch workspace "$workspace"
+      hyprctl dispatch movetoworkspacesilent 2
+      hyprctl dispatch workspace 2
+    fi
+  done < <(hyprctl workspaces -j | jq -r '.[].id')
+
+  # Apply assignments for each workspace, ensuring proper monitor mapping
+  for ws in {1..3}; do
+    monitor_desc="${assignments[$((ws - 1))]}"
+    monitor_name=$(map_output "$monitor_desc")
+    [[ -z "$monitor_name" ]] && monitor_name="$monitor_desc"
+
+    # Force create the workspace on the correct monitor
+    hyprctl dispatch workspace "$ws"
+    hyprctl keyword workspace "$ws,monitor:$monitor_name,persistent:true"
+    hyprctl dispatch moveworkspacetomonitor "$ws" "$monitor_name"
+  done
+
+  # Return to appropriate workspace
+  if [[ "$active_workspace" == "1" ]] || [[ -z "$active_workspace" ]]; then
+    hyprctl dispatch workspace 2
+  else
+    hyprctl dispatch workspace "$active_workspace"
+  fi
+}
+
+launch_waybar() {
+  for bar in topbar bottombar; do
+    sed -e "s/@@OUTPUT@@/$(map_output "${mons[-1]}")/" -e "s/@@BAR@@/$bar/" "$WAYBAR_TEMPLATE" >"$WAYBAR_TMP.$bar"
+    uwsm app -- waybar -c "$WAYBAR_TMP.$bar" &
+  done
+}
+
+handle_monitor_hotplug() {
+  handle() {
+    if [[ "$1" =~ monitorremoved* ]]; then
+      # Get current monitor count
+      monitor_count=$(hyprctl monitors -j | jq -r '.|length')
+
+      # Check if we're in docked-ext profile by looking for disabled internal monitor
+      if hyprctl monitors all -j | jq -r '.[] | select(.name=="eDP-1") | .disabled' | grep -q true; then
+        # If we're in docked-ext and monitor count is 1 or less, switch to undocked
+        if [[ "$monitor_count" -le 1 ]]; then
+          # Re-enable internal monitor first
+          # hyprctl keyword monitor "eDP-1,1920x1200,0x0,1"
+          # sleep 1 # Give monitor time to initialize
+          "$0" -p undocked
+        fi
+      fi
+    fi
+  }
+
+  socat -U - "UNIX-CONNECT:$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock" | while read -r line; do handle "$line"; done
+}
+
+main "$@"

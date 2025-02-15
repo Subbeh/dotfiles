@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if [ -d "$1" ]; then
+	onefetch --include-hidden --no-art --no-color-palette "$1" 2>/dev/null && exit 0
+	tree -CL 3 --gitignore --noreport "$1" 2>/dev/null && exit 0
+fi
+
+case "$1" in
+*/rfc/txt/rfc*.txt) sed -e '1,+2d' -e '/\f/d' "$1" && exit 0 ;;
+*) exit 1 ;;
+esac

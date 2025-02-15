@@ -1,0 +1,189 @@
+#!/usr/bin/env bash
+# dotfile manager
+
+# set -x
+set -eo pipefail
+
+export MATE="${DOT_DIR:-$PWD}"
+test -d "$MATE" || echo ERROR: dots directory not found: "$MATE"
+
+export MATE_CRYPT="$MATE/.crypt"
+export MATE_BACKUP="$MATE/.backup"
+
+git="git --git-dir=$MATE/.git --work-tree=$MATE"
+
+[ ! -d "$MATE" ] && mkdir "$MATE"
+
+# base function
+# args: dot [-r] <sub-function ... | git command>
+#   -r: use relative path
+main() {
+	local _cmd _file
+	retval=0
+
+	shopt -s dotglob
+
+	for _file in stow git; do
+		if ! command -v "$_file" &>/dev/null; then
+			echo ERROR: "$_file" could not be found
+			exit 1
+		fi
+	done
+
+	if [[ "$1" == "-r" ]]; then
+		pushd "$MATE"
+		shift
+	fi
+
+	_cmd=$1
+	shift
+	if declare -F _"$_cmd" >/dev/null 2>&1; then
+		_"$_cmd" "$@"
+	else
+		eval "$git" "$_cmd" "$@"
+	fi
+}
+
+# list git status including any submodules
+# args: N/A
+_status() {
+	$git status --ignore-submodules --short "$@"
+	$git -C "$MATE" submodule foreach 'git -c color.status=always status --short' | awk '{ gsub(/\x27/,"") } /Entering/ { submodule=$2; next } { print submodule ": " $0 }'
+}
+
+# move files to the repository and create symbolic link to point to the existing location
+# args: _link [-s] [-d <app-name> <object(s)>]
+#   -s: enable encryption on file(s)
+#   -d: add files/folders to repository
+_link() {
+	local _arg _app _dir _file _root
+	if [[ "$1" == '-s' ]]; then
+		MATE="$MATE_CRYPT"
+		shift
+	fi
+	if [[ "$1" == '-d' && ! -z $2 ]]; then
+		_app=$2
+		shift 2
+	else
+		echo ERROR: please specify the app name with \"'[-s] [-d <app-name>] file(s)'\"
+		exit 1
+	fi
+
+	for _arg in "$@"; do
+		if [ ! -e "$_arg" ]; then
+			echo ERROR: no such file: "$_arg"
+			exit 1
+		fi
+
+		[[ ! $_arg =~ ^/ ]] && _arg=$PWD/$_arg
+		[[ $_app =~ ^root_ ]] && _root='/'
+
+		_file=${_arg##*/}
+
+		if [[ $_arg =~ ^$HOME ]]; then
+			_dir=${_arg##*$HOME/}
+			_dir=${_dir%/*}/
+		else
+			_dir=${_arg%/*}
+			_dir=${_dir#*/}/
+		fi
+
+		mkdir -p "$MATE/$_app/$_dir" 2>/dev/null
+		if [ ! -d "$MATE/$_app/$_dir" ]; then
+			echo ERROR: unable to create directory "$MATE/$_dir"
+			exit 1
+		fi
+		echo INFO: moving file "$_file" to "$MATE/$_app/$_dir"
+		${_root/\//sudo} mv "$_arg" "$MATE/$_app/$_dir" && _load "$_app"
+	done
+}
+
+# validate if files already exist before trying to create a symlink to the same location
+# args: _validate [-r] [<app-name>]
+_validate() {
+	local _root _arg _dir
+	if [ "$1" == '-r' ]; then
+		_root='/'
+		shift
+	fi
+	for _arg in "$@"; do
+		retval=$((retval | 0))
+
+		_dir="$MATE/$_arg"
+		if ! [[ -d "$_dir" || -d "$MATE_CRYPT/$_arg" ]]; then
+			echo ERROR: directory not found: "$_dir"
+			exit 1
+		fi
+	done
+
+	return "$retval"
+}
+
+# recreate and update symbolic links from repository
+# args: _load [-g] | [<app-names>]]
+_load() {
+	local _arg _list _root _app _apps=() _apps_sorted=()
+
+	# update the submodules within the repository
+	if [ "$1" == '-g' ]; then
+		(
+			cd "$MATE"
+			"$git" -C "$MATE" submodule update --init --recursive --remote
+		)
+		shift
+	fi
+
+	[ "$1" = "" ] && return
+
+	for _arg in "$@"; do
+		_apps+=("$_arg")
+	done
+
+	IFS=$'\n' _apps_sorted=("$(sort -u <<<"${_apps[*]}")")
+
+	for _app in "${_apps[@]}"; do
+		_validate "$_app"
+	done
+
+	echo INFO: validating files for "$_arg" ...
+	for dir in "$MATE" "$MATE_CRYPT"; do
+		while read line; do
+			msg=$(echo "$line" | awk -F': | => ' '{ print $1 }')
+			file=$(echo "$line" | awk -F': | => ' '{ print $2 }')
+
+			case "$msg" in
+			*"link nor a directory"*)
+				if [[ -d "${file%/*}" ]]; then
+					mkdir -p "$MATE_BACKUP/${file%/*}"
+				fi
+				mv "$HOME/$file" "$MATE_BACKUP/${file%/*}"
+				;;
+			*"stowed"*) rm "$HOME/$file" ;;
+			esac
+		done <<<"$(${_root/\//sudo} stow -n -d "$dir" -t "${_root:-$HOME}" "$_arg" |& grep "existing target")"
+	done
+
+	for _app in "${_apps[@]}"; do
+		for dir in "$MATE" "$MATE_CRYPT"; do
+			if [[ $_app =~ ^root_ ]]; then
+				_root='/'
+				if [[ -d "$dir/$_app" ]]; then
+					sudo chown -R root:root "$dir/$_app"
+					sudo chmod -R og-w "$dir/$_app"
+				fi
+			fi
+			echo INFO: restoring "$_app" ...
+			test -d "$dir/$_app" && ${_root/\//sudo} stow -v --no-folding -R -d "$dir" -t "${_root:-$HOME}" "$_app" || echo INFO: no app found in "$dir"
+		done
+	done
+}
+
+# list files in the repository
+# args: N/A
+_ls() {
+	"$git" ls-tree --full-tree -r --name-only HEAD |
+		grep -ve ^.gitignore -e ^.gitmodules -e ^"$DOTCONF" -e ^dotmanager
+}
+
+# run main function
+main "$@"

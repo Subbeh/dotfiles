@@ -1,0 +1,19 @@
+@theme "theme"
+
+window {
+    location:   center;
+    width:      300px;
+    y-offset:   -160px;
+}
+
+element {
+    padding:    12px;
+    spacing:    12px;
+}
+
+listview {
+    lines:      5;
+    columns:    1;
+    fixed-height: true;
+    spacing: 5px;
+}

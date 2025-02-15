@@ -1,0 +1,118 @@
+#!/usr/bin/env bash
+set -x
+
+# Check if syncthing is running (parent process only)
+SYSTEMD_USER_PID=$(pgrep -x systemd --uid "$USER" | head -n1)
+SYNCTHING_PID=$(pgrep -x syncthing -P "$SYSTEMD_USER_PID")
+if [[ -z "$SYNCTHING_PID" ]]; then
+  echo '{"text": "󰌷", "class": "offline", "tooltip": "Syncthing is not running"}'
+  exit 0
+fi
+
+# Syncthing API endpoint
+API_KEY=$(grep -oP '(?<=<apikey>)[^<]+' "${XDG_STATE_HOME}/syncthing/config.xml")
+ENDPOINT="http://localhost:8384/rest/system/connections"
+STATUS_ENDPOINT="http://localhost:8384/rest/system/status"
+COMPLETION_ENDPOINT="http://localhost:8384/rest/db/completion"
+
+# Format bytes to human readable format
+format_bytes() {
+  local bytes=$1
+  if [[ $bytes -lt 1024 ]]; then
+    echo "${bytes}B"
+  elif [[ $bytes -lt 1048576 ]]; then
+    echo "$((bytes / 1024))KB"
+  elif [[ $bytes -lt 1073741824 ]]; then
+    echo "$((bytes / 1048576))MB"
+  else
+    echo "$((bytes / 1073741824))GB"
+  fi
+}
+
+# Get sync completion status
+get_sync_status() {
+  local completion_response
+  completion_response=$(curl -skL --connect-timeout 2 -H "X-API-Key: $API_KEY" "$COMPLETION_ENDPOINT")
+
+  if [[ $? -ne 0 ]]; then
+    echo "Unable to fetch sync status" >&2
+    return 1
+  fi
+
+  # Get overall completion percentage
+  local completion
+  completion=$(echo "$completion_response" | jq -r '.completion')
+  local need_items
+  need_items=$(echo "$completion_response" | jq -r '.needItems')
+  local need_bytes
+  need_bytes=$(echo "$completion_response" | jq -r '.needBytes')
+  local global_bytes
+  global_bytes=$(echo "$completion_response" | jq -r '.globalBytes')
+
+  local is_syncing=false
+  local sync_status=""
+
+  if (($(echo "$completion < 100" | bc -l))); then
+    is_syncing=true
+    sync_status="Overall: ${completion}%"
+    if [[ "$need_items" -gt 0 ]]; then
+      sync_status="${sync_status}\nItems remaining: ${need_items}"
+    fi
+    if [[ "$need_bytes" -gt 0 ]]; then
+      local formatted_need_bytes
+      formatted_need_bytes=$(format_bytes "$need_bytes")
+      local formatted_total_bytes
+      formatted_total_bytes=$(format_bytes "$global_bytes")
+      sync_status="${sync_status}\nRemaining: ${formatted_need_bytes} / ${formatted_total_bytes}"
+    fi
+  fi
+
+  echo "$is_syncing"
+  echo -e "$sync_status"
+}
+
+# Get Syncthing status
+get_status() {
+  # Test API availability first, ignore SSL verification
+  if ! curl -sk --connect-timeout 2 "$STATUS_ENDPOINT" >/dev/null; then
+    echo '{"text": "", "class": "starting", "tooltip": "Syncthing API not ready (PID: $SYNCTHING_PID)"}'
+    exit 0
+  fi
+
+  local response
+  response=$(curl -skL --connect-timeout 2 -H "X-API-Key: $API_KEY" "$ENDPOINT")
+
+  if [[ $? -ne 0 ]]; then
+    echo '{"text": "󰌷", "class": "offline", "tooltip": "Syncthing is not running"}'
+    exit 0
+  fi
+
+  # Count total devices and connected devices
+  local total_devices connected_devices
+  total_devices=$(echo "$response" | jq '.connections | length')
+  connected_devices=$(echo "$response" | jq '[.connections[] | select(.connected==true)] | length')
+
+  # Get sync status
+  local is_syncing sync_progress
+  read -r is_syncing sync_progress < <(get_sync_status)
+
+  local tooltip="Connected devices: $connected_devices/$total_devices"
+  if [[ -n "$sync_progress" ]]; then
+    tooltip="$tooltip\n\nSync Progress:\n$sync_progress"
+  fi
+
+  if [[ "$total_devices" -eq 0 ]]; then
+    echo "{\"text\": \"\", \"class\": \"idle\", \"tooltip\": \"$tooltip\"}"
+  elif [[ "$connected_devices" -eq 0 ]]; then
+    echo "{\"text\": \"\", \"class\": \"disconnected\", \"tooltip\": \"$tooltip\"}"
+  elif [[ "$is_syncing" == "true" ]]; then
+    echo "{\"text\": \"\", \"class\": \"syncing\", \"tooltip\": \"$tooltip\"}"
+  else
+    echo "{\"text\": \"\", \"class\": \"synced\", \"tooltip\": \"$tooltip\"}"
+  fi
+}
+
+# 
+
+# Main
+get_status

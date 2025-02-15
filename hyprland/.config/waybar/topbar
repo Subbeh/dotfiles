@@ -1,0 +1,29 @@
+// vi: ft=jsonc
+// -------------------------------------------------------------------------
+// Top bar configuration
+// -------------------------------------------------------------------------
+{
+  "name": "top",
+  "position": "top",
+  "modules-left": [
+    "hyprland/workspaces",
+    "custom/sep",
+    "hyprland/window"
+  ],
+  "modules-center": [
+    "clock#time",
+    "custom/sep",
+    "clock#date",
+    "custom/sep"
+  ],
+  "modules-right": [
+    "bluetooth",
+    "custom/sep",
+    "wireplumber",
+    "custom/sep",
+    "backlight",
+    "custom/sep",
+    "custom/notification",
+    "group/powermenu"
+  ]
+}

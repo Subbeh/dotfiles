@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+if [[ $(hyprctl activewindow -j | jq -r .workspace.name) == "special:term" ]]; then
+  hyprctl dispatch togglespecialworkspace term
+fi && hyprctl dispatch focuswindow "class:^($1)$"

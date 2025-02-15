@@ -1,0 +1,46 @@
+local opt = vim.opt
+
+opt.autoindent = true                                               --  Enable auto-indentation
+opt.breakindent = true                                              --  Preserve indentation in wrapped text
+opt.clipboard = "unnamedplus"                                       --  Use system clipboard
+opt.cmdheight = 0                                                   --  Hide command line unless needed
+opt.completeopt = { "menuone", "noselect" }                         --  Completion options
+opt.conceallevel = 0                                                --  Show text normally
+opt.cursorline = true                                               --  Highlight current line
+opt.diffopt = "internal,filler,closeoff,vertical"                   --  Diff options
+opt.expandtab = true                                                --  Convert tabs to spaces
+opt.fileencoding = "utf-8"                                          --  Set file encoding
+opt.hlsearch = true                                                 --  Highlight search results
+opt.ignorecase = true                                               --  Case-insensitive searching
+opt.inccommand = "nosplit"                                          --  Preview substitutions live
+opt.joinspaces = false                                              --  No double spaces with join
+opt.laststatus = 3                                                  --  Global statusline
+opt.list = true                                                     --  Show invisible characters
+opt.mouse = "v"                                                     --  Enable mouse in visual mode
+opt.number = true                                                   --  Show line numbers
+opt.numberwidth = 2                                                 --  Width of line number column
+opt.pumblend = 10                                                   --  Popup menu transparency
+opt.pumheight = 10                                                  --  Maximum number of items in popup menu
+opt.relativenumber = true                                           --  Show relative line numbers
+opt.ruler = false                                                   --  Hide line and column number
+opt.scrollback = 100000                                             --  Scrollback buffer size
+opt.scrolloff = 8                                                   --  Lines of context when scrolling
+opt.shiftround = true                                               --  Round indent to multiple of shiftwidth
+opt.shiftwidth = 2                                                  --  Size of indent
+opt.signcolumn = "yes"                                              --  Always show sign column
+opt.smartcase = true                                                --  Case-sensitive if search has uppercase
+opt.smartindent = true                                              --  Smart autoindenting
+opt.tabstop = 2                                                     --  Spaces per tab
+opt.guicursor = ""                                                  --  Use block cursor
+opt.undofile = true                                                 --  Enable persistent undo
+opt.swapfile = false                                                --  Disable swap files
+opt.backup = false                                                  --  Disable backup files
+opt.updatetime = 100                                                --  Faster completion
+opt.isfname:append("@-@")                                           --  Allow @ in filenames
+opt.wildmode = "longest:full,full"                                  --  Command-line completion mode
+opt.wrap = false                                                    --  Disable line wrap
+opt.fillchars = opt.fillchars + "eob: "                             --  Hide ~ at end of buffer
+opt.fillchars:append { stl = " ", }                                 --  Status line fill character
+
+vim.cmd "set whichwrap+=<,>,[,],h,l"        --  Allow keys to move past line ends
+vim.cmd [[set iskeyword+=-]]                --  Treat dash as part of words

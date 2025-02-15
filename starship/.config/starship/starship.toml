@@ -1,0 +1,89 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+add_newline = false
+continuation_prompt = '[❯❯](dimmed white) '
+command_timeout = 1000
+
+format = """
+$hostname\
+$directory\
+$custom\
+$character\
+"""
+
+right_format = """
+$cmd_duration\
+$sudo\
+$jobs\
+$git_branch\
+$git_state\
+$golang\
+$python\
+"""
+
+[directory]
+truncate_to_repo = false
+# repo_root_style = 'bold bright-blue'
+# repo_root_format = '[$before_root_path]($before_repo_root_style)[$repo_root]($repo_root_style)[$path](blue)[$read_only]($read_only_style) '
+truncation_length = 8
+truncation_symbol = '+/'
+style = 'bold bright-blue'
+format = '[$truncation_symbol](bold bright-purple)[$path](bold bright-blue)[$read_only]($read_only_style) '
+read_only = ' 󰌾'
+
+[directory.substitutions]
+'~/.config/' = '[] '
+'~/.config' = '[]'
+'~/workspace/dots/' = '[󰇘] '
+'~/workspace/dots' = '[󰇘]'
+'~/workspace/' = '[󱧽] '
+'~/workspace' = '[󱧽]'
+'~/' = '[] '
+'~' = '[]'
+'/data/workspace/dots/' = '[󰇘] '
+'/data/workspace/dots' = '[󰇘]'
+'/data/workspace/' = '[󱧽] '
+'/data/workspace' = '[󱧽]'
+'/data/' = '[] '
+'/data' = '[]'
+
+[character]
+success_symbol = '[❯](bold purple)'
+error_symbol = '[❯](bold red)'
+
+[cmd_duration]
+format = '[[󰔟](bold yellow) $duration ](dimmed white)'
+
+[git_branch]
+format = '[[$symbol](bold cyan) $branch(:$remote_branch)](dimmed white) '
+symbol = ""
+
+[git_status]
+style = 'dimmed white'
+ahead = '⇡${count}'
+diverged = '⇕⇡${ahead_count}⇣${behind_count}'
+behind = '⇣${count}'
+deleted = 'x'
+
+[golang]
+format = '[ ](sapphire)'
+
+[hostname]
+ssh_symbol = '\[\] '
+style = 'bright-blue'
+format = '[$ssh_symbol$hostname]($style)[ ❯](bold purple) '
+
+[python]
+format = '[[](bold yellow) $virtualenv](dimmed white) '
+
+[kubernetes]
+symbol = ''
+disabled = false
+detect_env_vars = ['KUBECONFIG']
+detect_files = ['dummy']
+format = '[[$symbol](bold bright-blue)$namespace](dimmed white) '
+
+[custom.direnv]
+command = 'echo '
+when = ''' test ! -z "$DIRENV_DIR" '''
+format = '[$output ](bold green)'

@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Default values
+value=""
+class="disabled"
+
+case "${1:?no arguments provided}" in
+    "eth_icon")
+        value="󰈀"
+        # Check if any ethernet interface is up and has an IP
+        if ip -j link show | jq -e '.[] | select(.link_type == "ether" and (.operstate == "UP") and (.ifname | startswith("w") | not))' >/dev/null; then
+            class="enabled"
+        fi
+        ;;
+    "eth_addr")
+        # Get IP addresses of all ethernet interfaces (excluding wireless interfaces)
+        value=$(ip -j addr show | jq -r '.[] | 
+            select(.operstate == "UP" and .link_type == "ether" and 
+            (.ifname | startswith("w") | not)) | 
+            .addr_info[] | select(.family == "inet" and .scope == "global").local' | paste -sd " ")
+        [[ -n "$value" ]] && class="enabled"
+        ;;
+    "wifi_icon")
+        value="󰖩"
+        # Check if any wifi interface is up and has an IP
+        if ip -j link show | jq -e '.[] | select(.ifname | startswith("wl")) | select(.operstate == "UP")' >/dev/null; then
+            class="enabled"
+        fi
+        ;;
+    "wifi_addr")
+        # Get IP addresses of all wifi interfaces
+        value=$(ip -j addr show | jq -r '.[] | 
+            select(.ifname | startswith("wl")) | 
+            select(.operstate == "UP") | 
+            .addr_info[] | select(.family == "inet" and .scope == "global").local' | paste -sd " ")
+        [[ -n "$value" ]] && class="enabled"
+        ;;
+    "tailscale_icon")
+        value="󰖂"
+        # Check if tailscale interface is up
+        if ip -j link show | jq -e '.[] | select(.ifname == "tailscale0") | select(.flags | contains(["UP"]))' >/dev/null; then
+            class="enabled"
+        fi
+        ;;
+    "tailscale_addr")
+        # Get IP address of the tailscale interface
+        value=$(ip -j addr show | jq -r '.[] | 
+            select(.ifname == "tailscale0") | 
+            .addr_info[] | select(.family == "inet" and .scope == "global").local' | head -1)
+        [[ -n "$value" ]] && class="enabled"
+        ;;
+    "inet_icon")
+        value="󰩟"
+        # Check if we have internet connectivity
+        if ping -c 1 1.1.1.1 &>/dev/null; then
+            class="enabled"
+        fi
+        ;;
+    "inet_addr")
+        # Get external IP address
+        value=$(curl -s ifconfig.me)
+        [[ -n "$value" ]] && class="enabled"
+        ;;
+    "dns_icon")
+        value="󰗆"
+        # Check if DNS resolution works
+        if nslookup google.com &>/dev/null; then
+            class="enabled"
+        fi
+        ;;
+    "dns_addr")
+        # Get primary DNS server from resolv.conf
+        value=$(grep -m 1 "nameserver" /etc/resolv.conf | awk '{print $2}')
+        [[ -n "$value" ]] && class="enabled"
+        ;;
+    *)
+        echo "Invalid argument. Valid arguments are: eth_icon, eth_addr, wifi_icon, wifi_addr, tailscale_icon, tailscale_addr, inet_icon, inet_addr, dns_icon, dns_addr" >&2
+        exit 1
+        ;;
+esac
+
+printf '{"text": "%s", "class": "%s"}\n' "$value" "$class"

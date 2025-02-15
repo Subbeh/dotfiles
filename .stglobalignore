@@ -1,0 +1,10 @@
+.direnv/
+.terraform/
+.cache/
+temp/
+repos/
+sessions/
+node_modules/
+
+(?d).DS_Store
+*.log

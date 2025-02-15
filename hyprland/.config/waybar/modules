@@ -1,0 +1,387 @@
+// vi: ft=jsonc
+// -------------------------------------------------------------------------
+// Module configuration
+// -------------------------------------------------------------------------
+{
+  // SEPARATOR
+  "custom/sep": {
+    "format": "",
+    "interval": "once",
+    "tooltip": false
+  },
+  // HYPRLAND
+  "hyprland/workspaces": {
+    "all-outputs": true,
+    "format": "{name}",
+    "format-icons": {
+      "1": "",
+      "2": "",
+      "3": "",
+      "4": "",
+      "5": ""
+    },
+    "on-scroll-up": "hyprctl dispatch workspace +1 1>/dev/null",
+    "on-scroll-down": "hyprctl dispatch workspace -1 1>/dev/null",
+    "sort-by-number": true,
+    "active-only": false
+  },
+  "hyprland/window": {
+    "format": "<span foreground='#87d7ff'></span> {initialTitle}"
+  },
+  // CLOCK
+  "clock#time": {
+    "format": "<span foreground='#87d7ff'></span> {:%R %Z}",
+    "timezones": [
+      "Australia/Melbourne",
+      "Europe/Amsterdam",
+      "America/New_York",
+      "Asia/Tokyo"
+    ],
+    "actions": {
+      "on-scroll-up": "tz_up",
+      "on-scroll-down": "tz_down"
+    }
+  },
+  "clock#date": {
+    "format": "<span foreground='#87d7ff'></span> {:%A %d %B %Y}",
+    "tooltip-format": "<tt><small>{calendar}</small></tt>",
+    "calendar": {
+      "mode": "month",
+      "weeks-pos": "left",
+      "on-scroll": 1,
+      "on-click-right": "mode",
+      "format": {
+        "months": "<span color='#d7d7d7'><b>{}</b></span>",
+        "days": "<span color='#d7d7d7'><b>{}</b></span>",
+        "weeks": "<span color='#afd787'><b>W{}</b></span>",
+        "weekdays": "<span color='#d7afd7'><b>{}</b></span>",
+        "today": "<span color='#87d7ff'><b><u>{}</u></b></span>"
+      }
+    },
+    "actions": {
+      "on-click-right": "mode",
+      "on-click-forward": "tz_up",
+      "on-click-backward": "tz_down",
+      "on-scroll-up": "shift_up",
+      "on-scroll-down": "shift_down"
+    }
+  },
+  // NOTIFICATIONS
+  "custom/notification": {
+    "tooltip": false,
+    "format": "{icon}",
+    "format-icons": {
+      "notification": "<span foreground='#87d7ff'><sup></sup></span>",
+      "none": "",
+      "dnd-notification": "<span foreground='#ff5f5f'><sup></sup></span>",
+      "dnd-none": "",
+      "inhibited-notification": "<span foreground='#d7afd7'><sup></sup></span>",
+      "inhibited-none": "",
+      "dnd-inhibited-notification": "<span foreground='#ff5f5f'><sup></sup></span>",
+      "dnd-inhibited-none": ""
+    },
+    "return-type": "json",
+    "exec-if": "which swaync-client",
+    "exec": "swaync-client -swb",
+    "on-click": "swaync-client -t -sw",
+    "on-click-right": "swaync-client -d -sw",
+    "escape": true
+  },
+  // BATTERY
+  "battery": {
+    "interval": 60,
+    "states": {
+      "warning": 30,
+      "critical": 10
+    },
+    "format": "{icon} {capacity}%",
+    "format-charging": "<span foreground='#87d7ff'></span> {capacity}%",
+    "format-plugged": "<span foreground='#d7afd7'></span> {capacity}%",
+    "format-icons": [
+      "<span foreground='#c34043'></span>",
+      "<span foreground='#BA4947'></span>",
+      "<span foreground='#B2534C'></span>",
+      "<span foreground='#A95C50'></span>",
+      "<span foreground='#A16554'></span>",
+      "<span foreground='#986F59'></span>",
+      "<span foreground='#90785d'></span>",
+      "<span foreground='#878161'></span>",
+      "<span foreground='#7F8B66'></span>",
+      "<span foreground='#76946a'></span>"
+    ],
+    "max-length": 25,
+    "design-capacity": true
+  },
+  // CPU TEMP
+  "temperature": {
+    "format": "{icon} {temperatureC}°C",
+    "format-icons": [
+      "<span foreground='#76946a'></span>",
+      "<span foreground='#76946a'></span>",
+      "<span foreground='#76946a'></span>",
+      "<span foreground='#76946a'></span>",
+      "<span foreground='#76946a'></span>",
+      "<span foreground='#7F8B66'></span>",
+      "<span foreground='#878161'></span>",
+      "<span foreground='#90785d'></span>",
+      "<span foreground='#986F59'></span>",
+      "<span foreground='#A16554'></span>",
+      "<span foreground='#B2534C'></span>",
+      "<span foreground='#c34043'></span>"
+    ]
+  },
+  // CPU
+  "cpu": {
+    "format": " {icon0}{icon1}{icon2}{icon3}{icon4}{icon5}{icon6}{icon7}{icon8}{icon9}{icon10}{icon11}",
+    "format-alt": " {usage}%",
+    "format-icons": [
+      "<span color='#76946a'></span>",
+      "<span color='#90785d'></span>",
+      "<span color='#A95C50'></span>",
+      "<span color='#c34043'></span>"
+    ],
+    "interval": 1
+  },
+  // MEMORY
+  "memory": {
+    "format": " {}%",
+    "format-alt": "memory:  {used}/{total} GiB",
+    "interval": 1
+  },
+  // DISKS
+  "disk": {
+    "format": " {percentage_used}%",
+    "format-alt": " {used}/{total} GiB",
+    "interval": 1,
+    "path": "/"
+  },
+  "disk#2": {
+    "format": " {percentage_used}%",
+    "format-alt": " {used}/{total} GiB",
+    "interval": 1,
+    "path": "/data"
+  },
+  // HARDWARE GROUP
+  "group/hardware": {
+    "modules": [
+      "cpu",
+      "temperature",
+      "memory",
+      "disk",
+      "disk#2"
+    ],
+    "orientation": "horizontal"
+  },
+  // UPDATES
+  "custom/updates": {
+    "format": " {}",
+    "interval": 600, // every 10 minutes
+    "exec": "checkupdates-with-aur | wc -l", // # of updates
+    "exec-if": "exit 0", // always run; consider advanced run conditions
+    // "on-click": "alacritty -e 'yay'; pkill -SIGRTMIN+8 waybar", // update system
+    "on-click": "__hypr_dropterm_updater", // update system
+    "signal": 8,
+    "max-length": 8,
+    "min-length": 3,
+    "tooltip": false
+  },
+  // PLAYERCTL
+  "custom/playerctl": {
+    "format": "{icon} <span>{}</span>",
+    "return-type": "json",
+    "max-length": 64,
+    "exec": "playerctl -p spotify metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"tooltip\": \"{{playerName}} : {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F",
+    "on-click": "playerctl -p spotify play-pause",
+    "on-scroll-up": "playerctl -p spotify next",
+    "on-scroll-down": "playerctl -p spotify previous",
+    "format-icons": {
+      "Playing": "<span foreground='#B1B946'></span>",
+      "Paused": "<span foreground='#47423E'></span>"
+    }
+  },
+  // BACKLIGHT
+  "backlight": {
+    "device": "intel_backlight",
+    "format": "<span foreground='#87d7ff'>{icon}</span> {percent}%",
+    "tooltip-format": "backlight: {percent}%",
+    "format-icons": [
+      "",
+      "",
+      ""
+    ]
+  },
+  // WIREPLUMBER
+  "wireplumber": {
+    "format": "<span foreground='#87d7ff'></span> {volume}% {node_name}",
+    "format-muted": " {node_name}",
+    "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+    "on-click-right": "pavucontrol"
+  },
+  // BLUETOOTH
+  "bluetooth": {
+    "format-off": "",
+    "format-on": "<span foreground='#87d7ff'></span>",
+    "format-connected": "<span foreground='#87d7ff'></span> {device_alias}",
+    "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+    "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+    "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%"
+  },
+  // POWERMENU
+  "group/powermenu": {
+    "drawer": {
+      "children-class": "not-light",
+      "transition-duration": 500,
+      "transition-left-to-right": false
+    },
+    "modules": [
+      "custom/power_off",
+      "custom/power_lock",
+      "custom/power_suspend",
+      "custom/power_reboot"
+    ],
+    "orientation": "horizontal"
+  },
+  "custom/power_off": {
+    "format": "",
+    "on-click": "systemctl poweroff",
+    "tooltip": false
+  },
+  "custom/power_reboot": {
+    "format": "",
+    "on-click": "systemctl reboot",
+    "tooltip": false
+  },
+  "custom/power_suspend": {
+    "format": "",
+    "on-click": "systemctl suspend",
+    "tooltip": false
+  },
+  "custom/power_lock": {
+    "format": "",
+    "on-click": "hyprlock",
+    "tooltip": false
+  },
+  // NETWORK ETH
+  "group/network_eth": {
+    "drawer": {
+      "children-class": "not-light",
+      "transition-duration": 500,
+      "transition-left-to-right": true
+    },
+    "modules": [
+      "custom/eth_icon",
+      "custom/eth_addr"
+    ],
+    "orientation": "horizontal"
+  },
+  "custom/eth_icon": {
+    "return-type": "json",
+    "exec": "__waybar_network eth_icon",
+    "restart-interval": 10
+  },
+  "custom/eth_addr": {
+    "return-type": "json",
+    "exec": "__waybar_network eth_addr",
+    "restart-interval": 10
+  },
+  // NETWORK WIFI
+  "group/network_wifi": {
+    "drawer": {
+      "children-class": "not-light",
+      "transition-duration": 500,
+      "transition-left-to-right": true
+    },
+    "modules": [
+      "custom/wifi_icon",
+      "custom/wifi_addr"
+    ],
+    "orientation": "horizontal"
+  },
+  "custom/wifi_icon": {
+    "return-type": "json",
+    "exec": "__waybar_network wifi_icon",
+    "restart-interval": 10
+  },
+  "custom/wifi_addr": {
+    "return-type": "json",
+    "exec": "__waybar_network wifi_addr",
+    "restart-interval": 10
+  },
+  // NETWORK tailscale
+  "group/network_tailscale": {
+    "drawer": {
+      "children-class": "not-light",
+      "transition-duration": 500,
+      "transition-left-to-right": true
+    },
+    "modules": [
+      "custom/tailscale_icon",
+      "custom/tailscale_addr"
+    ],
+    "orientation": "horizontal"
+  },
+  "custom/tailscale_icon": {
+    "return-type": "json",
+    "exec": "__waybar_network tailscale_icon",
+    "restart-interval": 10
+  },
+  "custom/tailscale_addr": {
+    "return-type": "json",
+    "exec": "__waybar_network tailscale_addr",
+    "restart-interval": 10
+  },
+  // NETWORK web
+  "group/network_inet": {
+    "drawer": {
+      "children-class": "not-light",
+      "transition-duration": 500,
+      "transition-left-to-right": true
+    },
+    "modules": [
+      "custom/inet_icon",
+      "custom/inet_addr"
+    ],
+    "orientation": "horizontal"
+  },
+  "custom/inet_icon": {
+    "return-type": "json",
+    "exec": "__waybar_network inet_icon",
+    "restart-interval": 10
+  },
+  "custom/inet_addr": {
+    "return-type": "json",
+    "exec": "__waybar_network inet_addr",
+    "restart-interval": 10
+  },
+  // NETWORK dns
+  "group/network_dns": {
+    "drawer": {
+      "children-class": "not-light",
+      "transition-duration": 500,
+      "transition-left-to-right": true
+    },
+    "modules": [
+      "custom/dns_icon",
+      "custom/dns_addr"
+    ],
+    "orientation": "horizontal"
+  },
+  "custom/dns_icon": {
+    "return-type": "json",
+    "exec": "__waybar_network dns_icon",
+    "restart-interval": 10
+  },
+  "custom/dns_addr": {
+    "return-type": "json",
+    "exec": "__waybar_network dns_addr",
+    "restart-interval": 10
+  },
+  // SYNCTHING
+  "custom/syncthing": {
+    "exec": "__waybar_syncthing",
+    "return-type": "json",
+    "interval": 10,
+    "tooltip": true
+  }
+}

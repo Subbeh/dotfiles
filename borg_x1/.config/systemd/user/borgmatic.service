@@ -1,0 +1,10 @@
+[Unit]
+Description=borgmatic user backup
+Wants=network-online.target
+After=network-online.target
+[Service]
+Type=oneshot
+Restart=no
+LogRateLimitIntervalSec=0
+
+ExecStart=systemd-inhibit --who="sysadm" --what="sleep:shutdown" --why="Prevent interrupting scheduled backup" /usr/bin/borgmatic --verbosity -2 --syslog-verbosity 1

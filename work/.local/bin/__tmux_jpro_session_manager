@@ -1,0 +1,57 @@
+#!/bin/bash
+set -xeuo pipefail
+
+test -d "${XDG_CACHE_HOME:?not set}/tmux" || mkdir -p "$_"
+exec 2>>"${XDG_CACHE_HOME}/tmux/jamf_session.log"
+
+SESH="work"
+DIR="${JAMF_DIR:?not set}"
+
+if ! tmux has-session -t "${SESH:?not set}" 2>/dev/null; then
+  tmuxinator start "$SESH" --no-attach
+fi
+
+instance=$(find "${DIR:?not set}/sessions" -depth 1 -type d -exec basename {} \; | fzf --bind=enter:replace-query+print-query --reverse --header "existing sessions:" --tmux center,20% || exit 0)
+
+if [[ "$instance" ]]; then
+  session_dir="${DIR}/sessions/$instance"
+
+  if ! tmux list-windows -t "$SESH":"$instance" &>/dev/null; then
+    test -d "$session_dir" || mkdir -p "$session_dir"/{logs,data}
+    # test -f "${session_dir}/kubeconfig" || hermes kubeconfig build --team "${JPRO_KUBE_AWS_PROFILE:?not set}"
+    test -f "${session_dir}/kubeconfig" || echo 'apiVersion: v1
+clusters: []
+contexts: []
+current-context: ""
+kind: ""
+preferences: {}
+users: []' >"${session_dir}/kubeconfig"
+    echo 'export KUBECONFIG="$(expand_path ./kubeconfig)"' >"$session_dir/.envrc"
+    direnv allow "$session_dir"
+    export INST="$instance"
+    tmux new-window -t "$SESH": -n "$instance" -c "$session_dir"
+
+    # select window
+    tmux switchc -t "$SESH"
+    tmux select-window -t "$SESH":"$instance"
+
+    # create layout
+    tmux split-window -c "$session_dir"
+    tmux split-window -h -p 30 -c "${WORKSPACE_DIR:?not set}/jamf/cloud-ops-tools/src/scripts"
+    tmux split-window -h -t 1 -p 30 -c "$session_dir"
+    tmux select-pane -t 3
+
+    # enable logging
+    for i in {2..4}; do
+      tmux pipe-pane -t "$i" "cat >> ${session_dir}/logs/pane_$i.log"
+    done
+
+    # set context
+    tmux send-keys -t 1 "__jpro_set_ctx $instance ; k9s" C-m
+    tmux send-keys -t 2 "jstatus3 -i $instance " C-m
+  else
+    # select window
+    tmux switchc -t "$SESH"
+    tmux select-window -t "$SESH":"$instance"
+  fi
+fi

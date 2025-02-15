@@ -1,0 +1,138 @@
+@import "theme.css";
+
+/* GLOBAL */
+
+* {
+  font-family: Tamzen, Siji;
+  font-size: 14px;
+  font-weight: 500;
+  /* font-style: normal; */
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
+}
+
+window.eDP-1 * {
+  font-size: 15px;
+  font-weight: normal;
+}
+
+window#waybar {
+  background: transparent;
+  color: @fg;
+}
+
+/* TOP BAR */
+
+window#waybar.top label.module {
+  border-top: 2px solid transparent;
+  margin-left: 1px;
+  margin-right: 1px;
+}
+
+/* BOTTOM BAR */
+
+window#waybar.bottom> :last-child {
+  margin-right: 10px;
+}
+
+window#waybar.bottom :first-child {
+  margin-left: 5px;
+}
+
+/* TOOLTIP */
+
+/* tooltip { */
+/*   font-family: FiraCode Nerd Font; */
+/*   background: alpha(@bgdark, 0.9); */
+/*   color: @white; */
+/*   border: 1px solid @fg; */
+/* } */
+
+/* tooltip * { */
+/*   color: @white; */
+/*   padding: 5px; */
+/*   font-size: 1.05em; */
+/*   font-weight: normal; */
+/* } */
+
+tooltip {
+  background: alpha(@bgdark, 0.9);
+  color: @white;
+  border: 1px solid @fg;
+}
+
+tooltip * {
+  color: @white;
+  padding: 5px;
+  font-family: FiraCode Nerd Font;
+  /* font-size: 1.05em; */
+  font-weight: normal;
+}
+
+/* WORKSPACES */
+
+#workspaces * {
+  /* font-size: 12px; */
+  font-weight: bold;
+}
+
+#workspaces button {
+  color: @fg;
+  /* border-top: 2px solid transparent; */
+}
+
+#workspaces button.active {
+  color: @white;
+  background: @bg;
+  border-top: 2px solid @blue;
+}
+
+/* POWERMENU */
+
+#powermenu {
+  background: @blue;
+  color: @bgdark;
+  padding: 5px;
+  margin-left: 8px;
+}
+
+#powermenu * {
+  padding-right: 2px;
+}
+
+#network_wlan *,
+#network_eth * {
+  padding-right: 2px;
+}
+
+#custom-syncthing {
+  padding: 0 5px;
+  color: @white;
+}
+
+#custom-syncthing.offline {
+  color: @fg;
+}
+
+#custom-syncthing.starting {
+  color: @blue;
+}
+
+#custom-syncthing.syncing {
+  color: @yellow;
+}
+
+#custom-syncthing.synced {
+  color: @green;
+}
+
+#custom-syncthing.disconnected {
+  color: @red;
+}
+
+#custom-syncthing.idle {
+  color: @white;
+}

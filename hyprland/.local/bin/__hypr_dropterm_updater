@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# open dropterm
+__hypr_dropterm_launcher
+while ! tmux list-sessions -F \#S | grep -q dropterm; do sleep 0; done
+tmux set-option -t dropterm monitor-activity off
+
+# create window
+tmux list-windows -t dropterm | grep -q updates || tmux new-window -t dropterm -n updates
+
+# select window
+tmux select-window -t dropterm:updates
+
+# send keys
+tmux send-keys -t dropterm:updates 'clear; \
+  yay && \
+  tmux select-window -t dropterm:1 && \
+  hyprctl activewindow -j | jq -c ".class" | grep -q dropterm && \
+  hyprctl dispatch togglespecialworkspace dropterm' Enter

@@ -1,0 +1,17 @@
+# [Created by task 3.1.0 11/28/2024 17:47:45]
+news.version=3.1.0
+
+data.location=~/workspace/tasks
+hooks.location=~/.config/task/hooks
+
+uda.priority.values = H,M,,L
+urgency.uda.priority.L.coefficient=0
+urgency.uda.priority..coefficient=1.8
+
+# description.count=true
+# theme
+color.active=blue on white
+context.work.read=project:Work
+context.work.write=project:Work
+context.home.read=project:Home
+context.home.write=project:Home

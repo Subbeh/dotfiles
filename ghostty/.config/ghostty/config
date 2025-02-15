@@ -1,0 +1,29 @@
+font-family = ""
+font-family = "FiraMono Nerd Font Mono"
+font-size = 12
+
+# Window settings
+window-padding-x = 15
+window-padding-y = 10
+#window-save-state = "always"
+#window-width = 640
+#window-height = 400
+
+# UI settings
+#term = "xterm-256color"
+#scrollback-limit = 10000
+#mouse-hide-while-typing = true
+#cursor-style = "block"
+#shell-integration = "detect"
+#background-opacity = 1.0
+#macos-option-as-alt = true
+#confirm-close-surface = false
+
+# Keybindings
+#keybind = "ctrl+="="increase-font-size"
+#keybind = "ctrl+-"="decrease-font-size"
+#keybind = "ctrl+0"="reset-font-size"
+#keybind = "f12"="toggle-fullscreen"
+
+# Theme
+config-file = theme

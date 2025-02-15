@@ -1,0 +1,27 @@
+# Basic colors (ANSI)
+palette = 0=#262626
+palette = 1=#d75f5f
+palette = 2=#afffaf
+palette = 3=#d7d7af
+palette = 4=#87afd7
+palette = 5=#d7afd7
+palette = 6=#87d7af
+palette = 7=#d7d7d7
+palette = 8=#6c6c6c
+palette = 9=#ff5f5f
+palette = 10=#afd787
+palette = 11=#ffffd7
+palette = 12=#87d7ff
+palette = 13=#d787ff
+palette = 14=#87ffff
+palette = 15=#d7d7d7
+
+# Theme colors
+foreground = #d7d7d7
+background = #262626
+
+cursor-color = #87afd7
+cursor-text = #303030
+
+selection-foreground = #d7d7d7
+selection-background = #005f87

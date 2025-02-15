@@ -1,0 +1,412 @@
+@define-color fg        #d7d7d7;
+@define-color bg        #303030;
+@define-color bg2       #444444;
+@define-color bg3       #626262;
+@define-color bg4       #212121;
+@define-color black     #151515;
+@define-color cyan      #87d7af;
+@define-color blue      #87d7ff;
+@define-color blue2     #87afd7;
+@define-color green     #afd787;
+@define-color magenta   #d7afd7;
+@define-color yellow    #d7d7af;
+@define-color red       #ff5f5f;
+
+@define-color cc-bg @bg;
+@define-color noti-border-color @fg;
+@define-color noti-bg @bg;
+@define-color noti-bg-darker @bg4;
+@define-color noti-bg-hover @bg2;
+@define-color noti-bg-focus @bg2;
+@define-color noti-close-bg @blue;
+@define-color noti-close-bg-hover @bg2;
+@define-color text-color @fg;
+@define-color text-color-disabled @bg2;
+@define-color bg-selected @bg4;
+
+* {
+  font-family: Tamzen, Siji;
+  /* font-size: 16px; */
+  /* font-weight: 700; */
+}
+
+.control-center .notification-row:focus,
+.control-center .notification-row:hover {
+    opacity: 1;
+    background: alpha(@bg, 0.25);
+    border-radius: 0;
+    margin: 0px;
+}
+
+.notification {
+    border-radius: 0;
+    padding: 0;
+    border: 1px solid @noti-close-bg;
+    background: @noti-bg-darker;
+    /* box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.75); */
+}
+
+.notification-content {
+    background: transparent;
+    padding: 10px;
+}
+
+.close-button {
+    background: alpha(@bg4, 0.25);
+    color: @red;
+    text-shadow: none;
+    padding: 0;
+    border-radius: 0;
+    margin-top: 5px;
+    margin-right: 5px;
+    box-shadow: none;
+    border: none;
+    min-width: 14px;
+    min-height: 14px
+}
+
+.close-button:hover {
+    box-shadow: none;
+    background: @noti-close-bg-hover;
+    transition: all .15s ease-in-out;
+    border: none
+}
+
+.notification-default-action,
+.notification-action {
+    padding: 4px;
+    margin: 0;
+    box-shadow: none;
+    background: @noti-bg;
+    border: none;
+    color: @text-color;
+    transition: all .15s ease-in-out;
+    font-size: 11pt;
+}
+
+.notification-default-action:hover,
+.notification-action:hover {
+    -gtk-icon-effect: none;
+    background: @noti-bg-hover;
+    /* text-shadow: 0 0 3px @text-color; */
+}
+
+.notification-default-action {
+    border-radius: 0;
+}
+
+.notification-default-action:not(:only-child) {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.notification-action {
+    border-radius: 0;
+    border-top: none;
+    border-right: none
+}
+
+.notification-action:first-child {
+    border-bottom-left-radius: 10px;
+    background: @bg4
+}
+
+.notification-action:last-child {
+    border-bottom-right-radius: 10px;
+    background: @bg4
+}
+
+.notification-group-headers {
+  font-weight: bold;
+  /* font-size: 11pt; */
+  color: @fg;
+  margin: 10px 10px;
+}
+
+.notification-group-icon {
+  color: @magenta;
+  margin-right: 8px;
+}
+
+.notification-group-collapse-button {
+  background: @noti-close-bg;
+  border: none;
+  min-width: 14px;
+  min-height: 14px;
+}
+
+.notification-group-collapse-button:hover {
+  background: @noti-close-bg-hover;
+  color: @red;
+}
+
+.notification-group-close-all-button {
+  background: @noti-close-bg;
+  border: none;
+  min-width: 14px;
+  min-height: 14px;
+}
+
+.notification-group-close-all-button:hover {
+  background: @noti-close-bg-hover;
+  color: @red
+}
+
+.inline-reply {
+    margin-top: 8px
+}
+
+.inline-reply-entry {
+    background: @noti-bg-darker;
+    color: @text-color;
+    caret-color: @text-color;
+    border: 1px solid @noti-border-color;
+    border-radius: 10px
+}
+
+.inline-reply-button {
+    margin-left: 4px;
+    background: @noti-bg;
+    border: 1px solid @noti-border-color;
+    border-radius: 10px;
+    color: @text-color
+}
+
+.inline-reply-button:disabled {
+    background: initial;
+    color: @text-color-disabled;
+    border: 1px solid transparent
+}
+
+.inline-reply-button:hover {
+    background: @noti-bg-hover;
+}
+
+.body-image {
+    margin-top: 0px;
+    background-color: transparent;
+    border-radius: 10px
+}
+
+.summary {
+    font-size: 11pt;
+    font-weight: bold;
+    font-style: italic;
+    background: transparent;
+    color: @magenta;
+    margin-left: 10px;
+    /* text-shadow: 0 0 3px @red; */
+}
+
+.time {
+    font-size: 11pt;
+    font-weight: bold;
+    font-style: italic;
+    background: transparent;
+    color: @blue;
+    text-shadow: none;
+    margin-right: 10px
+}
+
+.body {
+    font-size: 11pt;
+    font-weight: normal;
+    background: transparent;
+    color: @text-color;
+    text-shadow: none;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.image {
+    background: transparent;
+    border-radius: 8px;
+}
+
+.control-center {
+    background: alpha(@cc-bg, 0.9);
+    border: 1px solid @noti-close-bg;
+    border-radius: 0;
+    margin: 10px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 1);
+}
+
+.control-center-list {
+    background: transparent;
+}
+
+.control-center-list-placeholder {
+    opacity: .5
+}
+
+.floating-notifications .notification-row {
+    background: transparent;
+    margin: 15px 10px 0 0;
+}
+
+.blank-window {
+    background: alpha(black, 0.0)
+}
+
+.widget-title {
+    color: @blue2;
+    margin: 20px 20px 5px 20px;
+    font-size: 11pt;
+    font-weight: bold;
+    font-style: italic;
+    /* text-shadow: 0 0 3px @red; */
+}
+
+.widget-title>button {
+    font-size: initial;
+    font-weight: bold;
+    font-family: 'Symbols Nerd Font';
+    color: @magenta;
+    text-shadow: none;
+    background: @noti-bg;
+    border: 1px solid @noti-border-color;
+    box-shadow: none;
+    border-radius: 0;
+}
+
+.widget-title>button:hover {
+    background: @noti-bg-hover;
+    /* text-shadow: 0 0 3px @brgreen; */
+}
+
+.widget-dnd {
+    color: @text-color;
+    margin: 5px 20px 5px 20px;
+    font-size: 11pt;
+    font-weight: bold;
+}
+
+.widget-dnd>switch {
+    font-size: initial;
+    border-radius: 999px;
+    background: @bg2;
+    /* border: 1px solid @bgblack; */
+    box-shadow: none;
+    padding: 1px;
+    transition: all .1s ease-in-out;
+}
+
+.widget-dnd>switch:checked {
+    background: @magenta
+}
+
+.widget-dnd>switch slider {
+    background: @noti-bg-hover;
+    border-radius: 999px
+}
+
+.widget-label {
+    margin: 10px;
+}
+
+.widget-label>label {
+    font-size: 1.5rem;
+    color: @text-color;
+}
+
+.widget-mpris {
+    color: @text-color;
+    background: @noti-bg-darker;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 10px;
+}
+
+.widget-mpris-player {
+    padding: 8px;
+    margin: 8px
+}
+
+.widget-mpris-title {
+    font-weight: 700;
+    font-size: 1.25rem
+}
+
+.widget-mpris-subtitle {
+    font-size: 1.1rem
+}
+
+.widget-buttons-grid {
+    font-size: x-large;
+    padding: 8px;
+    margin: 20px 10px 10px;
+    border-radius: 10px;
+    background: @noti-bg-darker;
+}
+
+.widget-buttons-grid>flowbox>flowboxchild>button {
+    margin: 3px;
+    background: @noti-bg-hover;
+    border-radius: 10px;
+    color: @text-color
+}
+
+.widget-buttons-grid>flowbox>flowboxchild>button:hover {
+    /* background: @noti-bg-hover; */
+    color: @green;
+    /* text-shadow: 0 0 3px @white; */
+}
+
+.widget-menubar>box>.menu-button-bar>button {
+    border: none;
+    background: transparent
+}
+
+.topbar-buttons>button {
+    border: none;
+    background: transparent
+}
+
+.widget-volume {
+    background: @noti-bg-darker;
+    padding: 8px;
+    margin: 10px;
+    border-radius: 10px;
+    font-size: x-large;
+    color: @text-color
+}
+
+.widget-volume>box>button {
+    background: transparent;
+    border: none
+}
+
+.per-app-volume {
+    background-color: @noti-bg;
+    padding: 4px 8px 8px;
+    margin: 0 8px 8px;
+    border-radius: 10px
+}
+
+.widget-backlight {
+    background: @noti-bg-darker;
+    padding: 8px;
+    margin: 10px;
+    border-radius: 10px;
+    font-size: x-large;
+    color: @text-color
+}
+
+.widget-inhibitors {
+    margin: 8px;
+    font-size: 1.5rem
+}
+
+.widget-inhibitors>button {
+    font-size: initial;
+    color: @text-color;
+    text-shadow: none;
+    background: @noti-bg;
+    border: 1px solid @noti-border-color;
+    box-shadow: none;
+    border-radius: 10px
+}
+
+.widget-inhibitors>button:hover {
+    background: @noti-bg-hover
+}

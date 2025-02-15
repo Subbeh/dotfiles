@@ -1,0 +1,19 @@
+---
+name: work
+root: <%= ENV["JAMF_DIR"] %>
+
+windows:
+  - playground:
+      layout: a538,397x102,0,0{142x102,0,0,23,254x102,143,0[254x51,143,0,24,254x50,143,52,25]}
+      panes:
+        -
+        -
+        -
+  - clops-tools:
+      root: <%= ENV["JAMF_DIR"] %>/cloud-ops-tools/src/scripts
+      layout: 0cd1,397x110,0,0[397x81,0,0{110x81,0,0,1,173x81,111,0,7,112x81,285,0,8},397x28,0,82,10]
+      panes:
+        -
+        -
+        -
+        -

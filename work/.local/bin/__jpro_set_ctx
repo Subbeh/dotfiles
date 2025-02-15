@@ -1,0 +1,3 @@
+#!/bin/bash
+
+[[ $(__jpro_instance) != ""$1 ]] && hermes jpro set-ctx "$1"

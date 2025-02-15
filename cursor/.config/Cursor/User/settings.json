@@ -1,0 +1,25 @@
+{
+  "cursor.general.gitGraphIndexing": "enabled",
+  "zenMode.centerLayout": false,
+  "zenMode.hideLineNumbers": false,
+  "zenMode.showTabs": "single",
+  "workbench.colorTheme": "GitHub Dark",
+  "editor.fontFamily": "FiraMono Nerd Font Mono",
+  "editor.fontSize": 13,
+  "editor.fontLigatures": true,
+  
+  "terminal.integrated.defaultProfile.linux": "tmux-shell",
+  "terminal.integrated.profiles.linux": {
+    "tmux-shell": {
+      "path": "tmux",
+      "args": ["new-session", "-A", "-s", "vscode:${workspaceFolder}"]
+    }
+  },
+  "extensions.experimental.affinity": {
+    "asvetliakov.vscode-neovim": 1
+  },
+  "window.commandCenter": 1,
+  "git.openRepositoryInParentFolders": "never",
+  "cursor.cpp.enablePartialAccepts": true,
+  "explorer.confirmDelete": false
+}

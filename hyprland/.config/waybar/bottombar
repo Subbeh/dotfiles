@@ -1,0 +1,26 @@
+// vi: ft=jsonc
+// -------------------------------------------------------------------------
+// Bottom bar configuration
+// -------------------------------------------------------------------------
+{
+  "name": "bottom",
+  "position": "bottom",
+  "modules-left": [
+    "battery",
+    "custom/sep",
+    "group/hardware",
+    "custom/sep",
+    "custom/syncthing",
+    "custom/updates"
+  ],
+  "modules-center": [
+    "custom/playerctl"
+  ],
+  "modules-right": [
+    "group/network_eth",
+    "group/network_wifi",
+    "group/network_tailscale",
+    "group/network_inet",
+    "group/network_dns"
+  ]
+}
