@@ -11,7 +11,9 @@ if ! tmux has-session -t "${SESH:?not set}" 2>/dev/null; then
   tmuxinator start "$SESH" --no-attach
 fi
 
-instance=$(find "${DIR:?not set}/sessions" -depth 1 -type d -exec basename {} \; | fzf --bind=enter:replace-query+print-query --reverse --header "existing sessions:" --tmux center,20% || exit 0)
+instance=$(
+  find "${DIR:?not set}/sessions" -depth 1 -type d -exec stat -f '%B %N' {} \; | sort -rn | awk -F/ '{print $NF}' | fzf --bind=enter:replace-query+print-query --reverse --header "existing sessions:" --tmux center,20% || exit 0
+)
 
 if [[ "$instance" ]]; then
   session_dir="${DIR}/sessions/$instance"
@@ -27,8 +29,8 @@ kind: ""
 preferences: {}
 users: []' >"${session_dir}/kubeconfig"
     echo 'export KUBECONFIG="$(expand_path ./kubeconfig)"' >"$session_dir/.envrc"
+    echo "export INST=$instance" >>"$session_dir/.envrc"
     direnv allow "$session_dir"
-    export INST="$instance"
     tmux new-window -t "$SESH": -n "$instance" -c "$session_dir"
 
     # select window
@@ -48,7 +50,8 @@ users: []' >"${session_dir}/kubeconfig"
 
     # set context
     tmux send-keys -t 1 "__jpro_set_ctx $instance ; k9s" C-m
-    tmux send-keys -t 2 "jstatus3 -i $instance " C-m
+    tmux send-keys -t 2 "jstatus3 -i $instance" C-m
+    tmux send-keys -t 4 "hermes jpro get $instance" C-m
   else
     # select window
     tmux switchc -t "$SESH"
