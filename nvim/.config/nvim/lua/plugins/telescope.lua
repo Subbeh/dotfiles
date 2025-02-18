@@ -12,7 +12,7 @@ return {
     { "nvim-telescope/telescope-fzf-native.nvim" },
     { "kkharji/sqlite.lua" }, -- for smart-open.nvim
     { "nvim-telescope/telescope-project.nvim" },
-    -- { "nvim-telescope/telescope-frecency.nvim" },
+    { "nvim-telescope/telescope-frecency.nvim" },
     { "tsakirist/telescope-lazy.nvim" },
     { "ecthelionvi/NeoComposer.nvim" },                 -- TODO:
     { "debugloop/telescope-undo.nvim" },
@@ -181,6 +181,7 @@ return {
 
     local load_extension = require("telescope").load_extension
     load_extension("emoji")
+    load_extension("frecency")
     load_extension("fzf")
     load_extension("live_grep_args")
     load_extension("nerdy")
