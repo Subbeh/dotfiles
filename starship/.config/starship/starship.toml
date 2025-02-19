@@ -17,6 +17,7 @@ $sudo\
 $jobs\
 $git_branch\
 $git_state\
+$aws\
 $golang\
 $python\
 """
@@ -64,6 +65,13 @@ ahead = '⇡${count}'
 diverged = '⇕⇡${ahead_count}⇣${behind_count}'
 behind = '⇣${count}'
 deleted = 'x'
+
+[aws]
+format = '[[$symbol](bold bright-blue) $profile](dimmed white) '
+style = 'bold blue'
+symbol = ''
+[aws.profile_aliases]
+CompanyGroupFrobozzOnCallAccess = 'Frobozz'
 
 [golang]
 format = '[ ](sapphire)'
