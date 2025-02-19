@@ -8,7 +8,7 @@
   "editor.fontSize": 13,
   "editor.fontLigatures": true,
   
-  "terminal.integrated.defaultProfile.linux": "tmux-shell",
+  "terminal.integrated.defaultProfile.linux": "zsh",
   "terminal.integrated.profiles.linux": {
     "tmux-shell": {
       "path": "tmux",
