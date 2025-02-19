@@ -6,6 +6,12 @@ return {
     require("nvim-tree").setup({
       sync_root_with_cwd = true,
       respect_buf_cwd = true,
+      actions = {
+        change_dir = {
+          enable = true,
+          global = true, -- This makes the directory change global (changes vim.loop.cwd())
+        },
+      },
       renderer = {
         add_trailing = false,
         group_empty = false,
