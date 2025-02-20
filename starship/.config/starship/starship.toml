@@ -70,8 +70,6 @@ deleted = 'x'
 format = '[[$symbol](bold bright-blue) $profile](dimmed white) '
 style = 'bold blue'
 symbol = ''
-[aws.profile_aliases]
-CompanyGroupFrobozzOnCallAccess = 'Frobozz'
 
 [golang]
 format = '[ ](sapphire)'
