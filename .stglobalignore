@@ -2,7 +2,6 @@
 .terraform/
 .cache/
 temp/
-repos/
 sessions/
 node_modules/
 
