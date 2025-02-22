@@ -26,7 +26,7 @@
     "active-only": false
   },
   "hyprland/window": {
-    "format": "<span foreground='#87d7ff'></span> {initialTitle}"
+    "format": "<span foreground='#87d7ff'> </span> {initialTitle}"
   },
   // CLOCK
   "clock#time": {

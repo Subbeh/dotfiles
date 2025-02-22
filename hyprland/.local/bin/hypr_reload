@@ -16,15 +16,17 @@ WAYBAR_TMP="/tmp/waybar_config"
 main() {
   mons=("${MON[internal]}")
   reload_only=false
+  waybar_only=false
 
   if [[ $# -eq 0 ]]; then
     profile=$(select_profile)
     [[ -z "$profile" ]] && exit 1
   else
-    while getopts p:rh opt; do
+    while getopts p:rwh opt; do
       case "$opt" in
         p) profile="${OPTARG}" ;;
         r) reload_only=true ;;
+        w) waybar_only=true ;;
         h)
           handle_monitor_hotplug
           exit 0
@@ -33,6 +35,7 @@ main() {
           echo "Usage: $(basename "$0") [-p profile] [-r] [-h]"
           echo "  -p profile   Set monitor profile"
           echo "  -r           Reload Hyprland and Waybar only"
+          echo "  -w           Reload Waybar only"
           echo "  -h           Handle monitor hotplug event"
           exit 1
           ;;
@@ -40,14 +43,16 @@ main() {
     done
   fi
 
-  pgrep -x waybar >/dev/null && killall -q waybar
-  hyprctl reload
+  if ! $waybar_only; then
+    hyprctl reload
 
-  if ! $reload_only; then
-    [[ -n "$profile" ]] && set_profile "${profile}"
+    if ! $reload_only; then
+      [[ -n "$profile" ]] && set_profile "${profile}"
+    fi
+
+    set_workspaces
   fi
 
-  set_workspaces
   launch_waybar
 }
 
@@ -162,6 +167,7 @@ set_workspaces() {
 }
 
 launch_waybar() {
+  pgrep -x waybar >/dev/null && killall -q waybar
   for bar in topbar bottombar; do
     sed -e "s/@@OUTPUT@@/$(map_output "${mons[-1]}")/" -e "s/@@BAR@@/$bar/" "$WAYBAR_TEMPLATE" >"$WAYBAR_TMP.$bar"
     uwsm app -- waybar -c "$WAYBAR_TMP.$bar" &
