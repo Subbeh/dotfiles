@@ -59,13 +59,8 @@ keymap("n", "==", "gg<S-v>G", opts)
 keymap("v", "p", '"_dP', opts)
 --
 -- Copy text to " register
-keymap("n", "<leader>Y", "\"+y", { desc = "Yank into \" register" })
-keymap("v", "<leader>Y", "\"+y", { desc = "Yank into \" register" })
-keymap("n", "<leader>Y", "\"+Y", { desc = "Yank into \" register" })
-
--- Delete text to " register
-keymap("n", "<leader>D", "\"_d", { desc = "Delete into \" register" })
-keymap("v", "<leader>D", "\"_d", { desc = "Delete into \" register" })
+keymap({ "n", "v" }, "<leader>Y", "\"+y", { desc = "Yank into \" register" })
+keymap({ "n", "v" }, "<leader>D", "\"_d", { desc = "Delete into \" register" })
 
 -- Close all
 keymap("n", "<leader>Q", "<cmd>qa<cr>", { desc = "Close All" })
@@ -73,13 +68,13 @@ keymap("n", "<leader>Q", "<cmd>qa<cr>", { desc = "Close All" })
 -- Run lua code under cursor
 keymap("v", "<leader>l", "<cmd>...'<,'>lua<cr>", { desc = "Run lua" })
 
--- Code folding
--- local function close_all_folds()
---   vim.api.nvim_exec2("%foldc!", { output = false })
--- end
--- local function open_all_folds()
---   vim.api.nvim_exec2("%foldo!", { output = false })
--- end
-
--- vim.keymap.set("n", "<leader>zo", open_all_folds, { desc = "Open all" })
--- vim.keymap.set("n", "<leader>zc", close_all_folds, { desc = "Close all" })
+-- Window management
+keymap("n", "<C-w>\\", "<cmd>vsplit<cr>", { desc = "Split window vertically" })
+keymap("n", "<C-w>-", "<cmd>split<cr>", { desc = "Split window horizontally" })
+-- keymap("n", "<leader>wq", "<cmd>close<cr>", { desc = "Close window" })
+-- keymap("n", "<leader>wQ", "<cmd>only<cr>", { desc = "Close other windows" })
+-- keymap("n", "<leader>w=", "<C-w>=", { desc = "Equal window width" })
+-- keymap("n", "<leader>wH", "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })
+-- keymap("n", "<leader>wL", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
+-- keymap("n", "<leader>wJ", "<cmd>resize +2<cr>", { desc = "Increase window height" })
+-- keymap("n", "<leader>wK", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
