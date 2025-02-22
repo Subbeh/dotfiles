@@ -19,6 +19,12 @@ return {
       tf = { "tflint" },
     }
 
+    -- Configure ansible-lint options
+    lint.linters.ansible_lint.args = {
+      "--skip-list",
+      "no-changed-when",
+    }
+
     -- Configure specific linter options
     lint.linters.luacheck.args = {
       "--globals",
