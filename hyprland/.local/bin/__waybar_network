@@ -1,83 +1,112 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Default values
-value=""
-class="disabled"
+CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/waybar-network"
+mkdir -p "$CACHE_DIR"
 
-case "${1:?no arguments provided}" in
-    "eth_icon")
-        value="󰈀"
-        # Check if any ethernet interface is up and has an IP
-        if ip -j link show | jq -e '.[] | select(.link_type == "ether" and (.operstate == "UP") and (.ifname | startswith("w") | not))' >/dev/null; then
-            class="enabled"
-        fi
-        ;;
-    "eth_addr")
-        # Get IP addresses of all ethernet interfaces (excluding wireless interfaces)
-        value=$(ip -j addr show | jq -r '.[] | 
-            select(.operstate == "UP" and .link_type == "ether" and 
-            (.ifname | startswith("w") | not)) | 
-            .addr_info[] | select(.family == "inet" and .scope == "global").local' | paste -sd " ")
-        [[ -n "$value" ]] && class="enabled"
-        ;;
-    "wifi_icon")
-        value="󰖩"
-        # Check if any wifi interface is up and has an IP
-        if ip -j link show | jq -e '.[] | select(.ifname | startswith("wl")) | select(.operstate == "UP")' >/dev/null; then
-            class="enabled"
-        fi
-        ;;
-    "wifi_addr")
-        # Get IP addresses of all wifi interfaces
-        value=$(ip -j addr show | jq -r '.[] | 
-            select(.ifname | startswith("wl")) | 
-            select(.operstate == "UP") | 
-            .addr_info[] | select(.family == "inet" and .scope == "global").local' | paste -sd " ")
-        [[ -n "$value" ]] && class="enabled"
-        ;;
-    "tailscale_icon")
-        value="󰖂"
-        # Check if tailscale interface is up
-        if ip -j link show | jq -e '.[] | select(.ifname == "tailscale0") | select(.flags | contains(["UP"]))' >/dev/null; then
-            class="enabled"
-        fi
-        ;;
-    "tailscale_addr")
-        # Get IP address of the tailscale interface
-        value=$(ip -j addr show | jq -r '.[] | 
-            select(.ifname == "tailscale0") | 
-            .addr_info[] | select(.family == "inet" and .scope == "global").local' | head -1)
-        [[ -n "$value" ]] && class="enabled"
-        ;;
-    "inet_icon")
-        value="󰩟"
-        # Check if we have internet connectivity
-        if ping -c 1 1.1.1.1 &>/dev/null; then
-            class="enabled"
-        fi
-        ;;
-    "inet_addr")
-        # Get external IP address
-        value=$(curl -s ifconfig.me)
-        [[ -n "$value" ]] && class="enabled"
-        ;;
-    "dns_icon")
-        value="󰗆"
-        # Check if DNS resolution works
-        if nslookup google.com &>/dev/null; then
-            class="enabled"
-        fi
-        ;;
-    "dns_addr")
-        # Get primary DNS server from resolv.conf
-        value=$(grep -m 1 "nameserver" /etc/resolv.conf | awk '{print $2}')
-        [[ -n "$value" ]] && class="enabled"
-        ;;
-    *)
-        echo "Invalid argument. Valid arguments are: eth_icon, eth_addr, wifi_icon, wifi_addr, tailscale_icon, tailscale_addr, inet_icon, inet_addr, dns_icon, dns_addr" >&2
-        exit 1
-        ;;
-esac
+# Function to check if a service is enabled and cache its status
+is_enabled() {
+  local status=false
+  local ip_addrs=""
+  local extra_info=""
 
-printf '{"text": "%s", "class": "%s"}\n' "$value" "$class"
+  case "$1" in
+    "eth")
+      if ip -j link show | jq -e '.[] | select(.link_type == "ether" and (.operstate == "UP") and (.ifname | startswith("w") | not))' >/dev/null; then
+        status=true
+        ip_addrs=$(ip -j addr show | jq -r '.[] | 
+          select(.operstate == "UP" and .link_type == "ether" and 
+          (.ifname | startswith("w") | not)) | 
+          .addr_info[] | select(.family == "inet" and .scope == "global").local')
+      fi
+      ;;
+    "wifi")
+      if ip -j link show | jq -e '.[] | select(.ifname | startswith("wl")) | select(.operstate == "UP")' >/dev/null; then
+        status=true
+        ip_addrs=$(ip -j addr show | jq -r '.[] | 
+          select(.ifname | startswith("wl")) | 
+          select(.operstate == "UP") | 
+          .addr_info[] | select(.family == "inet" and .scope == "global").local')
+        local ssid
+        local signal
+        ssid=$(nmcli -t -f active,ssid dev wifi | awk -F: '/^yes:/ {print $2}')
+        signal=$(nmcli -f IN-USE,SIGNAL dev wifi | awk '/^\*/ {print $2}')
+        [[ -n "$ssid" ]] && extra_info+="ssid=$ssid\n"
+        [[ -n "$signal" ]] && extra_info+="signal=$signal"
+      fi
+      ;;
+    "tailscale")
+      if ip -j link show | jq -e '.[] | select(.ifname == "tailscale0") | select(.flags | contains(["UP"]))' >/dev/null; then
+        status=true
+        ip_addrs=$(ip -j addr show | jq -r '.[] | 
+          select(.ifname == "tailscale0") | 
+          .addr_info[] | select(.family == "inet" and .scope == "global").local')
+      fi
+      ;;
+    "inet")
+      if ping -c 1 1.1.1.1 &>/dev/null; then
+        status=true
+        ip_addrs=$(curl -s ifconfig.me)
+      fi
+      ;;
+    "dns")
+      if nslookup google.com &>/dev/null; then
+        status=true
+        ip_addrs=$(grep -m 1 "nameserver" /etc/resolv.conf | awk '{print $2}')
+      fi
+      ;;
+  esac
+
+  # Cache the results
+  {
+    echo "status=$status"
+    [[ -n "$ip_addrs" ]] && echo -e "ip_addrs=$ip_addrs"
+    [[ -n "$extra_info" ]] && echo -e "$extra_info"
+  } >"$CACHE_DIR/$1"
+
+  $status
+}
+
+# Initialize variables
+declare -A icons=(
+  ["eth"]=""
+  ["wifi"]=""
+  ["tailscale"]=""
+  ["inet"]=""
+  ["dns"]=""
+)
+
+declare -A names=(
+  ["eth"]="Ethernet "
+  ["wifi"]="WiFi     "
+  ["tailscale"]="Tailscale"
+  ["inet"]="Internet "
+  ["dns"]="DNS      "
+)
+
+# Build the output
+output=""
+tooltip=""
+any_enabled=false
+
+for service in eth wifi tailscale inet dns; do
+  if is_enabled "$service"; then
+    output+="<span color='#afd787'>${icons[$service]}</span>   "
+    tooltip+="${names[$service]} : Connected\n"
+    any_enabled=true
+  else
+    output+="<span color='#626262'>${icons[$service]}</span>   "
+    tooltip+="${names[$service]} : Disconnected\n"
+  fi
+done
+
+# Trim trailing spaces but keep one at the end
+output="${output%   } "
+tooltip="${tooltip%\\n}"
+
+# If no icons are enabled, show a disconnected icon
+if [[ "$any_enabled" == "false" ]]; then
+  output="<span color='#626262'>󰲛</span>"
+fi
+
+printf '{"text": "%s", "tooltip": "%s"}\n' "$output" "$tooltip"

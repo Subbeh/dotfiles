@@ -1,0 +1,142 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/waybar-network"
+
+# Function to read cached status
+get_cached_status() {
+  local service=$1
+  local cache_file="$CACHE_DIR/$service"
+
+  if [[ -f "$cache_file" ]]; then
+    source "$cache_file"
+  else
+    status=false
+  fi
+}
+
+# Function to get ethernet status
+get_ethernet_status() {
+  get_cached_status "eth"
+  if [[ "$status" == "true" ]]; then
+    echo "󰈀  Ethernet Connected"
+    echo "$ip_addrs" | while read -r ip; do
+      [[ -n "$ip" ]] && echo "    IP: ${ip}"
+    done
+  else
+    echo "󰈀  Ethernet Disconnected"
+  fi
+}
+
+# Function to get WiFi status
+get_wifi_status() {
+  get_cached_status "wifi"
+  if [[ "$status" == "true" ]]; then
+    echo "󰖩  WiFi Connected"
+    [[ -n "${ssid:-}" ]] && echo "    Network: ${ssid}"
+    [[ -n "${signal:-}" ]] && echo "    Signal: ${signal}%"
+    echo "$ip_addrs" | while read -r ip; do
+      [[ -n "$ip" ]] && echo "    IP: ${ip}"
+    done
+  else
+    echo "󰖩  WiFi Disconnected"
+  fi
+}
+
+# Function to get Tailscale status
+get_tailscale_status() {
+  get_cached_status "tailscale"
+  if [[ "$status" == "true" ]]; then
+    echo "󰖂  Tailscale Connected"
+    echo "$ip_addrs" | while read -r ip; do
+      [[ -n "$ip" ]] && echo "    IP: ${ip}"
+    done
+
+    # Get Tailscale peers
+    if command -v tailscale >/dev/null; then
+      local peers
+      peers=$(tailscale status --json | jq -r '.Peer[] | select(.Online) | "\(.HostName): \(.TailscaleIPs[0])"' 2>/dev/null || true)
+      if [[ -n "$peers" ]]; then
+        echo "    Connected peers:"
+        echo "$peers" | while read -r peer; do
+          echo "      ${peer}"
+        done
+      fi
+    fi
+  else
+    echo "󰖂  Tailscale Disconnected"
+  fi
+}
+
+# Function to get Internet status
+get_internet_status() {
+  get_cached_status "inet"
+  if [[ "$status" == "true" ]]; then
+    echo "󰩟  Internet Connected"
+    [[ -n "${ip_addrs:-}" ]] && echo "    Public IP: ${ip_addrs}"
+  else
+    echo "󰩟  Internet Disconnected"
+  fi
+}
+
+# Function to get DNS status
+get_dns_status() {
+  get_cached_status "dns"
+  if [[ "$status" == "true" ]]; then
+    echo "󰗆  DNS Working"
+    [[ -n "${ip_addrs:-}" ]] && echo "    Server: ${ip_addrs}"
+  else
+    echo "󰗆  DNS Not Working"
+  fi
+}
+
+# Function to extract value from line
+extract_value() {
+  local line="$1"
+  local value=""
+  local type=""
+
+  if [[ "$line" =~ IP:\ *(.*) ]]; then
+    value="${BASH_REMATCH[1]}"
+    type="IP"
+  elif [[ "$line" =~ Public\ IP:\ *(.*) ]]; then
+    value="${BASH_REMATCH[1]}"
+    type="Public IP"
+  elif [[ "$line" =~ Server:\ *(.*) ]]; then
+    value="${BASH_REMATCH[1]}"
+    type="DNS Server"
+  elif [[ "$line" =~ Network:\ *(.*) ]]; then
+    value="${BASH_REMATCH[1]}"
+    type="SSID"
+  elif [[ "$line" =~ [[:space:]]+([^:]+):\ *(.*) ]]; then
+    value="${BASH_REMATCH[2]}"
+    type="Tailscale peer IP"
+  fi
+
+  if [[ -n "$value" ]]; then
+    echo "$value"
+    echo "$type"
+  fi
+}
+
+# Generate menu and handle selection
+selected=$({
+  echo "  Network Status"
+  echo "━━━━━━━━━━━━━━━━━━━"
+  get_ethernet_status
+  get_wifi_status
+  get_tailscale_status
+  get_internet_status
+  get_dns_status
+} | rofi -dmenu -i -no-custom -no-fixed-num-lines -theme ~/.config/rofi/network.rasi -click-to-exit -normal-window)
+
+# Copy selected value to clipboard if it contains an IP or SSID
+if [[ -n "$selected" ]]; then
+  mapfile -t result < <(extract_value "$selected")
+  if [[ "${#result[@]}" -eq 2 ]]; then
+    value="${result[0]}"
+    type="${result[1]}"
+    echo -n "$value" | wl-copy
+    notify-send "Network" "Copied $type to clipboard: $value"
+  fi
+fi

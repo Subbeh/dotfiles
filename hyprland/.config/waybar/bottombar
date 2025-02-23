@@ -17,10 +17,6 @@
     "custom/playerctl"
   ],
   "modules-right": [
-    "group/network_eth",
-    "group/network_wifi",
-    "group/network_tailscale",
-    "group/network_inet",
-    "group/network_dns"
+    "custom/network"
   ]
 }

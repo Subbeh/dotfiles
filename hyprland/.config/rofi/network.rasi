@@ -1,0 +1,51 @@
+@import "theme.rasi"
+
+configuration {
+    hover-select: true;
+    me-select-entry: "";
+    me-accept-entry: "MousePrimary";
+}
+
+window {
+    location:   southeast;
+    width:      250px;
+    y-offset:   -20px;
+    x-offset:   -20px;
+    max-height: 100%;
+}
+
+listview {
+    fixed-height: false;
+    dynamic: true;
+    lines: 30;
+}
+
+element {
+    padding:    12px;
+    spacing:    0px;
+    cursor: pointer;
+}
+
+element-text {
+    background-color: inherit;
+    text-color: inherit;
+    font: "FiraCode Nerd Font 8";
+    vertical-align: 0.5;
+    cursor: pointer;
+}
+
+inputbar {
+    enabled: false;
+}
+
+/* Style for the section headers */
+element.selected.active {
+    background-color: @bg;
+    text-color: @accent-color;
+}
+
+/* Style for the information text */
+element.normal.normal {
+    background-color: @bg;
+    text-color: @fg;
+} 
