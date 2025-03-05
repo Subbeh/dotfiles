@@ -63,7 +63,7 @@ keymap({ "n", "v" }, "<leader>Y", "\"+y", { desc = "Yank into \" register" })
 keymap({ "n", "v" }, "<leader>D", "\"_d", { desc = "Delete into \" register" })
 
 -- Close all
-keymap("n", "<leader>Q", "<cmd>qa<cr>", { desc = "Close All" })
+keymap("n", "<leader>q", "<cmd>qa<cr>", { desc = "Close All" })
 
 -- Run lua code under cursor
 keymap("v", "<leader>l", "<cmd>...'<,'>lua<cr>", { desc = "Run lua" })

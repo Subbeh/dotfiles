@@ -1,9 +1,14 @@
 #!/bin/zsh
 
 # global aliases
-alias -g Z='| fzf'
-alias -g L='| less'
+alias -g C='| cat'
 alias -g G='| grep -i --color'
+alias -g H='--help'
+alias -g L='| less'
+alias -g V='--version'
+alias -g X='| xargs'
+alias -g X-='| xargs -I--'
+alias -g Z='| fzf'
 
 # suffix aliases
 alias -s {log,txt}=less

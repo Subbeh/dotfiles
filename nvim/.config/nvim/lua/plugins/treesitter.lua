@@ -60,7 +60,7 @@ return {
           if ok and stats and stats.size > max_filesize then
             return true
           end
-        end
+        end,
       },
       indent = { enable = true },
       fold = { enable = true },
@@ -135,7 +135,7 @@ return {
         },
       })
 
-      require('nvim-dap-repl-highlights').setup() -- must be setup before nvim-treesitter
+      require("nvim-dap-repl-highlights").setup() -- must be setup before nvim-treesitter
       require("nvim-treesitter.configs").setup(opts)
     end,
   },
@@ -150,6 +150,7 @@ return {
     config = function()
       require("treesj").setup({
         use_default_keymaps = false,
+        max_join_length = 240,
       })
     end,
   },

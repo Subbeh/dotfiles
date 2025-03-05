@@ -6,7 +6,6 @@ ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 [ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 source "${ZINIT_HOME}/zinit.zsh"
 
-
 ## syntax highlighting
 export ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern line)
 typeset -A ZSH_HIGHLIGHT_STYLES
@@ -30,7 +29,6 @@ function bgnotify_formatted {
 ## alias-finder
 export ZSH_ALIAS_FINDER_AUTOMATIC=true
 
-
 ## load plugins
 zi light zsh-users/zsh-syntax-highlighting
 zi light zsh-users/zsh-completions
@@ -51,4 +49,3 @@ zi snippet OMZP::fancy-ctrl-z
 zi snippet OMZP::kubectl
 zi snippet OMZP::safe-paste
 zi snippet OMZP::sudo
-zi snippet OMZP::taskwarrior

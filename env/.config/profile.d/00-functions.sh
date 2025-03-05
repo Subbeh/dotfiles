@@ -11,19 +11,22 @@ md() { [ $# = 1 ] && mkdir -p "$@" && cd "$@" || echo "Error - no directory pass
 
 # kill process
 fkill() {
-	pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
+  pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
 
-	if [ "x$pid" != "x" ]; then
-		echo "$pid" | xargs kill -"${1:-9}"
-	fi
+  if [ "x$pid" != "x" ]; then
+    echo "$pid" | xargs kill -"${1:-9}"
+  fi
 }
 
 # retry previous command
 retry() {
-	until $(fc -ln -1); do
-		sleep "${1:-1}"
-	done
+  until fc -ln -1; do
+    sleep "${1:-1}"
+  done
 }
 
 # watch previous command
 ck() { watch -n"${1:-5}" "$(fc -ln -1)"; }
+
+# cd up n directories
+up() { cd $(eval printf '../'%.0s {1..$1}); }

@@ -9,7 +9,7 @@ if [ "$HYPRLAND_INSTANCE_SIGNATURE" != "" ]; then
 fi
 
 # hyprland
-alias H="uwsm check may-start && uwsm start hyprland.desktop"
+alias hypr="uwsm check may-start && uwsm start hyprland.desktop"
 alias hyprlogs='less $XDG_RUNTIME_DIR/hypr/$(ls -t $XDG_RUNTIME_DIR/hypr/ | head -n 1)/hyprland.log'
 alias hyprdir='cd $XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/'
 alias hyprstop='uwsm stop'

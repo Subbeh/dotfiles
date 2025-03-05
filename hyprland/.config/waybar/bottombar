@@ -11,6 +11,7 @@
     "group/hardware",
     "custom/sep",
     "custom/syncthing",
+    "custom/sep",
     "custom/updates"
   ],
   "modules-center": [

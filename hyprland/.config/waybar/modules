@@ -193,14 +193,18 @@
   //
   "custom/updates": {
     "format": " {}",
-    "interval": 600, // every 10 minutes
-    "exec": "checkupdates-with-aur | wc -l", // # of updates
-    "exec-if": "exit 0", // always run; consider advanced run conditions
-    "on-click": "__hypr_dropterm_updater", // update system
+    "interval": 600,
+    "return-type": "json",
+    "exec": "updates=$(checkupdates-with-aur | sed -r \"s/\\x1B\\[[0-9;]*[mK]//g\" | column -t); count=$(echo \"$updates\" | wc -l); echo \"{\\\"text\\\": \\\"$count\\\", \\\"tooltip\\\": \\\"$updates\\\"}\"",
+    // "exec": "updates=$(checkupdates-with-aur | column -t); count=$(echo \"$updates\" | wc -l); echo \"{\\\"text\\\": \\\"$count\\\", \\\"tooltip\\\": \\\"$updates\\\"}\"",
+    // "exec": "updates=$(checkupdates-with-aur); count=$(echo \"$updates\" | wc -l); tooltip=$(echo \"$updates\" | column -t); echo \"{\\\"text\\\": \\\"$count\\\", \\\"tooltip\\\": \\\"$(echo \"$tooltip\" | sed 's/\"/\\\"/g')\\\"}\"",
+    // "exec": "checkupdates-with-aur | jq -Rc '{text: (. | split(\"\n\") | length | tostring), tooltip: (. | gsub(\"\n\"; \" \"))}'",
+    // "exec": "updates=$(checkupdates-with-aur); count=$(echo \"$updates\" | wc -l); echo \"{\\\"text\\\": \\\"$count\\\", \\\"tooltip\\\": \\\"$updates\\\"}\"",
+    "exec-if": "exit 0",
+    "on-click": "__hypr_dropterm_updater",
     "signal": 8,
     "max-length": 8,
-    "min-length": 3,
-    "tooltip": false
+    "min-length": 3
   },
   //
   // PLAYERCTL
@@ -297,7 +301,7 @@
     "return-type": "json",
     "exec": "__waybar_network",
     "on-click": "pkill -x rofi || __waybar_network_popup",
-    "interval": 5
+    "interval": 60
   },
   //
   // SYNCTHING
