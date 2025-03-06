@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+if command -v checkupdates-with-aur &>/dev/null; then
+  updates=$(checkupdates-with-aur | sed -r "s/\x1B\[[0-9;]*[mK]//g" | column -t)
+  count="$(wc -l <<<"$updates")"
+  updates_fmt="$(echo "$updates" | awk 1 ORS='\\n' | sed 's/\\n$//')"
+
+  echo "{\"text\": \"$count\", \"tooltip\": \"$updates_fmt\"}"
+else
+  echo "{\"text\": \"n/a\"}"
+fi
