@@ -91,8 +91,34 @@ any_enabled=false
 
 for service in eth wifi tailscale inet dns; do
   if is_enabled "$service"; then
-    output+="<span color='#afffaf'>${icons[$service]}</span>   "
+    output+="<span color='#afffaf'>${icons[$service]}</span> "
+
+    # Add IP address to the bar for eth and wifi
+    if [[ "$service" == "eth" || "$service" == "wifi" ]]; then
+      # Read IP from cache
+      if [[ -f "$CACHE_DIR/$service" ]]; then
+        ip_addr=$(grep "ip_addrs=" "$CACHE_DIR/$service" | cut -d= -f2 | head -n1)
+        if [[ -n "$ip_addr" ]]; then
+          output+="<span color='#d7d7d7'>${ip_addr}</span> "
+        fi
+      fi
+    fi
+
     tooltip+="${names[$service]} : Connected\n"
+
+    # Add detailed info to tooltip
+    if [[ -f "$CACHE_DIR/$service" ]]; then
+      ip_addrs=$(grep "ip_addrs=" "$CACHE_DIR/$service" | cut -d= -f2)
+      [[ -n "$ip_addrs" ]] && tooltip+="  IP: $ip_addrs\n"
+
+      if [[ "$service" == "wifi" ]]; then
+        ssid=$(grep "ssid=" "$CACHE_DIR/$service" | cut -d= -f2)
+        signal=$(grep "signal=" "$CACHE_DIR/$service" | cut -d= -f2)
+        [[ -n "$ssid" ]] && tooltip+="  SSID: $ssid\n"
+        [[ -n "$signal" ]] && tooltip+="  Signal: $signal%\n"
+      fi
+    fi
+
     any_enabled=true
   else
     output+="<span color='#797979'>${icons[$service]}</span>   "

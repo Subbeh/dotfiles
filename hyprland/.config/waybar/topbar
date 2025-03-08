@@ -13,8 +13,7 @@
   "modules-center": [
     "clock#time",
     "custom/sep",
-    "clock#date",
-    "custom/sep"
+    "clock#date"
   ],
   "modules-right": [
     "bluetooth",

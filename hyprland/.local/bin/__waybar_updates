@@ -2,10 +2,17 @@
 
 if command -v checkupdates-with-aur &>/dev/null; then
   updates=$(checkupdates-with-aur | sed -r "s/\x1B\[[0-9;]*[mK]//g" | column -t)
-  count="$(wc -l <<<"$updates")"
-  updates_fmt="$(echo "$updates" | awk 1 ORS='\\n' | sed 's/\\n$//')"
 
-  echo "{\"text\": \"$((count - 1))\", \"tooltip\": \"$updates_fmt\"}"
+  if [[ -z "$(echo "$updates" | tr -d '[:space:]')" ]]; then
+    updates_fmt=""
+    color="#797979"
+  else
+    count="$(echo "$updates" | wc -l)"
+    updates_fmt="$(echo "$updates" | awk 1 ORS='\\n' | sed 's/\\n$//')"
+    color="#87d7ff"
+  fi
+
+  echo "{\"text\": \"<span color='$color'></span> $count\", \"tooltip\": \"$updates_fmt\"}"
 else
-  echo "{\"text\": \"n/a\"}"
+  echo "{\"text\": \"<span color='#797979'></span> n/a\"}"
 fi

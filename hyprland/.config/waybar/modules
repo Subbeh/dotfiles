@@ -32,7 +32,8 @@
   // TIME & DATE
   //
   "clock#time": {
-    "format": "<span foreground='#87d7ff'></span> {:%R %Z}",
+    "format": "<span foreground='#87d7ff'></span> <span foreground='#d7d7d7'>{:%R %Z}</span>",
+    "tooltip-format": "{tz_list}",
     "timezones": [
       "Australia/Melbourne",
       "Europe/Amsterdam",
@@ -45,7 +46,7 @@
     }
   },
   "clock#date": {
-    "format": "<span foreground='#87d7ff'></span> {:%A %d %B %Y}",
+    "format": "<span foreground='#87d7ff'></span> <span foreground='#d7d7d7'>{:%A %d %B %Y}</span>",
     "tooltip-format": "<tt><small>{calendar}</small></tt>",
     "calendar": {
       "mode": "month",
@@ -193,7 +194,7 @@
   // UPDATES
   //
   "custom/updates": {
-    "format": "<span foreground='#87d7ff'></span> {}",
+    "format": "{}",
     "interval": 600,
     "return-type": "json",
     "exec": "__waybar_updates",
@@ -205,7 +206,7 @@
   // PLAYERCTL
   //
   "custom/playerctl": {
-    "format": "{icon} <span>{}</span>",
+    "format": "{icon} <span foreground='#d7d7d7'>{text}</span>",
     "return-type": "json",
     "max-length": 64,
     "exec": "playerctl -p spotify metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"tooltip\": \"{{playerName}} : {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F",
@@ -243,7 +244,7 @@
   // BLUETOOTH
   //
   "bluetooth": {
-    "format-off": "",
+    "format-off": "",
     "format-on": "<span foreground='#87d7ff'></span>",
     "format-connected": "<span foreground='#87d7ff'></span> {device_alias}",
     "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
