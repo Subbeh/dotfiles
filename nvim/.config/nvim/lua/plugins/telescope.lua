@@ -28,6 +28,7 @@ return {
     -- { "<leader><leader>", "<cmd>Telescope frecency workspace=CWD<cr>",                                             desc = "Find Files" },
     { "<leader>bb",       "<cmd>Telescope buffers previewer=false<cr>",                                              desc = "Buffers" },
     { "<leader>cu",       "<cmd>Telescope undo<cr>",                                                                 desc = "Undo" },
+    { "<leader>cS",       "<cmd>Telescope lsp_document_symbols<cr>",                                                 desc = "LSP Document Symbols" },
     -- { "<leader>ff",       "<cmd>Telescope smart_open<cr>",                                                         desc = "Find Files (all)" },
     { "<leader>ff",       "<cmd>Telescope frecency workspace=CWD<cr>",                                               desc = "Frequent Files (all)" },
     { "<leader>fg",       "<cmd>Telescope live_grep<cr>",                                                            desc = "Grep" },
