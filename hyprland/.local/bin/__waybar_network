@@ -91,11 +91,11 @@ any_enabled=false
 
 for service in eth wifi tailscale inet dns; do
   if is_enabled "$service"; then
-    output+="<span color='#afd787'>${icons[$service]}</span>   "
+    output+="<span color='#afffaf'>${icons[$service]}</span>   "
     tooltip+="${names[$service]} : Connected\n"
     any_enabled=true
   else
-    output+="<span color='#626262'>${icons[$service]}</span>   "
+    output+="<span color='#797979'>${icons[$service]}</span>   "
     tooltip+="${names[$service]} : Disconnected\n"
   fi
 done
@@ -106,7 +106,7 @@ tooltip="${tooltip%\\n}"
 
 # If no icons are enabled, show a disconnected icon
 if [[ "$any_enabled" == "false" ]]; then
-  output="<span color='#626262'>󰲛</span>"
+  output="<span color='#797979'>󰲛</span>"
 fi
 
 printf '{"text": "%s", "tooltip": "%s"}\n' "$output" "$tooltip"

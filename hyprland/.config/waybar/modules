@@ -104,16 +104,17 @@
     "format-charging": "<span foreground='#87d7ff'></span> {capacity}%",
     "format-plugged": "<span foreground='#d7afd7'></span> {capacity}%",
     "format-icons": [
-      "<span foreground='#c34043'></span>",
-      "<span foreground='#BA4947'></span>",
-      "<span foreground='#B2534C'></span>",
-      "<span foreground='#A95C50'></span>",
-      "<span foreground='#A16554'></span>",
-      "<span foreground='#986F59'></span>",
-      "<span foreground='#90785d'></span>",
-      "<span foreground='#878161'></span>",
-      "<span foreground='#7F8B66'></span>",
-      "<span foreground='#76946a'></span>"
+      "<span foreground='#d75f5f'></span>",
+      "<span foreground='#d2756b'></span>",
+      "<span foreground='#cd8774'></span>",
+      "<span foreground='#ca967b'></span>",
+      "<span foreground='#c7a281'></span>",
+      "<span foreground='#c3b188'></span>",
+      "<span foreground='#bfc08f'></span>",
+      "<span foreground='#bcce96'></span>",
+      "<span foreground='#b8de9e'></span>",
+      "<span foreground='#b4eca5'></span>",
+      "<span foreground='#afffaf'></span>"
     ],
     "max-length": 25,
     "design-capacity": true
@@ -124,18 +125,18 @@
   "temperature": {
     "format": "{icon} {temperatureC}°C",
     "format-icons": [
-      "<span foreground='#76946a'></span>",
-      "<span foreground='#76946a'></span>",
-      "<span foreground='#76946a'></span>",
-      "<span foreground='#76946a'></span>",
-      "<span foreground='#76946a'></span>",
-      "<span foreground='#7F8B66'></span>",
-      "<span foreground='#878161'></span>",
-      "<span foreground='#90785d'></span>",
-      "<span foreground='#986F59'></span>",
-      "<span foreground='#A16554'></span>",
-      "<span foreground='#B2534C'></span>",
-      "<span foreground='#c34043'></span>"
+      "<span foreground='#afffaf'></span>",
+      "<span foreground='#afffaf'></span>",
+      "<span foreground='#b4eca5'></span>",
+      "<span foreground='#b8de9e'></span>",
+      "<span foreground='#bcce96'></span>",
+      "<span foreground='#bfc08f'></span>",
+      "<span foreground='#c3b188'></span>",
+      "<span foreground='#c7a281'></span>",
+      "<span foreground='#ca967b'></span>",
+      "<span foreground='#cd8774'></span>",
+      "<span foreground='#d2756b'></span>",
+      "<span foreground='#d75f5f'></span>"
     ]
   },
   //
@@ -145,10 +146,10 @@
     "format": " {icon0}{icon1}{icon2}{icon3}{icon4}{icon5}{icon6}{icon7}{icon8}{icon9}{icon10}{icon11}",
     "format-alt": " {usage}%",
     "format-icons": [
-      "<span color='#76946a'></span>",
-      "<span color='#90785d'></span>",
-      "<span color='#A95C50'></span>",
-      "<span color='#c34043'></span>"
+      "<span color='#afffaf'></span>",
+      "<span color='#bfc08f'></span>",
+      "<span color='#cd8774'></span>",
+      "<span color='#d75f5f'></span>"
     ],
     "interval": 1
   },
@@ -192,13 +193,12 @@
   // UPDATES
   //
   "custom/updates": {
-    "format": " {}",
+    "format": "<span foreground='#87d7ff'></span> {}",
     "interval": 600,
     "return-type": "json",
     "exec": "__waybar_updates",
     "exec-if": "exit 0",
     "on-click": "__hypr_dropterm_updater",
-    "max-length": 8,
     "min-length": 3
   },
   //
@@ -213,8 +213,8 @@
     "on-scroll-up": "playerctl -p spotify next",
     "on-scroll-down": "playerctl -p spotify previous",
     "format-icons": {
-      "Playing": "<span foreground='#B1B946'></span>",
-      "Paused": "<span foreground='#47423E'></span>"
+      "Playing": "<span foreground='#afffaf'></span>",
+      "Paused": "<span foreground='#797979'></span>"
     }
   },
   //

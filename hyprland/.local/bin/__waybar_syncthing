@@ -112,7 +112,5 @@ get_status() {
   fi
 }
 
-# 
-
 # Main
 get_status

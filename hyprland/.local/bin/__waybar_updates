@@ -5,7 +5,7 @@ if command -v checkupdates-with-aur &>/dev/null; then
   count="$(wc -l <<<"$updates")"
   updates_fmt="$(echo "$updates" | awk 1 ORS='\\n' | sed 's/\\n$//')"
 
-  echo "{\"text\": \"$count\", \"tooltip\": \"$updates_fmt\"}"
+  echo "{\"text\": \"$((count - 1))\", \"tooltip\": \"$updates_fmt\"}"
 else
   echo "{\"text\": \"n/a\"}"
 fi
