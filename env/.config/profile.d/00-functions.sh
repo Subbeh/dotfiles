@@ -29,4 +29,4 @@ retry() {
 ck() { watch -n"${1:-5}" "$(fc -ln -1)"; }
 
 # cd up n directories
-up() { cd $(eval printf '../'%.0s {1..$1}); }
+up() { cd "$(eval printf '../'%.0s {1..$1})" || return 1; }

@@ -28,7 +28,7 @@ alias b='bat'
 alias calc='noglob _calc'
 alias gpt='chatblade'
 alias httpserver='python3 -m http.server'
-alias lip='curl -w "\n" ifconfig.me'
+alias lip='curl -sw "\n" -4 ifconfig.me'
 alias sdiff='diff --color=always --side-by-side'
 
 # systemd

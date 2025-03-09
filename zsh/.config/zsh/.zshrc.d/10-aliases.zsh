@@ -2,6 +2,7 @@
 
 # global aliases
 alias -g C='| cat'
+alias -g B='| bat'
 alias -g G='| grep -i --color'
 alias -g H='--help'
 alias -g L='| less'
@@ -9,6 +10,8 @@ alias -g V='--version'
 alias -g X='| xargs'
 alias -g X-='| xargs -I--'
 alias -g Z='| fzf'
+_chkcmd wl-copy && alias -g CP='| wl-copy -n'
+_chkcmd pbcopy && alias -g CP='| pbcopy'
 
 # suffix aliases
 alias -s {log,txt}=less

@@ -30,7 +30,7 @@ return {
     { "<leader>cu",       "<cmd>Telescope undo<cr>",                                                                 desc = "Undo" },
     { "<leader>cS",       "<cmd>Telescope lsp_document_symbols<cr>",                                                 desc = "LSP Document Symbols" },
     -- { "<leader>ff",       "<cmd>Telescope smart_open<cr>",                                                         desc = "Find Files (all)" },
-    { "<leader>ff",       "<cmd>Telescope frecency workspace=CWD<cr>",                                               desc = "Frequent Files (all)" },
+    { "<leader>ff",       "<cmd>Telescope frecency<cr>",                                                             desc = "Frequent Files (all)" },
     { "<leader>fg",       "<cmd>Telescope live_grep<cr>",                                                            desc = "Grep" },
     { "<leader>fG",       "<cmd>lua require('telescope').extensions.live_grep_args.live_grep_args()<cr>",            desc = "Grep (args)" },
     -- { "<leader>fo",       "<cmd>Telescope oldfiles<cr>",                                                           desc = "Recent Files" },
