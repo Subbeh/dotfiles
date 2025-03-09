@@ -122,7 +122,7 @@ extract_value() {
 # Generate menu and handle selection
 selected=$({
   echo "  Network Status"
-  echo "━━━━━━━━━━━━━━━━━━━"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   get_ethernet_status
   get_wifi_status
   get_tailscale_status

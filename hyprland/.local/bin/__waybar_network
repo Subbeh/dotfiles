@@ -46,7 +46,7 @@ is_enabled() {
     "inet")
       if ping -c 1 1.1.1.1 &>/dev/null; then
         status=true
-        ip_addrs=$(curl -s ifconfig.me)
+        ip_addrs=$(curl -s -4 ifconfig.me)
       fi
       ;;
     "dns")
@@ -94,7 +94,7 @@ for service in eth wifi tailscale inet dns; do
     output+="<span color='#afffaf'>${icons[$service]}</span> "
 
     # Add IP address to the bar for eth and wifi
-    if [[ "$service" == "eth" || "$service" == "wifi" ]]; then
+    if [[ "$service" == "eth" || "$service" == "wifi" || "$service" == "tailscale" ]]; then
       # Read IP from cache
       if [[ -f "$CACHE_DIR/$service" ]]; then
         ip_addr=$(grep "ip_addrs=" "$CACHE_DIR/$service" | cut -d= -f2 | head -n1)

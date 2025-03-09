@@ -8,7 +8,7 @@ configuration {
 
 window {
     location:   southeast;
-    width:      250px;
+    width:      255px;
     y-offset:   -20px;
     x-offset:   -20px;
     max-height: 100%;
@@ -21,7 +21,7 @@ listview {
 }
 
 element {
-    padding:    12px;
+    padding:    6px;
     spacing:    0px;
     cursor: pointer;
 }
