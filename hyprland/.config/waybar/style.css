@@ -16,12 +16,27 @@
 
 window.eDP-1 * {
   font-size: 15px;
-  font-weight: normal;
+  font-weight: 600;
 }
 
 window#waybar {
   background: transparent;
   color: @fg;
+}
+
+tooltip {
+  background: alpha(@bgdark, 0.9);
+  color: @white;
+  border: 1px solid @fg;
+}
+
+tooltip * {
+  color: @white;
+  padding: 5px;
+  font-family: FiraCode Nerd Font;
+  /* font-size: 1.05em; */
+  font-size: 12px;
+  font-weight: normal;
 }
 
 /* TOP BAR */
@@ -40,37 +55,6 @@ window#waybar.bottom> :last-child {
 
 window#waybar.bottom :first-child {
   margin-left: 5px;
-}
-
-/* TOOLTIP */
-
-/* tooltip { */
-/*   font-family: FiraCode Nerd Font; */
-/*   background: alpha(@bgdark, 0.9); */
-/*   color: @white; */
-/*   border: 1px solid @fg; */
-/* } */
-
-/* tooltip * { */
-/*   color: @white; */
-/*   padding: 5px; */
-/*   font-size: 1.05em; */
-/*   font-weight: normal; */
-/* } */
-
-tooltip {
-  background: alpha(@bgdark, 0.9);
-  color: @white;
-  border: 1px solid @fg;
-}
-
-tooltip * {
-  color: @white;
-  padding: 5px;
-  font-family: FiraCode Nerd Font;
-  /* font-size: 1.05em; */
-  font-size: 12px;
-  font-weight: normal;
 }
 
 /* WORKSPACES */

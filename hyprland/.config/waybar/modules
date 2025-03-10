@@ -47,7 +47,7 @@
   },
   "clock#date": {
     "format": "<span foreground='#87d7ff'></span> <span foreground='#d7d7d7'>{:%A %d %B %Y}</span>",
-    "tooltip-format": "<tt><small>{calendar}</small></tt>",
+    "tooltip-format": "<tt><big>{calendar}</big></tt>",
     "calendar": {
       "mode": "month",
       "weeks-pos": "left",
@@ -56,7 +56,7 @@
       "format": {
         "months": "<span color='#d7d7d7'><b>{}</b></span>",
         "days": "<span color='#d7d7d7'><b>{}</b></span>",
-        "weeks": "<span color='#afd787'><b>W{}</b></span>",
+        "weeks": "<span color='#afffaf'><b>W{}</b></span>",
         "weekdays": "<span color='#d7afd7'><b>{}</b></span>",
         "today": "<span color='#87d7ff'><b><u>{}</u></b></span>"
       }
@@ -78,11 +78,11 @@
     "format-icons": {
       "notification": "<span foreground='#87d7ff'><sup></sup></span>",
       "none": "",
-      "dnd-notification": "<span foreground='#ff5f5f'><sup></sup></span>",
+      "dnd-notification": "<span foreground='#d75f5f'><sup></sup></span>",
       "dnd-none": "",
       "inhibited-notification": "<span foreground='#d7afd7'><sup></sup></span>",
       "inhibited-none": "",
-      "dnd-inhibited-notification": "<span foreground='#ff5f5f'><sup></sup></span>",
+      "dnd-inhibited-notification": "<span foreground='#d75f5f'><sup></sup></span>",
       "dnd-inhibited-none": ""
     },
     "return-type": "json",
@@ -158,7 +158,7 @@
   // MEMORY
   //
   "memory": {
-    "format": " {}%",
+    "format": " {}% ",
     "format-alt": "memory:  {used}/{total} GiB",
     "interval": 1
   },
@@ -166,7 +166,7 @@
   // DISKS
   //
   "disk": {
-    "format": " {percentage_used}%",
+    "format": " {percentage_used}% ",
     "format-alt": " {used}/{total} GiB",
     "interval": 1,
     "path": "/"
@@ -200,6 +200,8 @@
     "exec": "__waybar_updates",
     "exec-if": "exit 0",
     "on-click": "__hypr_dropterm_updater",
+    "on-click-right": "pkill -SIGRTMIN+8 waybar",
+    "signal": 8,
     "min-length": 3
   },
   //
@@ -214,8 +216,8 @@
     "on-scroll-up": "playerctl -p spotify next",
     "on-scroll-down": "playerctl -p spotify previous",
     "format-icons": {
-      "Playing": "<span foreground='#afffaf'></span>",
-      "Paused": "<span foreground='#797979'></span>"
+      "Playing": "<span foreground='#afffaf'></span>",
+      "Paused": "<span foreground='#797979'></span>"
     }
   },
   //

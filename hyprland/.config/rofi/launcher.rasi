@@ -2,19 +2,19 @@
 
 configuration {
 	modi:                       "drun,run,filebrowser,window";
-    show-icons:                 true;
-    display-drun:               "";
-    display-run:                "";
-    display-filebrowser:        "";
-    display-window:             "";
+  show-icons:                 true;
+  display-drun:               "";
+  display-run:                "";
+  display-filebrowser:        "";
+  display-window:             "";
 	drun-display-format:        "{name}";
 	window-format:              "{w} · {c} · {t}";
 }
 
 mainbox {
-    enabled:                     true;
-    spacing:                     0px;
-    background-color:            transparent;
-    orientation:                 vertical;
-    children:                    [ "inputbar", "listbox", "mode-switcher" ];
+  enabled:                    true;
+  spacing:                    0px;
+  background-color:           transparent;
+  orientation:                vertical;
+  children:                   [ "inputbar", "listbox", "mode-switcher" ];
 }
