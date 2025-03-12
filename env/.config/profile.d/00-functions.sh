@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # check command
 _chkcmd() { command -v "$1" >/dev/null 2>&1 || return 1; }

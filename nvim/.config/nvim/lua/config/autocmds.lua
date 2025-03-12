@@ -14,11 +14,12 @@ vim.api.nvim_create_autocmd("FileType", {
     "spectre_panel",
     "AvanteInput",
     "tsplayground",
+    "TelescopePrompt",
     "",
   },
   callback = function()
     vim.cmd [[
-      nnoremap <silent> <buffer> q :close<CR>
+      nnoremap <silent> <buffer> q :close!<CR>
       set nobuflisted
     ]]
   end,
