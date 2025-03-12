@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Firefox Profile Manager
+Exec=/usr/lib/firefox/firefox -ProfileManager
+Icon=firefox
+Terminal=false
+Categories=GNOME;GTK;Network;WebBrowser;
