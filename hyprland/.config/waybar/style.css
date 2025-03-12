@@ -6,7 +6,6 @@
   font-family: Tamzen, Siji;
   font-size: 14px;
   font-weight: 500;
-  /* font-style: normal; */
   min-height: 0;
   border: 0;
   border-radius: 0;
@@ -60,13 +59,17 @@ window#waybar.bottom :first-child {
 /* WORKSPACES */
 
 #workspaces * {
-  /* font-size: 12px; */
   font-weight: bold;
 }
 
 #workspaces button {
   color: @fg;
-  /* border-top: 2px solid transparent; */
+}
+
+#workspaces button:hover {
+  color: @bg;
+  background: @blue;
+  border-top: 2px solid transparent;
 }
 
 #workspaces button.active {

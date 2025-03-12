@@ -101,9 +101,9 @@
       "warning": 30,
       "critical": 10
     },
-    "format": "{icon} {capacity}%",
-    "format-charging": "<span foreground='#87d7ff'></span> {capacity}%",
-    "format-plugged": "<span foreground='#d7afd7'></span> {capacity}%",
+    "format": "{icon} <span foreground='#d7d7d7'>{capacity}%</span>",
+    "format-charging": "<span foreground='#87d7ff'></span> <span foreground='#d7d7d7'>{capacity}%</span>",
+    "format-plugged": "<span foreground='#d7afd7'></span> <span foreground='#d7d7d7'>{capacity}%</span>",
     "format-icons": [
       "<span foreground='#d75f5f'></span>",
       "<span foreground='#d2756b'></span>",
