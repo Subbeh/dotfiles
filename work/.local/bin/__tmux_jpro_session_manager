@@ -49,9 +49,9 @@ users: []' >"${session_dir}/kubeconfig"
     done
 
     # set context
-    tmux send-keys -t 1 "__jpro_set_ctx $instance ; k9s" C-m
-    tmux send-keys -t 2 "jstatus3 -i $instance" C-m
-    tmux send-keys -t 4 "hermes jpro get $instance" C-m
+    tmux send-keys -t '{top-left}' "__jpro_set_ctx $instance ; k9s" C-m
+    tmux send-keys -t '{top-right}' "jstatus3 -i $instance" C-m
+    tmux send-keys -t '{bottom-right}' "hermes jpro get $instance" C-m
   else
     # select window
     tmux switchc -t "$SESH"
