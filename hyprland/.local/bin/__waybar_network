@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -uo pipefail
 
 CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/waybar-network"
 mkdir -p "$CACHE_DIR"
@@ -8,6 +8,7 @@ mkdir -p "$CACHE_DIR"
 is_enabled() {
   local status=false
   local ip_addrs=""
+  local country=""
   local extra_info=""
 
   case "$1" in
@@ -43,10 +44,20 @@ is_enabled() {
           .addr_info[] | select(.family == "inet" and .scope == "global").local')
       fi
       ;;
+    "vpn")
+      if ip -j link show | jq -e '.[] | select(.ifname == "proton0") | select(.flags | contains(["UP"]))' >/dev/null; then
+        status=true
+        # ip_addrs=$(ip -j addr show | jq -r '.[] |
+        #   select(.ifname == "proton0") |
+        #   .addr_info[] | select(.family == "inet" and .scope == "global").local')
+      fi
+      ;;
     "inet")
       if ping -c 1 1.1.1.1 &>/dev/null; then
         status=true
-        ip_addrs=$(curl -s -4 ifconfig.me)
+        ifconfig=$(curl -s -4 ifconfig.co/json)
+        ip_addrs=$(echo "$ifconfig" | jq -r '.ip')
+        country=$(echo "$ifconfig" | jq -r '.country_iso')
       fi
       ;;
     "dns")
@@ -61,6 +72,7 @@ is_enabled() {
   {
     echo "status=$status"
     [[ -n "$ip_addrs" ]] && echo -e "ip_addrs=$ip_addrs"
+    [[ -n "$country" ]] && echo -e "country=$country"
     [[ -n "$extra_info" ]] && echo -e "$extra_info"
   } >"$CACHE_DIR/$1"
 
@@ -72,6 +84,7 @@ declare -A icons=(
   ["eth"]=""
   ["wifi"]=""
   ["tailscale"]=""
+  ["vpn"]=" "
   ["inet"]=""
   ["dns"]=""
 )
@@ -80,6 +93,7 @@ declare -A names=(
   ["eth"]="Ethernet "
   ["wifi"]="WiFi     "
   ["tailscale"]="Tailscale"
+  ["vpn"]="VPN      "
   ["inet"]="Internet "
   ["dns"]="DNS      "
 )
@@ -89,7 +103,7 @@ output=""
 tooltip=""
 any_enabled=false
 
-for service in eth wifi tailscale inet dns; do
+for service in eth wifi tailscale vpn inet dns; do
   if is_enabled "$service"; then
     output+="<span color='#afffaf'>${icons[$service]}</span> "
 
@@ -102,6 +116,12 @@ for service in eth wifi tailscale inet dns; do
           output+="<span color='#d7d7d7'>${ip_addr}</span> "
         fi
       fi
+    fi
+
+    # Add country code for inet
+    if [[ "$service" == "inet" && -f "$CACHE_DIR/$service" ]]; then
+      country=$(grep "country=" "$CACHE_DIR/$service" | cut -d= -f2 | head -n1)
+      output+="<span color='#d7d7d7'>${country}</span> "
     fi
 
     tooltip+="${names[$service]} : Connected\n"
@@ -121,7 +141,7 @@ for service in eth wifi tailscale inet dns; do
 
     any_enabled=true
   else
-    output+="<span color='#797979'>${icons[$service]}</span>   "
+    output+="<span color='#797979'>${icons[$service]}</span>  "
     tooltip+="${names[$service]} : Disconnected\n"
   fi
 done
