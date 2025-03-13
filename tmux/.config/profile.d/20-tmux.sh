@@ -4,9 +4,7 @@ alias mux=__tmuxinator_sessions
 
 cda() {
   # cda - Change Directory All
-  if [[ "$1" ]]; then
-    current_dir=$(pwd)
-  fi
+  current_dir=$(pwd)
 
   window_index=$(tmux display-message -p '#I')
 
