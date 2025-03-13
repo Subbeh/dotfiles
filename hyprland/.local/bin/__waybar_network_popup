@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+set -x
 
 CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/waybar-network"
 
@@ -68,12 +69,27 @@ get_tailscale_status() {
   fi
 }
 
+# Function to get VPN status
+get_vpn_status() {
+  get_cached_status "vpn"
+  if [[ "$status" == "true" ]]; then
+    echo "  VPN Connected"
+    echo "    - Disconnect"
+  else
+    echo "  VPN Disconnected"
+    echo "    - Server: Fastest"
+    echo "    - Server: AU"
+    echo "    - Server: NL"
+  fi
+}
+
 # Function to get Internet status
 get_internet_status() {
   get_cached_status "inet"
   if [[ "$status" == "true" ]]; then
     echo "󰩟  Internet Connected"
     [[ -n "${ip_addrs:-}" ]] && echo "    Public IP: ${ip_addrs}"
+    [[ -n "${country:-}" ]] && echo "    Country: ${country}"
   else
     echo "󰩟  Internet Disconnected"
   fi
@@ -126,17 +142,33 @@ selected=$({
   get_ethernet_status
   get_wifi_status
   get_tailscale_status
+  get_vpn_status
   get_internet_status
   get_dns_status
 } | rofi -dmenu -i -no-custom -no-fixed-num-lines -theme ~/.config/rofi/network.rasi -click-to-exit -normal-window)
 
 # Copy selected value to clipboard if it contains an IP or SSID
 if [[ -n "$selected" ]]; then
-  mapfile -t result < <(extract_value "$selected")
-  if [[ "${#result[@]}" -eq 2 ]]; then
-    value="${result[0]}"
-    type="${result[1]}"
-    echo -n "$value" | wl-copy
-    notify-send "Network" "Copied $type to clipboard: $value"
+  if [[ "$selected" =~ -\ Disconnect ]]; then
+    notify-send "VPN" "Disconnecting..."
+    sudo protonvpn disconnect
+    pkill -SIGRTMIN+9 waybar
+  elif [[ "$selected" =~ -\ Server:\ *(.*) ]]; then
+    cc="${BASH_REMATCH[1]}"
+    notify-send "VPN" "Connecting to $cc server..."
+    if [[ "$cc" == "Fastest" ]]; then
+      sudo protonvpn connect --fastest
+    else
+      sudo protonvpn connect --cc "$cc"
+    fi
+    pkill -SIGRTMIN+9 waybar
+  else
+    mapfile -t result < <(extract_value "$selected")
+    if [[ "${#result[@]}" -eq 2 ]]; then
+      value="${result[0]}"
+      type="${result[1]}"
+      echo -n "$value" | wl-copy
+      notify-send "Network" "Copied $type to clipboard: $value"
+    fi
   fi
 fi

@@ -110,7 +110,7 @@ window#waybar.bottom :first-child {
 }
 
 #custom-syncthing.syncing {
-  color: @yellow;
+  color: @orange;
 }
 
 #custom-syncthing.synced {

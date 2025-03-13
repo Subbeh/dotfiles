@@ -299,7 +299,8 @@
     "return-type": "json",
     "exec": "__waybar_network",
     "on-click": "pkill -x rofi || __waybar_network_popup",
-    "interval": 60
+    "interval": 60,
+    "signal": 9
   },
   //
   // SYNCTHING

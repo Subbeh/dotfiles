@@ -9,6 +9,7 @@ is_enabled() {
   local status=false
   local ip_addrs=""
   local country=""
+  local country_iso=""
   local extra_info=""
 
   case "$1" in
@@ -55,9 +56,10 @@ is_enabled() {
     "inet")
       if ping -c 1 1.1.1.1 &>/dev/null; then
         status=true
-        ifconfig=$(curl -s -4 ifconfig.co/json)
-        ip_addrs=$(echo "$ifconfig" | jq -r '.ip')
-        country=$(echo "$ifconfig" | jq -r '.country_iso')
+        ifconfig="$(curl -s -4 ifconfig.co/json)"
+        ip_addrs="$(echo "$ifconfig" | jq -r '.ip')"
+        country_iso=$(echo "$ifconfig" | jq -r '.country_iso')
+        country="$(echo "$ifconfig" | jq -r '.country')"
       fi
       ;;
     "dns")
@@ -71,8 +73,9 @@ is_enabled() {
   # Cache the results
   {
     echo "status=$status"
-    [[ -n "$ip_addrs" ]] && echo -e "ip_addrs=$ip_addrs"
-    [[ -n "$country" ]] && echo -e "country=$country"
+    [[ -n "$ip_addrs" ]] && echo -e ip_addrs=$ip_addrs
+    [[ -n "$country" ]] && echo -e country=\"$country\"
+    [[ -n "$country_iso" ]] && echo -e country_iso=$country_iso
     [[ -n "$extra_info" ]] && echo -e "$extra_info"
   } >"$CACHE_DIR/$1"
 
@@ -120,8 +123,9 @@ for service in eth wifi tailscale vpn inet dns; do
 
     # Add country code for inet
     if [[ "$service" == "inet" && -f "$CACHE_DIR/$service" ]]; then
-      country=$(grep "country=" "$CACHE_DIR/$service" | cut -d= -f2 | head -n1)
-      output+="<span color='#d7d7d7'>${country}</span> "
+      country_iso=$(grep "country_iso=" "$CACHE_DIR/$service" | cut -d= -f2 | head -n1)
+      country=$(grep "country=" "$CACHE_DIR/$service" | cut -d= -f2 | head -n1 | sed 's/"//g')
+      output+="<span color='#d7d7d7'>${country_iso}</span> "
     fi
 
     tooltip+="${names[$service]} : Connected\n"
@@ -136,6 +140,10 @@ for service in eth wifi tailscale vpn inet dns; do
         signal=$(grep "signal=" "$CACHE_DIR/$service" | cut -d= -f2)
         [[ -n "$ssid" ]] && tooltip+="  SSID: $ssid\n"
         [[ -n "$signal" ]] && tooltip+="  Signal: $signal%\n"
+      fi
+
+      if [[ "$service" == "inet" ]]; then
+        [[ -n "$country" ]] && tooltip+="  Country: $country\n"
       fi
     fi
 
