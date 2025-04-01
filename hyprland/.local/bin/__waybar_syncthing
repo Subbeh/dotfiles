@@ -32,9 +32,7 @@ format_bytes() {
 # Get sync completion status
 get_sync_status() {
   local completion_response
-  completion_response=$(curl -skL --connect-timeout 2 -H "X-API-Key: $API_KEY" "$COMPLETION_ENDPOINT")
-
-  if [[ $? -ne 0 ]]; then
+  if ! completion_response=$(curl -skL --connect-timeout 2 -H "X-API-Key: $API_KEY" "$COMPLETION_ENDPOINT"); then
     echo "Unable to fetch sync status" >&2
     return 1
   fi
@@ -80,9 +78,7 @@ get_status() {
   fi
 
   local response
-  response=$(curl -skL --connect-timeout 2 -H "X-API-Key: $API_KEY" "$ENDPOINT")
-
-  if [[ $? -ne 0 ]]; then
+  if ! response=$(curl -skL --connect-timeout 2 -H "X-API-Key: $API_KEY" "$ENDPOINT"); then
     echo '{"text": "󰌷", "class": "offline", "tooltip": "Syncthing is not running"}'
     exit 0
   fi

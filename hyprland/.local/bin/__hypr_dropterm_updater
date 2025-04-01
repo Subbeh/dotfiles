@@ -16,7 +16,5 @@ tmux send-keys -t dropterm:updates 'clear; \
   yay && \
   tmux select-window -t dropterm:1 && \
   hyprctl activewindow -j | jq -c ".class" | grep -q dropterm && \
-  hyprctl dispatch togglespecialworkspace dropterm' Enter
-
-# reload waybar
-pkill -SIGRTMIN+8 waybar
+  hyprctl dispatch togglespecialworkspace dropterm && \
+  pkill -SIGRTMIN+8 waybar' Enter

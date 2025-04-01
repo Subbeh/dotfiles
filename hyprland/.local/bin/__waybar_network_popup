@@ -149,10 +149,16 @@ selected=$({
 
 # Copy selected value to clipboard if it contains an IP or SSID
 if [[ -n "$selected" ]]; then
-  if [[ "$selected" =~ -\ Disconnect ]]; then
+  if [[ "$selected" =~ VPN ]]; then
+    exec protonvpn-app &
+  elif [[ "$selected" =~ -\ Disconnect ]]; then
     notify-send "VPN" "Disconnecting..."
-    sudo protonvpn disconnect
-    pkill -SIGRTMIN+9 waybar
+    if sudo protonvpn disconnect; then
+      notify-send "VPN" "Disconnected"
+    else
+      notify-send "VPN" "Error disconnecting"
+    fi
+    pkill -SIGRTMIN+7 waybar
   elif [[ "$selected" =~ -\ Server:\ *(.*) ]]; then
     cc="${BASH_REMATCH[1]}"
     notify-send "VPN" "Connecting to $cc server..."
@@ -161,7 +167,12 @@ if [[ -n "$selected" ]]; then
     else
       sudo protonvpn connect --cc "$cc"
     fi
-    pkill -SIGRTMIN+9 waybar
+    if [[ "$?" -eq 0 ]]; then
+      notify-send "VPN" "Connected"
+    else
+      notify-send "VPN" "Error connecting"
+    fi
+    pkill -SIGRTMIN+7 waybar
   else
     mapfile -t result < <(extract_value "$selected")
     if [[ "${#result[@]}" -eq 2 ]]; then
