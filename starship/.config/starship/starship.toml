@@ -7,12 +7,13 @@ command_timeout = 1000
 format = """
 $hostname\
 $directory\
-$custom\
+${custom.direnv}\
 $character\
 """
 
 right_format = """
 $cmd_duration\
+${custom.hermes}
 $sudo\
 $jobs\
 $git_branch\
@@ -91,5 +92,11 @@ format = '[[$symbol](bold bright-blue)$namespace](dimmed white) '
 
 [custom.direnv]
 command = 'echo '
-when = ''' test ! -z "$DIRENV_DIR" '''
+when = ''' test -n "$DIRENV_DIR" '''
 format = '[$output ](bold green)'
+
+[custom.hermes]
+command = 'echo $INST'
+symbol = '󱃾'
+when = ''' test -n "$INST" '''
+format = '[$symbol ](bold blue)[$output ](dimmed white)'
