@@ -15,7 +15,7 @@ _chkcmd pbcopy && alias -g CP='| pbcopy'
 
 # suffix aliases
 alias -s {log,txt}=less
-alias -s pdf=firefox
+alias -s {html,pdf}=firefox
 alias -s {mp4,MP4,mov,MOV}='vlc'
 
 # navigation
