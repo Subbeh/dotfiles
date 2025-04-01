@@ -27,8 +27,9 @@ return {
       formatters_by_ft = {
         bash = { "shfmt" },
         go = { "goimports", "gofmt" },
-        json = { "prettier" },
+        json = { "prettier_json" },
         lua = { "lsp" },
+        markdown = { "prettier" },
         python = { "ruff" },
         sh = { "shfmt" },
         yaml = { "yamlfmt" },
@@ -40,7 +41,8 @@ return {
         shfmt = {
           args = { "-i", "2", "-ci" }, -- 2 space indentation and indent switch cases
         },
-        prettier = {
+        prettier_json = {
+          command = "prettier",
           args = {
             "--print-width",
             "120",
@@ -50,6 +52,8 @@ return {
             "false",
             "--single-quote",
             "false",
+            "--parser",
+            "json",
           },
         },
         yamlfmt = {
