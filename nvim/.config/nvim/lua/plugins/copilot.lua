@@ -1,6 +1,7 @@
 return {
   {
     "zbirenbaum/copilot.lua",
+    cond = vim.loop.os_uname().sysname == "Darwin", -- Only enable on macOS
     cmd = "Copilot",
     event = "InsertEnter",
     config = function()
@@ -26,7 +27,7 @@ return {
             accept_line = "<M-]>",
             next = "<M-]>",
             prev = "<M-[>",
-            dismiss = "<C-]>",
+            dismiss = "<M-x>",
           },
         },
         filetypes = {

@@ -11,8 +11,10 @@ return {
     "nvim-lua/plenary.nvim",
     "MunifTanjim/nui.nvim",
     --- The below dependencies are optional,
-    "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
-    -- "zbirenbaum/copilot.lua", -- for providers='copilot'
+    "nvim-tree/nvim-web-devicons",   -- or echasnovski/mini.icons
+    "nvim-telescope/telescope.nvim", -- for file_selector provider telescope
+    "ibhagwan/fzf-lua",              -- for file_selector provider fzf
+    "zbirenbaum/copilot.lua",        -- for providers='copilot'
     {
       -- support for image pasting
       "HakonHarnes/img-clip.nvim",
@@ -42,25 +44,16 @@ return {
 
   opts = {
     -- add any opts here
-    window = {
-      resize_debounce = 100,   -- debounce window resize events
-      resize_max_attempts = 3, -- max attempts to resize window
-    },
-    ask = {
-      start_insert = false,
-    },
-    edit = {
-      start_insert = false,
+    windows = {
+      ask = {
+        start_insert = false,
+      },
+      edit = {
+        start_insert = false,
+      },
     },
     hints = {
       enabled = false, -- disable automatic hints to prevent the resize error
-    },
-    mode_changes = {
-      debounce = 150,                -- add debounce to mode changes
-      skip_token_calculation = true, -- skip token calculation on mode change
-    },
-    sidebar = {
-      auto_refresh = false, -- disable automatic sidebar refresh
     },
   },
 }

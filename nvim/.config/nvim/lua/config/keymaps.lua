@@ -46,8 +46,8 @@ keymap("x", "<A-j>", ":move '>+1<CR>gv-gv", opts)
 keymap("x", "<A-k>", ":move '<-2<CR>gv-gv", opts)
 
 -- Navigate buffers
-keymap("n", "<S-l>", ":bp<CR>", opts)
-keymap("n", "<S-h>", ":bn<CR>", opts)
+keymap("n", "<S-l>", ":bn<CR>", opts)
+keymap("n", "<S-h>", ":bp<CR>", opts)
 
 -- Split windows
 keymap("n", "<C-\\>", ":vsplit<CR>", opts)

@@ -55,9 +55,6 @@ return {
     require("mason").setup()
     require("mason-nvim-lint").setup({
       -- Automatically install linters that are configured in linters_by_ft
-      ensure_installed = {
-        "golangci-lint",
-      },
       automatic_installation = true,
     })
 
