@@ -12,9 +12,9 @@ tmux list-windows -t dropterm | grep -q updates || tmux new-window -t dropterm -
 tmux select-window -t dropterm:updates
 
 # send keys
-tmux send-keys -t dropterm:updates 'clear; \
-  yay && \
-  tmux select-window -t dropterm:1 && \
-  hyprctl activewindow -j | jq -c ".class" | grep -q dropterm && \
-  hyprctl dispatch togglespecialworkspace dropterm && \
-  pkill -SIGRTMIN+8 waybar' Enter
+pgrep yay || tmux send-keys -t dropterm:updates 'clear;
+yay --noconfirm && pkill -SIGRTMIN+8 waybar;
+tmux select-window -t dropterm:1 && \
+hyprctl activewindow -j | jq -c ".class" | grep -q dropterm && \
+hyprctl dispatch togglespecialworkspace dropterm && \
+' Enter

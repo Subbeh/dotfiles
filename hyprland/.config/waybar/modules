@@ -18,12 +18,15 @@
       "2": "",
       "3": "",
       "4": "",
-      "5": ""
+      "5": "",
+      "special": "X"
     },
     "on-scroll-up": "hyprctl dispatch workspace +1 1>/dev/null",
     "on-scroll-down": "hyprctl dispatch workspace -1 1>/dev/null",
     "sort-by-number": true,
-    "active-only": false
+    "active-only": false,
+    "show-special": true,
+    "special-visible-only": true
   },
   "hyprland/window": {
     "format": "<span foreground='#87d7ff'>  </span>{initialTitle}"
