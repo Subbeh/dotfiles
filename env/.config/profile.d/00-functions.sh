@@ -20,7 +20,7 @@ fkill() {
 
 # retry previous command
 retry() {
-  until fc -ln -1; do
+  until eval fc -ln -1; do
     sleep "${1:-1}"
   done
 }

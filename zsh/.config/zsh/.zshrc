@@ -18,7 +18,7 @@ HISTDUP=erase
 
 setopt appendhistory          # Append to history file rather than overwriting
 setopt auto_pushd             # Automatically push directories to stack when cd-ing
-setopt complete_aliases       # Complete aliases as their full commands
+# setopt complete_aliases       # Complete aliases as their full commands NOTE: this messes up the kubectl autocompletion
 setopt extended_history       # Save timestamp and duration for each command in history
 setopt hist_find_no_dups      # When searching history, skip duplicates
 setopt hist_ignore_dups       # Don't save duplicate commands in history
