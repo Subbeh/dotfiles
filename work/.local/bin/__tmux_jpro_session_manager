@@ -11,23 +11,19 @@ if ! tmux has-session -t "${SESH:?not set}" 2>/dev/null; then
   tmuxinator start "$SESH" --no-attach
 fi
 
-instance=$(
-  find "${DIR:?not set}/sessions" -depth 1 -type d -exec stat -f '%B %N' {} \; | sort -rn | awk -F/ '{print $NF}' | fzf --bind=enter:replace-query+print-query --reverse --header "existing sessions:" --tmux center,20% || exit 0
-)
+if [[ -z "${1:-}" ]]; then
+  instance=$(
+    find "${DIR:?not set}/sessions" -depth 1 -type d -exec stat -f '%B %N' {} \; | sort -rn | awk -F/ '{print $NF}' | fzf --bind=enter:replace-query+print-query --reverse --header "existing sessions:" --tmux center,20% || exit 0
+  )
+else
+  instance="$1"
+fi
 
 if [[ "$instance" ]]; then
   session_dir="${DIR}/sessions/$instance"
 
   if ! tmux list-windows -t "$SESH":"$instance" &>/dev/null; then
     test -d "$session_dir" || mkdir -p "$session_dir"/{logs,data}
-    # test -f "${session_dir}/kubeconfig" || hermes kubeconfig build --team "${JPRO_KUBE_AWS_PROFILE:?not set}"
-    test -f "${session_dir}/kubeconfig" || echo 'apiVersion: v1
-clusters: []
-contexts: []
-current-context: ""
-kind: ""
-preferences: {}
-users: []' >"${session_dir}/kubeconfig"
     echo 'export KUBECONFIG="$(expand_path ./kubeconfig)"' >"$session_dir/.envrc"
     echo "export INST=$instance" >>"$session_dir/.envrc"
     direnv allow "$session_dir"
@@ -39,7 +35,7 @@ users: []' >"${session_dir}/kubeconfig"
 
     # create layout
     tmux split-window -c "$session_dir"
-    tmux split-window -h -p 30 -c "${WORKSPACE_DIR:?not set}/jamf/cloud-ops-tools/src/scripts"
+    tmux split-window -h -p 30 -c "$session_dir"
     tmux split-window -h -t 1 -p 30 -c "$session_dir"
     tmux select-pane -t 3
 
@@ -48,9 +44,10 @@ users: []' >"${session_dir}/kubeconfig"
       tmux pipe-pane -t "$i" "cat >> ${session_dir}/logs/pane_$i.log"
     done
 
-    # set context
+    # set context and run clops tools
     tmux send-keys -t '{top-left}' "__jpro_set_ctx $instance ; k9s" C-m
     tmux send-keys -t '{top-right}' "jstatus3 -i $instance" C-m
+    tmux send-keys -t '{bottom-left}' "hermes jpro actions get $instance" C-m
     tmux send-keys -t '{bottom-right}' "hermes jpro get $instance" C-m
   else
     # select window
