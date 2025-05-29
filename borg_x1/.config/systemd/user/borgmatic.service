@@ -2,9 +2,16 @@
 Description=borgmatic user backup
 Wants=network-online.target
 After=network-online.target
+
 [Service]
 Type=oneshot
 Restart=no
 LogRateLimitIntervalSec=0
+# Make sure we have access to the GPG agent
+Environment=GNUPGHOME=%h/.config/gnupg
+# Set the GPG TTY for pinentry
+Environment=GPG_TTY=/dev/tty
+# Make sure we have the SSH_AUTH_SOCK environment variable
+Environment=SSH_AUTH_SOCK=%t/gnupg/S.gpg-agent.ssh
 
 ExecStart=systemd-inhibit --who="sysadm" --what="sleep:shutdown" --why="Prevent interrupting scheduled backup" /usr/bin/borgmatic --verbosity -2 --syslog-verbosity 1
