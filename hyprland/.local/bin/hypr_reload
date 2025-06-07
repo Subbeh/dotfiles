@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
 set -x
-set -eo pipefail
+# set -eo pipefail
+
+exec &>>/tmp/hypr_reload.log
 
 declare -A MON=(
   [internal]="eDP-1"
-  [dell_4k]="desc:Dell Inc. DELL U2723QE"
+  [dell_4k]="desc:Dell Inc. DELL U2723QE 7M70DP3"
   [lg_4k]="desc:LG Electronics LG HDR 4K 308NTTQFK265"
 )
 
@@ -22,21 +24,16 @@ main() {
     profile=$(select_profile)
     [[ -z "$profile" ]] && exit 1
   else
-    while getopts p:rwh opt; do
+    while getopts p:rw opt; do
       case "$opt" in
         p) profile="${OPTARG}" ;;
         r) reload_only=true ;;
         w) waybar_only=true ;;
-        h)
-          handle_monitor_hotplug
-          exit 0
-          ;;
         *)
           echo "Usage: $(basename "$0") [-p profile] [-r] [-h]"
           echo "  -p profile   Set monitor profile"
-          echo "  -r           Reload Hyprland and Waybar only"
+          echo "  -r           Reload Hyprland and Waybar"
           echo "  -w           Reload Waybar only"
-          echo "  -h           Handle monitor hotplug event"
           exit 1
           ;;
       esac
@@ -69,40 +66,60 @@ map_output() {
   fi
 }
 
+check_monitors() {
+  for mon in "$@"; do
+    local mon_name="${MON[$mon]#desc:}"
+    if ! hyprctl monitors all -j | jq -r '.[].description' | grep -Fxq "$mon_name"; then
+      return 1
+    fi
+  done
+}
+
 set_profile() {
   for mon in $(hyprctl monitors -j | jq -r '.[].name'); do
     [[ "$mon" != "${MON[internal]}" ]] && hyprctl keyword monitor "$mon, disable"
   done
 
-  case "$1" in
-    "docked")
-      hyprctl keyword monitor "${MON[internal]}, 1920x1200, 0x0,        1" >/dev/null
-      hyprctl keyword monitor "${MON[dell_4k]},  3840x2160, 0x-1440,    1.5" >/dev/null
-      hyprctl keyword monitor "${MON[lg_4k]},    3840x2160, 2560x-1440, 1.5" >/dev/null
-      mons=("internal" "dell_4k" "lg_4k")
-      ;;
-    "docked-ext")
-      hyprctl keyword monitor "${MON[dell_4k]}, 3840x2160, 0x0,        1.5" >/dev/null
-      hyprctl keyword monitor "${MON[lg_4k]},   3840x2160, 2560x0,     1.5" >/dev/null
-      if [[ "$(hyprctl monitors -j | jq -r '.|length')" -gt 1 ]]; then
-        hyprctl keyword monitor "${MON[internal]}, disable"
-      fi
-      mons=("dell_4k" "lg_4k")
-      ;;
-    "docked-dell")
-      hyprctl keyword monitor "${MON[internal]},  1920x1200, 0x0,        1" >/dev/null
-      hyprctl keyword monitor "${MON[dell_4k]},   3840x2160, 0x-1440,    1.5" >/dev/null
-      mons=("internal" "dell_4k")
-      ;;
-    "docked-lg")
-      hyprctl keyword monitor "${MON[internal]},  1920x1200, 0x0,        1" >/dev/null
-      hyprctl keyword monitor "${MON[lg_4k]},     3840x2160, 1920x0,     1.5" >/dev/null
-      mons=("internal" "lg_4k")
-      ;;
-    *)
-      hyprctl keyword monitor "${MON[internal]},  1920x1200, 0x0,        1" >/dev/null
-      ;;
-  esac
+  ac_status=$(acpi -a)
+  if [[ "$ac_status" != "Adapter 0: off-line" ]]; then
+    case "$1" in
+      "docked")
+        mons=("internal" "dell_4k" "lg_4k")
+        if check_monitors "${mons[@]}"; then
+          hyprctl keyword monitor "${MON[internal]}, 1920x1200, 0x0,        1" >/dev/null
+          hyprctl keyword monitor "${MON[dell_4k]},  3840x2160, 0x-1440,    1.5" >/dev/null
+          hyprctl keyword monitor "${MON[lg_4k]},    3840x2160, 2560x-1440, 1.5" >/dev/null
+        fi
+        ;;
+      "docked-ext")
+        mons=("dell_4k" "lg_4k")
+        if check_monitors "${mons[@]}"; then
+          hyprctl keyword monitor "${MON[dell_4k]}, 3840x2160, 0x0,        1.5" >/dev/null
+          hyprctl keyword monitor "${MON[lg_4k]},   3840x2160, 2560x0,     1.5" >/dev/null
+          if [[ "$(hyprctl monitors -j | jq -r '.|length')" -gt 1 ]]; then
+            hyprctl keyword monitor "${MON[internal]}, disable"
+          fi
+        fi
+        ;;
+      "docked-dell")
+        mons=("internal" "dell_4k")
+        if check_monitors "${mons[@]}"; then
+          hyprctl keyword monitor "${MON[internal]},  1920x1200, 0x0,        1" >/dev/null
+          hyprctl keyword monitor "${MON[dell_4k]},   3840x2160, 0x-1440,    1.5" >/dev/null
+        fi
+        ;;
+      "docked-lg")
+        mons=("internal" "lg_4k")
+        if check_monitors "${mons[@]}"; then
+          hyprctl keyword monitor "${MON[internal]},  1920x1200, 0x0,        1" >/dev/null
+          hyprctl keyword monitor "${MON[lg_4k]},     3840x2160, 1920x0,     1.5" >/dev/null
+        fi
+        ;;
+      *)
+        hyprctl keyword monitor "${MON[internal]},  1920x1200, 0x0,        1" >/dev/null
+        ;;
+    esac
+  fi
 }
 
 set_workspaces() {
@@ -172,28 +189,6 @@ launch_waybar() {
     sed -e "s/@@OUTPUT@@/$(map_output "${mons[-1]}")/" -e "s/@@BAR@@/$bar/" "$WAYBAR_TEMPLATE" >"$WAYBAR_TMP.$bar"
     uwsm app -- waybar -c "$WAYBAR_TMP.$bar" &
   done
-}
-
-handle_monitor_hotplug() {
-  handle() {
-    if [[ "$1" =~ monitorremoved* ]]; then
-      # Get current monitor count
-      monitor_count=$(hyprctl monitors -j | jq -r '.|length')
-
-      # Check if we're in docked-ext profile by looking for disabled internal monitor
-      if hyprctl monitors all -j | jq -r '.[] | select(.name=="eDP-1") | .disabled' | grep -q true; then
-        # If we're in docked-ext and monitor count is 1 or less, switch to undocked
-        if [[ "$monitor_count" -le 1 ]]; then
-          # Re-enable internal monitor first
-          # hyprctl keyword monitor "eDP-1,1920x1200,0x0,1"
-          # sleep 1 # Give monitor time to initialize
-          "$0" -p undocked
-        fi
-      fi
-    fi
-  }
-
-  socat -U - "UNIX-CONNECT:$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock" | while read -r line; do handle "$line"; done
 }
 
 main "$@"
