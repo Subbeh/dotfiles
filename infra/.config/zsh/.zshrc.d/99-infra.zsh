@@ -13,9 +13,11 @@ _chkcmd kubectl && {
 
 # ansible
 play() {
-  pushd "${HOMELAB_DIR:?not set}/ansible"
+  local _popd
+  [[ "$(pwd)" != "${HOMELAB_DIR:?not set}/ansible" ]] && _popd=1
+  ((_popd)) && pushd "${HOMELAB_DIR:?not set}/ansible"
   ansible-playbook "playbooks/$@"
-  popd
+  ((_popd)) && popd
 }
 
 ## completion function for ap command
@@ -32,3 +34,24 @@ compdef _play play
 alias tinit="terraform init"
 alias tplan="terraform plan"
 alias tapply="terraform apply"
+
+# direnv hook for Zsh history switching
+# default history file
+ZSH_DEFAULT_HISTFILE="$HOME/.zsh_history"
+
+direnv_hook() {
+  # get current HISTFILE value
+  local new_histfile=${HISTFILE:-$ZSH_DEFAULT_HISTFILE}
+
+  # only reload if HISTFILE has changed
+  if [[ "$ZSH_ACTIVE_HISTFILE" != "$new_histfile" ]]; then
+    fc -AI # save current history
+    HISTFILE="$new_histfile"
+    fc -R # reload new history
+    ZSH_ACTIVE_HISTFILE="$HISTFILE"
+  fi
+}
+
+autoload -Uz add-zsh-hook
+add-zsh-hook chpwd direnv_hook
+add-zsh-hook precmd direnv_hook
