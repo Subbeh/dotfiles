@@ -15,8 +15,8 @@ return {
   { "tpope/vim-fugitive",         keys = { { "<leader>gg", "<cmd>Git<cr>", desc = "Fugitive" } } },
   { "numToStr/Comment.nvim",      opts = {} },
   { "windwp/nvim-autopairs",      event = "InsertEnter",                                         config = true },
-  { "rmagatti/auto-session",      lazy = false }, -- TODO: debug
-  { "monaqa/dial.nvim" },                         -- TODO: is enabled?
+  -- { "rmagatti/auto-session",      lazy = false }, -- TODO: debug
+  { "monaqa/dial.nvim" }, -- TODO: is enabled?
   { "stevearc/dressing.nvim",     opts = {} },
   { "kawre/neotab.nvim",          event = "InsertEnter",                                         opts = {} },
   { "ibhagwan/fzf-lua" },

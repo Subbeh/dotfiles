@@ -26,7 +26,8 @@ return {
   keys = {
     { "<leader><leader>", "<cmd>lua require('telescope').extensions.smart_open.smart_open({ cwd_only = true })<cr>", desc = "Find Files" },
     -- { "<leader><leader>", "<cmd>Telescope frecency workspace=CWD<cr>",                                             desc = "Find Files" },
-    { "<leader>bb",       "<cmd>Telescope buffers previewer=false<cr>",                                              desc = "Buffers" },
+    -- { "<leader>bb",       "<cmd>Telescope buffers previewer=false<cr>",                                              desc = "Buffers" },
+    { "<tab>",            "<cmd>Telescope buffers previewer=false<cr>",                                              desc = "Buffers" },
     { "<leader>cu",       "<cmd>Telescope undo<cr>",                                                                 desc = "Undo" },
     { "<leader>cS",       "<cmd>Telescope lsp_document_symbols<cr>",                                                 desc = "LSP Document Symbols" },
     -- { "<leader>ff",       "<cmd>Telescope smart_open<cr>",                                                         desc = "Find Files (all)" },
@@ -95,12 +96,12 @@ return {
         prompt_prefix = " " .. icons.ui.FindFile .. " ",
         selection_caret = icons.ui.Forward,
         winblend = 20,
-        mappings = {
-          i = {
-            ["<Tab>"] = actions.toggle_selection + actions.move_selection_better,
-            ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_worse,
-          },
-        },
+        -- mappings = {
+        --   i = {
+        --     ["<Tab>"] = actions.toggle_selection + actions.move_selection_better,
+        --     ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_worse,
+        --   },
+        -- },
         file_ignore_patterns = file_ignore_patterns,
       },
 
@@ -129,16 +130,18 @@ return {
           theme = "dropdown",
           previewer = false,
           initial_mode = "normal",
+          ignore_current_buffer = true,
+          sort_mru = true,
           mappings = {
             i = {
               ["<C-d>"] = actions.delete_buffer,
             },
             n = {
               ["dd"] = actions.delete_buffer,
+              ["<tab>"] = require('telescope.actions').close,
             },
           },
         },
-
         colorscheme = {
           enable_preview = true,
         },
@@ -162,6 +165,9 @@ return {
           },
           hidden_files = true,
           sync_with_nvim_tree = true,
+          on_project_selected = function()
+            require('telescope').extensions.smart_open.smart_open({ cwd_only = true })
+          end,
         },
         repo = { -- TODO: `locate -r` error
           list = {

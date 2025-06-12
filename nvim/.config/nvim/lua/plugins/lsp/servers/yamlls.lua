@@ -11,6 +11,9 @@ return {
       format = {
         enable = true,
       },
+      customTags = {
+        "!vault scalar"
+      },
     },
   },
   setup = {
