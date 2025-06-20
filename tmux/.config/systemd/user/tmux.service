@@ -1,0 +1,13 @@
+[Unit]
+Description=tmux multiple sessions
+After=graphical-session.target
+
+[Service]
+Type=forking
+ExecStart=%h/.local/bin/__tmux_start_sessions
+ExecStop=/bin/bash -c '/usr/bin/tmux kill-server'
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

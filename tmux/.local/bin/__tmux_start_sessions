@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Start multiple tmux sessions with error handling
+set -e
+
+# Source environment variables from profile
+# This ensures environment variables are available when started by systemd
+if [ -f "$HOME/.profile" ]; then
+  source "$HOME/.profile"
+fi
+
+# Function to start a session if it doesn't exist
+start_session() {
+  local session_name="$1"
+  if ! /usr/bin/tmux has-session -t "$session_name" 2>/dev/null; then
+    echo "Starting tmux session: $session_name"
+    /usr/bin/tmuxinator start "$session_name"
+  else
+    echo "Session $session_name already exists, skipping..."
+  fi
+}
+
+# Start configured sessions
+start_session "home"
+start_session "dropterm"
+
+# Optional: Add any other sessions you want to start
+# start_session "work"
+# start_session "monitoring"
+
+echo "All tmux sessions started successfully"
