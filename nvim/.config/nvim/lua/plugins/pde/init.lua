@@ -3,6 +3,7 @@ return {
     "mfussenegger/nvim-dap",
     dependencies = {
       "rcarriga/nvim-dap-ui",
+      "jay-babu/mason-nvim-dap.nvim",
       "nvim-neotest/nvim-nio",
       "theHamsta/nvim-dap-virtual-text",
       "nvim-telescope/telescope-dap.nvim",
@@ -31,9 +32,93 @@ return {
     },
 
     config = function()
-      require("dapui").setup()
-      require("nvim-dap-virtual-text").setup()
-      require('telescope').load_extension('dap')
+      local mason_dap = require("mason-nvim-dap")
+      local dap = require("dap")
+      local ui = require("dapui")
+      local dap_virtual_text = require("nvim-dap-virtual-text")
+
+      -- Dap Virtual Text
+      dap_virtual_text.setup()
+
+      -- Helper function to get Python path
+      local function get_python_path()
+        -- First check for VIRTUAL_ENV (set by direnv)
+        local venv = os.getenv("VIRTUAL_ENV")
+        if venv and vim.fn.executable(venv .. "/bin/python") == 1 then
+          return venv .. "/bin/python"
+        end
+        
+        -- Fall back to checking local venv directories
+        local cwd = vim.fn.getcwd()
+        if vim.fn.executable(cwd .. "/venv/bin/python") == 1 then
+          return cwd .. "/venv/bin/python"
+        elseif vim.fn.executable(cwd .. "/.venv/bin/python") == 1 then
+          return cwd .. "/.venv/bin/python"
+        else
+          return "/usr/bin/python"
+        end
+      end
+
+      mason_dap.setup({
+        ensure_installed = { "python" },
+        automatic_installation = true,
+        handlers = {
+          function(config)
+            require("mason-nvim-dap").default_setup(config)
+          end,
+        },
+      })
+
+      -- Configurations
+      dap.configurations = {
+        python = {
+          {
+            -- The first three options are required by nvim-dap
+            type = "python", -- the type here established the link to the adapter definition: `dap.adapters.python`
+            request = "launch",
+            name = "Launch file",
+
+            -- Options below are for debugpy, see https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings for supported options
+
+            program = "${file}", -- This configuration will launch the current file if used.
+            pythonPath = get_python_path,
+          },
+          {
+            type = "python",
+            request = "launch",
+            name = "Launch file with args",
+            program = "${file}",
+            args = function()
+              local args = {}
+              local input = vim.fn.input("Arguments: ")
+              for arg in string.gmatch(input, "%S+") do
+                table.insert(args, arg)
+              end
+              return args
+            end,
+            pythonPath = get_python_path,
+          },
+        },
+      }
+
+      -- Dap UI
+
+      ui.setup()
+      --
+      -- vim.fn.sign_define("DapBreakpoint", { text = "🐞" })
+
+      dap.listeners.before.attach.dapui_config = function()
+        ui.open()
+      end
+      dap.listeners.before.launch.dapui_config = function()
+        ui.open()
+      end
+      dap.listeners.before.event_terminated.dapui_config = function()
+        ui.close()
+      end
+      dap.listeners.before.event_exited.dapui_config = function()
+        ui.close()
+      end
     end
   },
 }
