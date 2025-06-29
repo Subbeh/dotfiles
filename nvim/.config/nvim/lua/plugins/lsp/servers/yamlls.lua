@@ -1,19 +1,21 @@
 return {
-  filetypes = { "yaml" }, -- explicitly set filetypes, excluding 'ansible'
+  filetypes = { "yaml", "yaml.ansible" },
   settings = {
     yaml = {
       schemaStore = {
-        enable = true,
-        url = "https://www.schemastore.org/api/json/catalog.json",
+        -- You must disable built-in schemaStore support if you want to use
+        -- this plugin and its advanced options like `ignore`.
+        enable = false,
+        -- Avoid TypeError: Cannot read properties of undefined (reading 'length')
+        url = "",
       },
-      schemas = require("schemastore").yaml.schemas(),
-      validate = true,
-      format = {
-        enable = true,
-      },
-      customTags = {
-        "!vault scalar"
-      },
+      schemas = require('schemastore').yaml.schemas(),
+      validate = { enable = true },
+      format = { enable = true },
+      customTags = { "!vault scalar" },
+      lint = {
+        commas = "ignore",
+      }
     },
   },
   setup = {

@@ -92,27 +92,25 @@ return {
     end
 
     -- Define default LSP handlers with themed window
-    local handlers = {
-      ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-        border = "single",
-        title = "",
-        max_width = 80,
-        max_height = 30,
-        focusable = false,
-        style = "minimal",
-        title_pos = "left",
-        border_hl = "FloatBorder",
-        float_hl = "NormalFloat",
-      }),
-      ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-        border = "single",
-        title = "",
-        focusable = false,
-        style = "minimal",
-        border_hl = "FloatBorder",
-        float_hl = "NormalFloat",
-      }),
-    }
+    vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+      border = "single",
+      title = "",
+      max_width = 80,
+      max_height = 30,
+      focusable = false,
+      style = "minimal",
+      title_pos = "left",
+      border_hl = "FloatBorder",
+      float_hl = "NormalFloat",
+    })
+    vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+      border = "single",
+      title = "",
+      focusable = false,
+      style = "minimal",
+      border_hl = "FloatBorder",
+      float_hl = "NormalFloat",
+    })
 
     -- Force diagnostic refresh on certain events
     vim.api.nvim_create_autocmd({ "InsertLeave", "BufEnter" }, {
@@ -126,33 +124,16 @@ return {
 
     -- Set up mason first
     require("mason").setup()
+    require("mason-lspconfig").setup()
 
     -- Load all LSP configurations from the servers directory
     local servers_path = vim.fn.stdpath("config") .. "/lua/plugins/lsp/servers"
-    local server_configs = {}
-    local ensure_installed = {}
 
     for _, file in ipairs(vim.fn.readdir(servers_path)) do
       if file:match("%.lua$") then
         local server_name = file:gsub("%.lua$", "")
-        -- Load the configuration from our local file
-        server_configs[server_name] = require("plugins.lsp.servers." .. server_name)
-        table.insert(ensure_installed, server_name)
+        vim.lsp.config(server_name, require("plugins.lsp.servers." .. server_name))
       end
     end
-
-    -- Set up mason-lspconfig with ensure_installed
-    require("mason-lspconfig").setup({
-      automatic_installation = true,
-      ensure_installed = ensure_installed,
-      handlers = {
-        function(server_name)
-          local config = server_configs[server_name] or {}
-          -- Merge our base config with server-specific config
-          config.handlers = vim.tbl_deep_extend("force", handlers, config.handlers or {})
-          require("lspconfig")[server_name].setup(config)
-        end,
-      },
-    })
   end,
 }
