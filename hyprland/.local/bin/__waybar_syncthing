@@ -92,7 +92,7 @@ get_status() {
   local is_syncing sync_progress
   read -r is_syncing sync_progress < <(get_sync_status)
 
-  local tooltip="Connected devices: $connected_devices/$total_devices"
+  local tooltip="Syncthing - connected devices: $connected_devices/$total_devices"
   if [[ -n "$sync_progress" ]]; then
     tooltip="$tooltip\n\nSync Progress:\n$sync_progress"
   fi
@@ -104,7 +104,7 @@ get_status() {
   elif [[ "$is_syncing" == "true" ]]; then
     echo "{\"text\": \"\", \"class\": \"syncing\", \"tooltip\": \"$tooltip\"}"
   else
-    echo "{\"text\": \"\", \"class\": \"synced\", \"tooltip\": \"$tooltip\"}"
+    echo "{\"text\": \"\", \"class\": \"synced\", \"tooltip\": \"$tooltip\"}"
   fi
 }
 

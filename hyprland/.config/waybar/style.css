@@ -31,7 +31,7 @@ tooltip {
 
 tooltip * {
   color: @white;
-  padding: 5px;
+  padding: 2px;
   font-family: FiraCode Nerd Font;
   /* font-size: 1.05em; */
   font-size: 12px;
