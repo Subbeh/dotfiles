@@ -1,12 +1,13 @@
 #!/bin/bash
 
-# Start multiple tmux sessions with error handling
+# Start tmux daemon and sessions with systemd-run
 set -e
 
-# Source environment variables from profile
-# This ensures environment variables are available when started by systemd
-if [ -f "$HOME/.profile" ]; then
-  source "$HOME/.profile"
+# Start tmux daemon if not already running
+if ! systemctl --user is-active --quiet tmux 2>/dev/null; then
+    echo "Starting tmux daemon with systemd-run..."
+    systemd-run --user --remain-after-exit -u tmux -- tmux new-session -d -s _daemon 'sleep infinity'
+    sleep 2  # Give daemon time to start
 fi
 
 # Function to start a session if it doesn't exist
