@@ -7,7 +7,6 @@ return {
       "nvim-neotest/nvim-nio",
       "theHamsta/nvim-dap-virtual-text",
       "nvim-telescope/telescope-dap.nvim",
-      "jbyuki/one-small-step-for-vimkind",
     },
 
     keys = {
@@ -47,7 +46,7 @@ return {
         if venv and vim.fn.executable(venv .. "/bin/python") == 1 then
           return venv .. "/bin/python"
         end
-        
+
         -- Fall back to checking local venv directories
         local cwd = vim.fn.getcwd()
         if vim.fn.executable(cwd .. "/venv/bin/python") == 1 then
@@ -119,6 +118,6 @@ return {
       dap.listeners.before.event_exited.dapui_config = function()
         ui.close()
       end
-    end
+    end,
   },
 }

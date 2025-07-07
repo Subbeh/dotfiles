@@ -10,6 +10,7 @@ return {
     { "folke/lazydev.nvim" },
     { "rafamadriz/friendly-snippets" },
     { "brenoprata10/nvim-highlight-colors" },
+    { "fang2hou/blink-copilot" },
   },
 
   opts = {
@@ -68,8 +69,14 @@ return {
     },
 
     sources = {
-      default = { "lsp", "lazydev", "path", "snippets", "buffer" },
+      default = { "copilot", "lsp", "lazydev", "path", "snippets", "buffer" },
       providers = {
+        copilot = {
+          name = "copilot",
+          module = "blink-copilot",
+          score_offset = 100,
+          async = true,
+        },
         lazydev = {
           name = "LazyDev",
           module = "lazydev.integrations.blink",

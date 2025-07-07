@@ -1,6 +1,7 @@
 local opt = vim.opt
 
 opt.autoindent = true                                               --  Enable auto-indentation
+opt.autoread = true                                                 --  Enable auto-reload
 opt.breakindent = true                                              --  Preserve indentation in wrapped text
 opt.clipboard = "unnamedplus"                                       --  Use system clipboard
 opt.cmdheight = 0                                                   --  Hide command line unless needed

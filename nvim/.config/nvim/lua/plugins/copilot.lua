@@ -2,46 +2,33 @@ return {
   {
     "zbirenbaum/copilot.lua",
     cond = vim.loop.os_uname().sysname == "Darwin", -- Only enable on macOS
-    cmd = "Copilot",
-    event = "InsertEnter",
-    config = function()
-      require("copilot").setup({
-        panel = {
-          enabled = true,
-          auto_refresh = true,
-          keymap = {
-            jump_prev = "[[",
-            jump_next = "]]",
-            accept = "<CR>",
-            refresh = "gr",
-            open = "<M-CR>",
-          },
+    opts = {
+      suggestion = {
+        enabled = false,
+        auto_trigger = true,
+        hide_during_completion = vim.g.ai_cmp,
+        keymap = {
+          accept = false, -- handled by nvim-cmp / blink.cmp
         },
-        suggestion = {
-          enabled = true,
-          auto_trigger = true,
-          debounce = 75,
-          keymap = {
-            accept = "<M-l>",
-            accept_word = "<M-w>",
-            accept_line = "<M-]>",
-            next = "<M-]>",
-            prev = "<M-[>",
-            dismiss = "<M-x>",
-          },
-        },
-        filetypes = {
-          yaml = false,
-          markdown = false,
-          help = false,
-          gitcommit = false,
-          gitrebase = false,
-          hgcommit = false,
-          svn = false,
-          cvs = false,
-          ["."] = false,
-        },
-      })
-    end,
+      },
+      panel = { enabled = false },
+      filetypes = {
+        ["*"] = true,
+      },
+    },
+  },
+
+  {
+    "CopilotC-Nvim/CopilotChat.nvim",
+    cond = vim.loop.os_uname().sysname == "Darwin", -- Only enable on macOS
+    dependencies = {
+      { "github/copilot.vim" },
+      { "nvim-lua/plenary.nvim", branch = "master" },
+    },
+    build = "make tiktoken",
+    keys = {
+      { "<leader>aA", "<cmd>CopilotChat<cr>", desc = "Copilot Chat" },
+    },
+    opts = {},
   },
 }
