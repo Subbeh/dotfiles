@@ -3,6 +3,8 @@
 .direnv/
 .terraform/
 .cache/
+.venv/
+.vscode/
 temp/
 sessions/
 node_modules/

@@ -1,3 +1,5 @@
-.stversions/*
-.direnv/*
+.stversions/
+.direnv/
 .DS_Store
+.claude/
+CLAUDE.md

@@ -3,10 +3,13 @@
 _chkcmd terraform && complete -o nospace -C $(which terraform) terraform
 _chkcmd aws && complete -C $(which aws_completer) aws
 _chkcmd aws-sso-util && eval "$(_AWS_SSO_UTIL_COMPLETE=zsh_source aws-sso-util)"
+_chkcmd mise && eval "$(mise activate zsh)"
 
 # kubectl
 _chkcmd kubectl && {
   alias k=kubectl
+  alias kns="kubectl config set-context --current --namespace"
+  alias kctx="kubectl config use-context"
   source <(kubectl completion zsh)
   compdef k='kubectl'
 }
