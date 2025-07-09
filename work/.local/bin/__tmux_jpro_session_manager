@@ -49,6 +49,9 @@ if [[ "$instance" ]]; then
     tmux send-keys -t '{top-right}' "jstatus3 -i $instance" C-m
     tmux send-keys -t '{bottom-left}' "hermes jpro actions get $instance" C-m
     tmux send-keys -t '{bottom-right}' "hermes jpro get $instance" C-m
+
+    # bind key for sketchybar context
+    tmux bind-key -T prefix C "run-shell 'sketchybar --trigger set_ctx HERMES_CTX=#{window_name}'"
   else
     # select window
     tmux switchc -t "$SESH"
