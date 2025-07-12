@@ -41,12 +41,12 @@ main() {
   fi
 
   if ! $waybar_only; then
-    hyprctl reload
 
     if ! $reload_only; then
-      [[ -n "$profile" ]] && set_profile "${profile}"
+      [[ -n "$profile" ]] && set_profile "${profile}" && sleep 1
     fi
 
+    hyprctl reload
     set_workspaces
   fi
 
