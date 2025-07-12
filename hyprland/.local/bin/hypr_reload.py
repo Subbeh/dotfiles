@@ -61,6 +61,7 @@ class Monitor:
     width: int = 0
     height: int = 0
     scale: float = 1.0
+    disabled: bool = False
 
     @classmethod
     def from_hyprctl_data(cls, data: dict) -> "Monitor":
@@ -72,6 +73,7 @@ class Monitor:
             width=data["width"],
             height=data["height"],
             scale=data["scale"],
+            disabled=data["disabled"],
         )
 
 
@@ -95,12 +97,37 @@ class Profile:
     def is_active(self, monitors: Dict) -> bool:
         """Check if the current monitor configuration matches this profile."""
         expected_configs = self.get_monitor_configs()
+        
+        # Get the set of monitor names that should be active in this profile
+        expected_active_monitors = set()
+        for monitor_name, _, _, _, _, _ in expected_configs:
+            # Find the actual monitor name
+            if monitor_name == "internal":
+                internal_name = MONITORS["internal"]["name"]
+                if internal_name in monitors:
+                    expected_active_monitors.add(internal_name)
+            elif monitor_name in monitors:
+                expected_active_monitors.add(monitor_name)
+            else:
+                # Try to match by description
+                monitor_info = MONITORS.get(monitor_name, {})
+                expected_description = monitor_info.get("description", "")
+                if expected_description:
+                    for mon_name, mon in monitors.items():
+                        if mon.description == expected_description:
+                            expected_active_monitors.add(mon_name)
+                            break
 
-        # First check: Do we have the right number of monitors?
-        if len(expected_configs) != len(monitors):
-            return False
+        # Check that monitors not in the profile are disabled
+        for monitor_name, monitor in monitors.items():
+            if monitor_name not in expected_active_monitors:
+                if not monitor.disabled:
+                    return False  # Monitor should be disabled but isn't
+            else:
+                if monitor.disabled:
+                    return False  # Monitor should be active but is disabled
 
-        # Second check: For each expected monitor configuration, verify it matches current state
+        # Check that each expected monitor has the correct configuration
         for (
             monitor_name,
             expected_x,
@@ -111,19 +138,17 @@ class Profile:
         ) in expected_configs:
             current_monitor = None
 
-            # Try to find the monitor by name first - for internal monitor, check if it has a "name" field
+            # Find the actual monitor
             if monitor_name == "internal":
-                # For internal monitor, use the name from MONITORS config
                 internal_name = MONITORS["internal"]["name"]
                 if internal_name in monitors:
                     current_monitor = monitors[internal_name]
             elif monitor_name in monitors:
                 current_monitor = monitors[monitor_name]
             else:
-                # If not found by name, try to match by description
+                # Try to match by description
                 monitor_info = MONITORS.get(monitor_name, {})
                 expected_description = monitor_info.get("description", "")
-
                 if expected_description:
                     for mon in monitors.values():
                         if mon.description == expected_description:
@@ -181,11 +206,14 @@ class Profile:
 
 
 class HyprlandManager:
-    def __init__(self):
+    def __init__(self, dry_run: bool = False):
+        self.dry_run = dry_run
         self.profiles = {
             name: Profile(name, configs) for name, configs in PROFILES.items()
         }
+        self.refresh_monitors()
 
+    def refresh_monitors(self):
         try:
             result = subprocess.run(
                 ["hyprctl", "monitors", "all", "-j"],
@@ -204,8 +232,44 @@ class HyprlandManager:
 
         except subprocess.CalledProcessError as e:
             print(f"Error running hyprctl: {e}")
+            self.monitors = {}
         except json.JSONDecodeError as e:
             print(f"Error parsing monitor data: {e}")
+            self.monitors = {}
+
+    def find_monitor_by_config_name(self, config_name: str) -> str:
+        """Find the actual monitor name for a given config name."""
+        if config_name == "internal":
+            internal_name = MONITORS["internal"]["name"]
+            if internal_name in self.monitors:
+                return internal_name
+        elif config_name in self.monitors:
+            return config_name
+        else:
+            monitor_info = MONITORS.get(config_name, {})
+            expected_description = monitor_info.get("description", "")
+
+            if expected_description:
+                for mon_name, mon in self.monitors.items():
+                    if mon.description == expected_description:
+                        return mon_name
+
+        return None
+
+    def run_hyprctl_command(self, command: List[str]) -> bool:
+        """Execute a hyprctl command, respecting dry-run mode."""
+        if self.dry_run:
+            print(f"[DRY RUN] Would execute: {' '.join(command)}")
+            return True
+
+        try:
+            subprocess.run(command, capture_output=True, text=True, check=True)
+            return True
+        except subprocess.CalledProcessError as e:
+            print(f"Error executing {' '.join(command)}: {e}")
+            if e.stderr:
+                print(f"stderr: {e.stderr}")
+            return False
 
     def set_profile(self, profile_name: str) -> bool:
         try:
@@ -224,6 +288,71 @@ class HyprlandManager:
 
         print(f"Setting monitor profile to {profile_name}")
 
+        # Get the monitor configurations for this profile
+        profile_configs = profile.get_monitor_configs()
+        profile_monitor_names = set()
+
+        # Collect all monitor names that should be active in this profile
+        for config_name, _, _, _, _, _ in profile_configs:
+            actual_name = self.find_monitor_by_config_name(config_name)
+            if actual_name:
+                profile_monitor_names.add(actual_name)
+
+        success = True
+
+        # Step 1: Disable monitors not in the profile
+        for monitor_name, monitor in self.monitors.items():
+            if monitor_name not in profile_monitor_names:
+                if not monitor.disabled:
+                    print(f"Disabling monitor: {monitor_name}")
+                    if not self.run_hyprctl_command(
+                        ["hyprctl", "keyword", "monitor", f"{monitor_name},disable"]
+                    ):
+                        success = False
+                else:
+                    print(f"Monitor {monitor_name} is already disabled")
+
+        # Step 2: Configure monitors in the profile
+        for config_name, x, y, width, height, scale in profile_configs:
+            actual_name = self.find_monitor_by_config_name(config_name)
+            if actual_name:
+                current_monitor = self.monitors[actual_name]
+                
+                # Check if monitor needs to be configured
+                needs_config = (
+                    current_monitor.disabled or
+                    current_monitor.x != x or
+                    current_monitor.y != y or
+                    current_monitor.width != width or
+                    current_monitor.height != height or
+                    abs(current_monitor.scale - scale) > 0.01
+                )
+                
+                if needs_config:
+                    # Format: monitor=name,widthxheight@refresh,positionx,scale
+                    monitor_config = f"{actual_name},{width}x{height},{x}x{y},{scale}"
+                    print(f"Configuring monitor: {monitor_config}")
+                    if not self.run_hyprctl_command(
+                        ["hyprctl", "keyword", "monitor", monitor_config]
+                    ):
+                        success = False
+                else:
+                    print(f"Monitor {actual_name} is already correctly configured")
+            else:
+                print(f"Warning: Could not find monitor for config '{config_name}'")
+                success = False
+
+        if success:
+            print(f"Successfully applied profile '{profile_name}'")
+        else:
+            print(f"Some errors occurred while applying profile '{profile_name}'")
+
+        # Refresh monitor state after changes
+        if not self.dry_run:
+            self.refresh_monitors()
+
+        return success
+
     # def reload_hyprland(self):
     #     try:
     #         subprocess.run(["hyprctl", "reload"], check=True)
@@ -239,10 +368,14 @@ def main():
     parser.add_argument(
         "-r", "--reload", action="store_true", help="Reload Hyprland and Waybar"
     )
-    parser.add_argument("--dry-run", help="Don't change anything")
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Don't change anything, just show what would be done",
+    )
 
     args = parser.parse_args()
-    manager = HyprlandManager()
+    manager = HyprlandManager(dry_run=args.dry_run)
 
     if args.profile:
         manager.set_profile(args.profile)
