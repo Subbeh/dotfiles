@@ -1,0 +1,178 @@
+#!/usr/bin/env bash
+set -x
+
+# Get systemd service status
+get_service_status() {
+  local service_status
+  service_status=$(systemctl --user is-active borgmatic.service 2>/dev/null)
+
+  if [[ "$service_status" == "active" || "$service_status" == "activating" ]]; then
+    echo "running"
+  elif [[ "$service_status" == "failed" ]]; then
+    echo "failed"
+  else
+    echo "inactive"
+  fi
+}
+
+# Get last run time from systemd journal
+get_last_run() {
+  local last_run
+  last_run=$(journalctl --user -u borgmatic.service --since "1 day ago" --no-pager --output=short-iso | grep "Starting borgmatic user backup" | tail -n1 | cut -d' ' -f1)
+
+  if [[ -n "$last_run" ]]; then
+    echo "$last_run"
+  else
+    echo ""
+  fi
+}
+
+# Get next run time from systemd timer
+get_next_run() {
+  local next_run
+  next_run=$(systemctl --user list-timers borgmatic.timer --no-pager --output=short-iso | grep "borgmatic.timer" | head -n1 | awk '{print $1, $2, $3}')
+
+  if [[ -n "$next_run" ]]; then
+    echo "$next_run"
+  else
+    echo ""
+  fi
+}
+
+# Get backup size from borg info (if available)
+get_backup_size() {
+  # Try to get the repository path from borgmatic config
+  local config_file
+  config_file=$(find ~/.config/borgmatic -name "config.yaml" 2>/dev/null | head -n1)
+
+  if [[ -n "$config_file" ]]; then
+    local repo_path
+    repo_path=$(grep -E "^\s*path:" "$config_file" | head -n1 | awk '{print $2}' | tr -d '"')
+
+    if [[ -n "$repo_path" ]]; then
+      local size_info
+      size_info=$(borg info "$repo_path" 2>/dev/null | grep -E "All archives" | awk '{print $3, $4}')
+
+      if [[ -n "$size_info" ]]; then
+        echo "$size_info"
+      else
+        echo "Unknown"
+      fi
+    else
+      echo "Unknown"
+    fi
+  else
+    echo "Unknown"
+  fi
+}
+
+# Check if backup failed recently
+check_recent_failure() {
+  local last_run_time
+  last_run_time=$(journalctl --user -u borgmatic.service --since "1 day ago" --no-pager --output=short-iso | grep "Starting borgmatic user backup" | tail -n1 | cut -d' ' -f1)
+
+  if [[ -z "$last_run_time" ]]; then
+    echo ""
+    return
+  fi
+
+  local failure_time
+  failure_time=$(journalctl --user -u borgmatic.service --since "$last_run_time" --no-pager --output=short-iso | grep -E "(Failed|failed|ERROR|error)" | tail -n1 | cut -d' ' -f1)
+
+  if [[ -n "$failure_time" ]]; then
+    echo "$failure_time"
+  else
+    echo ""
+  fi
+}
+
+# Format time difference
+format_time_diff() {
+  local timestamp=$1
+  if [[ -z "$timestamp" ]]; then
+    echo "Unknown"
+    return
+  fi
+
+  local now=$(date +%s)
+  local then=$(date -d "$timestamp" +%s 2>/dev/null || echo "")
+
+  if [[ -z "$then" ]]; then
+    echo "Unknown"
+    return
+  fi
+
+  local diff=$((now - then))
+  local hours=$((diff / 3600))
+  local minutes=$(((diff % 3600) / 60))
+
+  if [[ $hours -gt 24 ]]; then
+    local days=$((hours / 24))
+    local remaining_hours=$((hours % 24))
+    echo "${days}d ${remaining_hours}h ago"
+  elif [[ $hours -gt 0 ]]; then
+    echo "${hours}h ${minutes}m ago"
+  else
+    echo "${minutes}m ago"
+  fi
+}
+
+# Get borgmatic status
+get_status() {
+  local service_status
+  service_status=$(get_service_status)
+
+  local last_run
+  last_run=$(get_last_run)
+
+  local next_run
+  next_run=$(get_next_run)
+
+  local backup_size
+  backup_size=$(get_backup_size)
+
+  local failure_time
+  failure_time=$(check_recent_failure)
+
+  # Build tooltip
+  local tooltip="Borgmatic Backup Status"
+
+  if [[ -n "$last_run" ]]; then
+    local time_ago
+    time_ago=$(format_time_diff "$last_run")
+    tooltip="${tooltip}\nLast run: $time_ago"
+  else
+    tooltip="${tooltip}\nLast run: Never"
+  fi
+
+  if [[ -n "$next_run" ]]; then
+    tooltip="${tooltip}\nNext run: $next_run"
+  else
+    tooltip="${tooltip}\nNext run: Unknown"
+  fi
+
+  tooltip="${tooltip}\nBackup size: $backup_size"
+
+  # Determine status and icon
+  if [[ "$service_status" == "running" ]]; then
+    echo "{\"text\": \"\", \"class\": \"running\", \"tooltip\": \"$tooltip\"}"
+  elif [[ -n "$failure_time" ]]; then
+    echo "{\"text\": \"\", \"class\": \"error\", \"tooltip\": \"$tooltip\n\nLast error: $(format_time_diff "$failure_time")\"}"
+  elif [[ -n "$last_run" ]]; then
+    local hours_ago
+    hours_ago=$(date -d "$last_run" +%s 2>/dev/null)
+    local now=$(date +%s)
+    local diff_hours=$(((now - hours_ago) / 3600))
+
+    if [[ $diff_hours -lt 24 ]]; then
+      echo "{\"text\": \"\", \"class\": \"success\", \"tooltip\": \"$tooltip\"}"
+    else
+      echo "{\"text\": \"\", \"class\": \"stale\", \"tooltip\": \"$tooltip\"}"
+    fi
+  else
+    echo "{\"text\": \"\", \"class\": \"unknown\", \"tooltip\": \"$tooltip\"}"
+  fi
+}
+
+# Main
+get_status

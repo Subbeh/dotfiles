@@ -16,6 +16,7 @@
     "custom/playerctl"
   ],
   "modules-right": [
+    "custom/borgmatic",
     "custom/syncthing",
     "custom/sep",
     "custom/network"

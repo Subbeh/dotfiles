@@ -313,5 +313,14 @@
     "return-type": "json",
     "interval": 10,
     "tooltip": true
+  },
+  //
+  // BORGMATIC
+  //
+  "custom/borgmatic": {
+    "exec": "__waybar_borgmatic",
+    "return-type": "json",
+    "interval": 10,
+    "tooltip": true
   }
 }

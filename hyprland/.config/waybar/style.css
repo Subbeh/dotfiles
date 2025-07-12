@@ -99,6 +99,8 @@ window#waybar.bottom :first-child {
   padding-right: 2px;
 }
 
+/* NETWORK */
+
 #network_wlan *,
 #network_eth * {
   padding-right: 2px;
@@ -130,5 +132,27 @@ window#waybar.bottom :first-child {
 }
 
 #custom-syncthing.idle {
+  color: @white;
+}
+
+/* BORGMATIC */
+
+#custom-borgmatic.running {
+  color: @orange;
+}
+
+#custom-borgmatic.error {
+  color: @red;
+}
+
+#custom-borgmatic.success {
+  color: @green;
+}
+
+#custom-borgmatic.stale {
+  color: @white;
+}
+
+#custom-borgmatic.unknown {
   color: @white;
 }
