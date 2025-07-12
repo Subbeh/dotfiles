@@ -2,6 +2,10 @@ return {
   "folke/todo-comments.nvim",
   dependencies = {
     "nvim-lua/plenary.nvim",
+    "nvim-telescope/telescope.nvim",
+  },
+  keys = {
+    { "<leader>ft", "<cmd>TodoTelescope keywords=TODO<cr>", desc = "Todos" },
   },
   config = function()
     local colors = require("config.colors")

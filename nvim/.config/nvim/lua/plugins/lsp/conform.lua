@@ -30,7 +30,7 @@ return {
         json = { "prettier_json" },
         lua = { "lsp" },
         markdown = { "prettier" },
-        python = { "ruff" },
+        python = { "ruff_check", "ruff" },
         sh = { "shfmt" },
         yaml = { "yamlfmt" },
         zsh = { "shfmt" },
@@ -38,6 +38,25 @@ return {
 
       -- Configure formatters
       formatters = {
+        ruff = {
+          command = "ruff",
+          args = {
+            "format",
+            "--stdin-filename",
+            "$FILENAME",
+            "-",
+          },
+        },
+        ruff_check = {
+          command = "ruff",
+          args = {
+            "check",
+            "--fix",
+            "--stdin-filename",
+            "$FILENAME",
+            "-",
+          },
+        },
         shfmt = {
           args = { "-i", "2", "-ci" }, -- 2 space indentation and indent switch cases
         },
