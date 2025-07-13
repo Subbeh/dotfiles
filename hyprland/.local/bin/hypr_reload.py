@@ -8,11 +8,11 @@ import subprocess
 
 MONITORS = {
     "internal": {
-        "name": "eDP-1", 
-        "description": "", 
-        "width": 1920, 
-        "height": 1200, 
-        "scale": 1.0
+        "name": "eDP-1",
+        "description": "",
+        "width": 1920,
+        "height": 1200,
+        "scale": 1.0,
     },
     "dell_4k": {
         "name": "",
@@ -32,30 +32,30 @@ MONITORS = {
 
 PROFILES = {
     "undocked": [
-        ("internal", 0, 0),
+        ("internal", 0, 0, [1, 2, 3]),
     ],
     "docked": [
-        ("internal", 0, 0),
-        ("dell_4k", 0, -1440),
-        ("lg_4k", 2560, -1440),
+        ("internal", 0, 0, [3]),
+        ("dell_4k", 0, -1440, [1]),
+        ("lg_4k", 2560, -1440, [2]),
     ],
     "docked-ext-only": [
-        ("dell_4k", 0, 0),
-        ("lg_4k", 2560, 0),
+        ("dell_4k", 0, 0, [1]),
+        ("lg_4k", 2560, 0, [2, 3]),
     ],
     "docked-dell-only": [
-        ("dell_4k", 0, 0),
+        ("dell_4k", 0, 0, [1, 2, 3]),
     ],
     "docked-dell": [
-        ("internal", 0, 0),
-        ("dell_4k", 0, -1440),
+        ("internal", 0, 0, [1, 2]),
+        ("dell_4k", 0, -1440, [3]),
     ],
     "docked-lg-only": [
-        ("lg_4k", 0, 0),
+        ("lg_4k", 0, 0, [1, 2, 3]),
     ],
     "docked-lg": [
-        ("internal", 0, 0),
-        ("lg_4k", 1920, 0),
+        ("internal", 0, 0, [3]),
+        ("lg_4k", 1920, 0, [1, 2]),
     ],
 }
 
@@ -86,36 +86,38 @@ class Monitor:
 
 
 class Profile:
-    def __init__(self, name: str, monitor_configs: List[Tuple[str, int, int]]):
+    def __init__(self, name: str, monitor_configs: List[Tuple[str, int, int, List[int]]]):
         self.name = name
         self.monitor_configs = monitor_configs
-    
-    def _find_monitor_name(self, config_name: str, monitors: Dict[str, 'Monitor']) -> Optional[str]:
+
+    def _find_monitor_name(
+        self, config_name: str, monitors: Dict[str, "Monitor"]
+    ) -> Optional[str]:
         """Find the actual monitor name for a config name."""
         if config_name not in MONITORS:
             return None
-            
+
         monitor_info = MONITORS[config_name]
-        
+
         # First try by name (for internal monitor)
         if monitor_info.get("name"):
             name = monitor_info["name"]
             if name in monitors:
                 return name
-                
+
         # Then try by description (for external monitors)
         if monitor_info.get("description"):
             description = monitor_info["description"]
             for mon_name, mon in monitors.items():
                 if mon.description == description:
                     return mon_name
-                    
+
         return None
 
     def get_monitor_configs(self) -> List[Tuple[str, int, int, int, int, float]]:
         """Convert simple configs to full monitor configurations with width, height, scale."""
         full_configs = []
-        for monitor_name, x, y in self.monitor_configs:
+        for monitor_name, x, y, workspaces in self.monitor_configs:
             if monitor_name in MONITORS:
                 monitor_info = MONITORS[monitor_name]
                 width = monitor_info["width"]
@@ -123,11 +125,19 @@ class Profile:
                 scale = monitor_info["scale"]
                 full_configs.append((monitor_name, x, y, width, height, scale))
         return full_configs
+    
+    def get_workspace_configs(self) -> List[Tuple[str, List[int]]]:
+        """Get workspace assignments for each monitor."""
+        workspace_configs = []
+        for monitor_name, x, y, workspaces in self.monitor_configs:
+            if monitor_name in MONITORS:
+                workspace_configs.append((monitor_name, workspaces))
+        return workspace_configs
 
-    def is_active(self, monitors: Dict[str, 'Monitor']) -> bool:
+    def is_active(self, monitors: Dict[str, "Monitor"], current_workspaces: Optional[Dict[int, str]] = None) -> bool:
         """Check if the current monitor configuration matches this profile."""
         expected_configs = self.get_monitor_configs()
-        
+
         # Get the set of monitor names that should be active in this profile
         expected_active_monitors = set()
         for config_name, _, _, _, _, _ in expected_configs:
@@ -156,7 +166,7 @@ class Profile:
             actual_name = self._find_monitor_name(config_name, monitors)
             if not actual_name or actual_name not in monitors:
                 return False
-                
+
             current_monitor = monitors[actual_name]
 
             # Check if position, dimensions, and scale match
@@ -169,9 +179,22 @@ class Profile:
             ):  # Allow small floating point differences
                 return False
 
+        # Check workspace assignments if workspace data is provided
+        if current_workspaces is not None:
+            workspace_configs = self.get_workspace_configs()
+            for config_name, expected_workspaces in workspace_configs:
+                actual_name = self._find_monitor_name(config_name, monitors)
+                if not actual_name:
+                    continue
+                    
+                # Check if all expected workspaces are on the correct monitor
+                for workspace_id in expected_workspaces:
+                    if current_workspaces.get(workspace_id) != actual_name:
+                        return False
+
         return True
 
-    def is_available(self, monitors: Dict[str, 'Monitor']) -> bool:
+    def is_available(self, monitors: Dict[str, "Monitor"]) -> bool:
         """Check if all monitors required by this profile are currently available/connected."""
         expected_configs = self.get_monitor_configs()
 
@@ -194,7 +217,7 @@ class HyprlandManager:
         }
         self.monitors: Dict[str, Monitor] = {}
         self.refresh_monitors()
-    
+
     def _validate_config(self) -> None:
         """Validate the MONITORS and PROFILES configuration."""
         # Check MONITORS config
@@ -202,20 +225,36 @@ class HyprlandManager:
             required_fields = ["width", "height", "scale"]
             for field in required_fields:
                 if field not in config:
-                    raise ValueError(f"Monitor '{name}' missing required field '{field}'")
-            
+                    raise ValueError(
+                        f"Monitor '{name}' missing required field '{field}'"
+                    )
+
             # Must have either name or description
             if not config.get("name") and not config.get("description"):
-                raise ValueError(f"Monitor '{name}' must have either 'name' or 'description' field")
-        
-        # Check PROFILES config  
+                raise ValueError(
+                    f"Monitor '{name}' must have either 'name' or 'description' field"
+                )
+
+        # Check PROFILES config
         for profile_name, monitor_configs in PROFILES.items():
             for config in monitor_configs:
-                if len(config) != 3:
-                    raise ValueError(f"Profile '{profile_name}' has invalid monitor config: {config}")
-                monitor_name, x, y = config
+                if len(config) != 4:
+                    raise ValueError(
+                        f"Profile '{profile_name}' has invalid monitor config: {config} (expected: monitor_name, x, y, [workspaces])"
+                    )
+                monitor_name, x, y, workspaces = config
                 if monitor_name not in MONITORS:
-                    raise ValueError(f"Profile '{profile_name}' references unknown monitor '{monitor_name}'")
+                    raise ValueError(
+                        f"Profile '{profile_name}' references unknown monitor '{monitor_name}'"
+                    )
+                if not isinstance(workspaces, list) or not all(isinstance(w, int) for w in workspaces):
+                    raise ValueError(
+                        f"Profile '{profile_name}' monitor '{monitor_name}' has invalid workspace list: {workspaces}"
+                    )
+                if not workspaces:
+                    raise ValueError(
+                        f"Profile '{profile_name}' monitor '{monitor_name}' must have at least one workspace"
+                    )
 
     def refresh_monitors(self) -> bool:
         """Refresh the current monitor state from hyprctl. Returns True on success."""
@@ -249,33 +288,57 @@ class HyprlandManager:
             self.monitors = {}
             return False
 
+    def get_current_workspaces(self) -> Dict[int, str]:
+        """Get current workspace to monitor mapping."""
+        try:
+            result = subprocess.run(
+                ["hyprctl", "workspaces", "-j"],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+            workspace_data = json.loads(result.stdout)
+            workspace_to_monitor = {}
+            
+            for ws_data in workspace_data:
+                workspace_id = ws_data["id"]
+                monitor_name = ws_data["monitor"]
+                workspace_to_monitor[workspace_id] = monitor_name
+                
+            return workspace_to_monitor
+            
+        except (subprocess.CalledProcessError, json.JSONDecodeError, KeyError) as e:
+            if self.verbose:
+                print(f"[DEBUG] Failed to get workspaces: {e}")
+            return {}
+
     def find_monitor_by_config_name(self, config_name: str) -> Optional[str]:
         """Find the actual monitor name for a given config name."""
         if config_name not in MONITORS:
             return None
-            
+
         monitor_info = MONITORS[config_name]
-        
+
         # First try by name (for internal monitor)
         if monitor_info.get("name"):
             name = monitor_info["name"]
             if name in self.monitors:
                 return name
-                
+
         # Then try by description (for external monitors)
         if monitor_info.get("description"):
             description = monitor_info["description"]
             for mon_name, mon in self.monitors.items():
                 if mon.description == description:
                     return mon_name
-                    
+
         return None
 
     def run_hyprctl_command(self, command: List[str]) -> bool:
         """Execute a hyprctl command, respecting dry-run mode."""
         if self.verbose:
             print(f"[DEBUG] Command: {' '.join(command)}")
-            
+
         if self.dry_run:
             print(f"[DRY RUN] Would execute: {' '.join(command)}")
             return True
@@ -302,8 +365,9 @@ class HyprlandManager:
 
         profile = self.profiles[profile_name]
 
-        # Check if profile is already active
-        if profile.is_active(self.monitors):
+        # Check if profile is already active (including workspace configuration)
+        current_workspaces = self.get_current_workspaces()
+        if profile.is_active(self.monitors, current_workspaces):
             print(f"Profile '{profile_name}' is already active")
             return True  # Success - no action needed
 
@@ -318,7 +382,9 @@ class HyprlandManager:
         # Get the monitor configurations for this profile
         profile_configs = profile.get_monitor_configs()
         if not profile_configs:
-            print(f"Error: Profile '{profile_name}' has no valid monitor configurations")
+            print(
+                f"Error: Profile '{profile_name}' has no valid monitor configurations"
+            )
             return False
 
         # Collect all monitor names that should be active in this profile
@@ -349,24 +415,24 @@ class HyprlandManager:
                 print(f"Error: Could not find monitor for config '{config_name}'")
                 success = False
                 continue
-                
+
             if actual_name not in self.monitors:
                 print(f"Error: Monitor '{actual_name}' not found in current monitors")
                 success = False
                 continue
-                
+
             current_monitor = self.monitors[actual_name]
-            
+
             # Check if monitor needs to be configured
             needs_config = (
-                current_monitor.disabled or
-                current_monitor.x != x or
-                current_monitor.y != y or
-                current_monitor.width != width or
-                current_monitor.height != height or
-                abs(current_monitor.scale - scale) > 0.01
+                current_monitor.disabled
+                or current_monitor.x != x
+                or current_monitor.y != y
+                or current_monitor.width != width
+                or current_monitor.height != height
+                or abs(current_monitor.scale - scale) > 0.01
             )
-            
+
             if needs_config:
                 # Format: monitor=name,widthxheight@refresh,positionx,scale
                 monitor_config = f"{actual_name},{width}x{height},{x}x{y},{scale}"
@@ -377,6 +443,32 @@ class HyprlandManager:
                     success = False
             else:
                 print(f"Monitor {actual_name} is already correctly configured")
+
+        # Step 3: Configure workspaces for each monitor
+        if success:  # Only configure workspaces if monitor config succeeded
+            workspace_configs = profile.get_workspace_configs()
+            current_workspaces = self.get_current_workspaces()
+            
+            for config_name, workspaces in workspace_configs:
+                actual_name = self.find_monitor_by_config_name(config_name)
+                if not actual_name:
+                    continue  # Already logged error above
+                    
+                print(f"Configuring workspaces {workspaces} for monitor {actual_name}")
+                
+                for workspace_id in workspaces:
+                    # Check if workspace is already on the correct monitor
+                    if current_workspaces.get(workspace_id) == actual_name:
+                        if self.verbose:
+                            print(f"[DEBUG] Workspace {workspace_id} already on {actual_name}")
+                        continue
+                        
+                    # Move workspace to monitor
+                    print(f"Moving workspace {workspace_id} to {actual_name}")
+                    if not self.run_hyprctl_command(
+                        ["hyprctl", "dispatch", "moveworkspacetomonitor", str(workspace_id), actual_name]
+                    ):
+                        success = False
 
         # Report results
         if success:
@@ -394,27 +486,46 @@ class HyprlandManager:
     def list_profiles(self) -> None:
         """List all available profiles and their status."""
         print("Available profiles:")
+        current_workspaces = self.get_current_workspaces()
         for name, profile in self.profiles.items():
             status = ""
-            if profile.is_active(self.monitors):
+            if profile.is_active(self.monitors, current_workspaces):
                 status = " (ACTIVE)"
             elif profile.is_available(self.monitors):
                 status = " (available)"
             else:
                 status = " (unavailable)"
-            
+
             print(f"  {name}{status}")
-    
+
     def show_current_config(self) -> None:
-        """Show current monitor configuration."""
+        """Show current monitor and workspace configuration."""
         print("Current monitor configuration:")
         for name, monitor in self.monitors.items():
             status = "disabled" if monitor.disabled else "enabled"
             if not monitor.disabled:
-                print(f"  {name}: {monitor.width}x{monitor.height} at ({monitor.x},{monitor.y}) scale={monitor.scale} ({status})")
+                print(
+                    f"  {name}: {monitor.width}x{monitor.height} at ({monitor.x},{monitor.y}) scale={monitor.scale} ({status})"
+                )
             else:
                 print(f"  {name}: {status}")
-    
+        
+        print("\nCurrent workspace configuration:")
+        current_workspaces = self.get_current_workspaces()
+        if current_workspaces:
+            # Group workspaces by monitor
+            monitor_workspaces = {}
+            for workspace_id, monitor_name in current_workspaces.items():
+                if monitor_name not in monitor_workspaces:
+                    monitor_workspaces[monitor_name] = []
+                monitor_workspaces[monitor_name].append(workspace_id)
+            
+            for monitor_name, workspaces in monitor_workspaces.items():
+                workspaces.sort()
+                print(f"  {monitor_name}: workspaces {workspaces}")
+        else:
+            print("  No workspaces found")
+
     def reload_hyprland(self) -> bool:
         """Reload Hyprland configuration."""
         print("Reloading Hyprland...")
@@ -441,13 +552,14 @@ def main() -> None:
         help="Don't change anything, just show what would be done",
     )
     parser.add_argument(
-        "-v", "--verbose",
+        "-v",
+        "--verbose",
         action="store_true",
         help="Enable verbose debug output",
     )
 
     args = parser.parse_args()
-    
+
     # Initialize manager
     try:
         manager = HyprlandManager(dry_run=args.dry_run, verbose=args.verbose)
