@@ -5,6 +5,7 @@
 .cache/
 .venv/
 .vscode/
+__pycache__/
 temp/
 sessions/
 node_modules/

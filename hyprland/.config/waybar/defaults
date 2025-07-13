@@ -1,0 +1,16 @@
+// vi: ft=jsonc
+// -------------------------------------------------------------------------
+// Default configuration
+// -------------------------------------------------------------------------
+{
+  "layer": "top",
+  "reload_style_on_change": 1,
+  "height": 20,
+  "margin-top": 0,
+  "margin-bottom": 0,
+  "margin-left": 2,
+  "margin-right": 2,
+  "include": [
+    "~/.config/waybar/modules"
+  ]
+}

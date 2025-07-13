@@ -2,12 +2,55 @@
 // -------------------------------------------------------------------------
 // Global configuration
 // -------------------------------------------------------------------------
-{
-  "layer": "top",
-  "reload_style_on_change": 1,
-  "height": 20,
-  "margin-top": 0,
-  "margin-bottom": 0,
-  "margin-left": 2,
-  "margin-right": 2
-}
+[
+  {
+    "name": "top",
+    "position": "top",
+    "include": [
+      "~/.config/waybar/defaults"
+    ],
+    "modules-left": [
+      "hyprland/workspaces",
+      "custom/sep",
+      "hyprland/window"
+    ],
+    "modules-center": [
+      "clock#time",
+      "custom/sep",
+      "clock#date"
+    ],
+    "modules-right": [
+      "bluetooth",
+      "custom/sep",
+      "wireplumber",
+      "custom/sep",
+      "backlight",
+      "custom/sep",
+      "custom/notification",
+      "group/powermenu"
+    ]
+  },
+  {
+    "name": "bottom",
+    "position": "bottom",
+    "include": [
+      "~/.config/waybar/defaults"
+    ],
+    "modules-left": [
+      "battery",
+      "custom/sep",
+      "group/hardware",
+      "custom/sep",
+      "custom/updates"
+    ],
+    "modules-center": [
+      "custom/playerctl"
+    ],
+    "modules-right": [
+      "custom/borgmatic",
+      "custom/syncthing",
+      "custom/sep",
+      "custom/network"
+    ]
+  }
+]

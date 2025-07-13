@@ -37,25 +37,25 @@ PROFILES = {
     "docked": [
         ("internal", 0, 0, [3]),
         ("dell_4k", 0, -1440, [1]),
-        ("lg_4k", 2560, -1440, [2]),
+        ("lg_4k", 2560, -1440, [2], "primary"),
     ],
     "docked-ext-only": [
         ("dell_4k", 0, 0, [1]),
-        ("lg_4k", 2560, 0, [2, 3]),
+        ("lg_4k", 2560, 0, [2, 3], "primary"),
     ],
     "docked-dell-only": [
         ("dell_4k", 0, 0, [1, 2, 3]),
     ],
-    "docked-dell": [
-        ("internal", 0, 0, [1, 2]),
-        ("dell_4k", 0, -1440, [3]),
-    ],
     "docked-lg-only": [
         ("lg_4k", 0, 0, [1, 2, 3]),
     ],
+    "docked-dell": [
+        ("internal", 0, 0, [1, 2]),
+        ("dell_4k", 0, -1440, [3], "primary"),
+    ],
     "docked-lg": [
         ("internal", 0, 0, [3]),
-        ("lg_4k", 1920, 0, [1, 2]),
+        ("lg_4k", 1920, 0, [1, 2], "primary"),
     ],
 }
 
@@ -86,7 +86,7 @@ class Monitor:
 
 
 class Profile:
-    def __init__(self, name: str, monitor_configs: List[Tuple[str, int, int, List[int]]]):
+    def __init__(self, name: str, monitor_configs: List[Tuple]):
         self.name = name
         self.monitor_configs = monitor_configs
 
@@ -117,7 +117,8 @@ class Profile:
     def get_monitor_configs(self) -> List[Tuple[str, int, int, int, int, float]]:
         """Convert simple configs to full monitor configurations with width, height, scale."""
         full_configs = []
-        for monitor_name, x, y, workspaces in self.monitor_configs:
+        for config in self.monitor_configs:
+            monitor_name, x, y, workspaces = config[:4]  # Extract first 4 elements
             if monitor_name in MONITORS:
                 monitor_info = MONITORS[monitor_name]
                 width = monitor_info["width"]
@@ -125,16 +126,34 @@ class Profile:
                 scale = monitor_info["scale"]
                 full_configs.append((monitor_name, x, y, width, height, scale))
         return full_configs
-    
+
     def get_workspace_configs(self) -> List[Tuple[str, List[int]]]:
         """Get workspace assignments for each monitor."""
         workspace_configs = []
-        for monitor_name, x, y, workspaces in self.monitor_configs:
+        for config in self.monitor_configs:
+            monitor_name, x, y, workspaces = config[:4]  # Extract first 4 elements
             if monitor_name in MONITORS:
                 workspace_configs.append((monitor_name, workspaces))
         return workspace_configs
 
-    def is_active(self, monitors: Dict[str, "Monitor"], current_workspaces: Optional[Dict[int, str]] = None) -> bool:
+    def get_primary_monitor(self) -> Optional[str]:
+        """Get the primary monitor name (if any) for this profile."""
+        # First check for explicitly marked primary monitor
+        for config in self.monitor_configs:
+            if len(config) >= 5 and config[4] == "primary":
+                return config[0]  # Return monitor name
+        
+        # If no explicit primary and only one monitor, make it primary
+        if len(self.monitor_configs) == 1:
+            return self.monitor_configs[0][0]  # Return the single monitor name
+            
+        return None
+
+    def is_active(
+        self,
+        monitors: Dict[str, "Monitor"],
+        current_workspaces: Optional[Dict[int, str]] = None,
+    ) -> bool:
         """Check if the current monitor configuration matches this profile."""
         expected_configs = self.get_monitor_configs()
 
@@ -186,9 +205,12 @@ class Profile:
                 actual_name = self._find_monitor_name(config_name, monitors)
                 if not actual_name:
                     continue
-                    
+
                 # Check if all expected workspaces are on the correct monitor
+                # Only check regular workspaces (positive IDs), ignore special workspaces
                 for workspace_id in expected_workspaces:
+                    if workspace_id < 0:  # Skip special workspaces
+                        continue
                     if current_workspaces.get(workspace_id) != actual_name:
                         return False
 
@@ -237,17 +259,20 @@ class HyprlandManager:
 
         # Check PROFILES config
         for profile_name, monitor_configs in PROFILES.items():
+            primary_count = 0
             for config in monitor_configs:
-                if len(config) != 4:
+                if len(config) not in [4, 5]:
                     raise ValueError(
-                        f"Profile '{profile_name}' has invalid monitor config: {config} (expected: monitor_name, x, y, [workspaces])"
+                        f"Profile '{profile_name}' has invalid monitor config: {config} (expected: monitor_name, x, y, [workspaces], optional 'primary')"
                     )
-                monitor_name, x, y, workspaces = config
+                monitor_name, x, y, workspaces = config[:4]
                 if monitor_name not in MONITORS:
                     raise ValueError(
                         f"Profile '{profile_name}' references unknown monitor '{monitor_name}'"
                     )
-                if not isinstance(workspaces, list) or not all(isinstance(w, int) for w in workspaces):
+                if not isinstance(workspaces, list) or not all(
+                    isinstance(w, int) for w in workspaces
+                ):
                     raise ValueError(
                         f"Profile '{profile_name}' monitor '{monitor_name}' has invalid workspace list: {workspaces}"
                     )
@@ -255,6 +280,20 @@ class HyprlandManager:
                     raise ValueError(
                         f"Profile '{profile_name}' monitor '{monitor_name}' must have at least one workspace"
                     )
+
+                # Check primary designation
+                if len(config) == 5:
+                    if config[4] != "primary":
+                        raise ValueError(
+                            f"Profile '{profile_name}' monitor '{monitor_name}' has invalid 5th element: {config[4]} (expected 'primary')"
+                        )
+                    primary_count += 1
+
+            # Check that only one monitor is marked as primary
+            if primary_count > 1:
+                raise ValueError(
+                    f"Profile '{profile_name}' has {primary_count} primary monitors (expected 0 or 1)"
+                )
 
     def refresh_monitors(self) -> bool:
         """Refresh the current monitor state from hyprctl. Returns True on success."""
@@ -299,14 +338,14 @@ class HyprlandManager:
             )
             workspace_data = json.loads(result.stdout)
             workspace_to_monitor = {}
-            
+
             for ws_data in workspace_data:
                 workspace_id = ws_data["id"]
                 monitor_name = ws_data["monitor"]
                 workspace_to_monitor[workspace_id] = monitor_name
-                
+
             return workspace_to_monitor
-            
+
         except (subprocess.CalledProcessError, json.JSONDecodeError, KeyError) as e:
             if self.verbose:
                 print(f"[DEBUG] Failed to get workspaces: {e}")
@@ -448,27 +487,66 @@ class HyprlandManager:
         if success:  # Only configure workspaces if monitor config succeeded
             workspace_configs = profile.get_workspace_configs()
             current_workspaces = self.get_current_workspaces()
-            
+
             for config_name, workspaces in workspace_configs:
                 actual_name = self.find_monitor_by_config_name(config_name)
                 if not actual_name:
                     continue  # Already logged error above
-                    
+
                 print(f"Configuring workspaces {workspaces} for monitor {actual_name}")
-                
+
                 for workspace_id in workspaces:
-                    # Check if workspace is already on the correct monitor
-                    if current_workspaces.get(workspace_id) == actual_name:
+                    # Skip special workspaces (negative IDs) - they should not be moved
+                    if workspace_id < 0:
                         if self.verbose:
-                            print(f"[DEBUG] Workspace {workspace_id} already on {actual_name}")
+                            print(f"[DEBUG] Skipping special workspace {workspace_id}")
+                        continue
+                    
+                    # Create persistent workspace on the monitor
+                    workspace_config = f"{workspace_id},monitor:{actual_name},persistent:true"
+                    print(f"Creating persistent workspace {workspace_id} on {actual_name}")
+                    if not self.run_hyprctl_command(
+                        ["hyprctl", "keyword", "workspace", workspace_config]
+                    ):
+                        success = False
                         continue
                         
+                    # Check if workspace needs to be moved
+                    if current_workspaces.get(workspace_id) == actual_name:
+                        if self.verbose:
+                            print(
+                                f"[DEBUG] Workspace {workspace_id} already on {actual_name}"
+                            )
+                        continue
+
                     # Move workspace to monitor
                     print(f"Moving workspace {workspace_id} to {actual_name}")
                     if not self.run_hyprctl_command(
-                        ["hyprctl", "dispatch", "moveworkspacetomonitor", str(workspace_id), actual_name]
+                        [
+                            "hyprctl",
+                            "dispatch",
+                            "moveworkspacetomonitor",
+                            str(workspace_id),
+                            actual_name,
+                        ]
                     ):
                         success = False
+
+        # Step 4: Configure waybar on primary monitor (if specified)
+        if success:  # Only configure waybar if everything else succeeded
+            primary_monitor_config = profile.get_primary_monitor()
+            if primary_monitor_config:
+                actual_primary_monitor = self.find_monitor_by_config_name(
+                    primary_monitor_config
+                )
+                if actual_primary_monitor:
+                    if not self.configure_waybar(actual_primary_monitor):
+                        print("Warning: Failed to configure waybar")
+                        # Don't mark as failure since monitor/workspace config succeeded
+                else:
+                    print(
+                        f"Warning: Could not find primary monitor '{primary_monitor_config}' for waybar"
+                    )
 
         # Report results
         if success:
@@ -496,7 +574,10 @@ class HyprlandManager:
             else:
                 status = " (unavailable)"
 
-            print(f"  {name}{status}")
+            primary_monitor = profile.get_primary_monitor()
+            primary_info = f" [primary: {primary_monitor}]" if primary_monitor else ""
+
+            print(f"  {name}{status}{primary_info}")
 
     def show_current_config(self) -> None:
         """Show current monitor and workspace configuration."""
@@ -509,22 +590,233 @@ class HyprlandManager:
                 )
             else:
                 print(f"  {name}: {status}")
-        
+
         print("\nCurrent workspace configuration:")
         current_workspaces = self.get_current_workspaces()
         if current_workspaces:
-            # Group workspaces by monitor
+            # Group workspaces by monitor (exclude special workspaces)
             monitor_workspaces = {}
-            for workspace_id, monitor_name in current_workspaces.items():
-                if monitor_name not in monitor_workspaces:
-                    monitor_workspaces[monitor_name] = []
-                monitor_workspaces[monitor_name].append(workspace_id)
+            special_workspaces = {}
             
+            for workspace_id, monitor_name in current_workspaces.items():
+                if workspace_id < 0:  # Special workspace
+                    if monitor_name not in special_workspaces:
+                        special_workspaces[monitor_name] = []
+                    special_workspaces[monitor_name].append(workspace_id)
+                else:  # Regular workspace
+                    if monitor_name not in monitor_workspaces:
+                        monitor_workspaces[monitor_name] = []
+                    monitor_workspaces[monitor_name].append(workspace_id)
+
             for monitor_name, workspaces in monitor_workspaces.items():
                 workspaces.sort()
-                print(f"  {monitor_name}: workspaces {workspaces}")
+                special = special_workspaces.get(monitor_name, [])
+                if special:
+                    special.sort()
+                    print(f"  {monitor_name}: workspaces {workspaces}, special {special}")
+                else:
+                    print(f"  {monitor_name}: workspaces {workspaces}")
         else:
             print("  No workspaces found")
+
+        print("\nWaybar status:")
+        waybar_monitor = self.get_current_primary_monitor()
+        if waybar_monitor:
+            if waybar_monitor == "unknown":
+                print("  Running (monitor unknown)")
+            else:
+                print(f"  Running on {waybar_monitor}")
+        else:
+            print("  Not running")
+
+    def _stop_waybar(self) -> bool:
+        """Stop existing waybar processes/units properly."""
+        try:
+            # Find waybar systemd units (uwsm-managed)
+            result = subprocess.run(
+                ["systemctl", "--user", "list-units", "--no-legend"],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            waybar_units = [line.split()[0] for line in result.stdout.splitlines() 
+                           if "waybar" in line and "scope" in line]
+            
+            stopped_any = False
+            for unit in waybar_units:
+                if self.verbose:
+                    print(f"[DEBUG] Stopping waybar unit: {unit}")
+                if self.run_hyprctl_command(["systemctl", "--user", "stop", unit]):
+                    stopped_any = True
+                else:
+                    print(f"Warning: Failed to stop {unit}")
+            
+            if not waybar_units:
+                # Fallback to pkill for non-uwsm waybar processes
+                if self.verbose:
+                    print("[DEBUG] No waybar systemd units found, trying pkill fallback")
+                # pkill returns 1 if no processes found, which is fine
+                self.run_hyprctl_command(["pkill", "waybar"])
+                return True
+            
+            return stopped_any
+                        
+        except subprocess.CalledProcessError as e:
+            if self.verbose:
+                print(f"[DEBUG] Error checking systemd units: {e}")
+            # Fallback to pkill
+            # pkill returns 1 if no processes found, which is fine
+            self.run_hyprctl_command(["pkill", "waybar"])
+            return True
+
+    def configure_waybar(self, primary_monitor: Optional[str]) -> bool:
+        """Configure waybar to display on the specified monitor."""
+        if not primary_monitor:
+            if self.verbose:
+                print(
+                    "[DEBUG] No primary monitor specified, restarting waybar without monitor targeting"
+                )
+            # Just restart waybar without specifying monitor
+            self._stop_waybar()
+            
+            if self.dry_run:
+                print("[DRY RUN] Would execute: uwsm app -- waybar (no output restriction)")
+                return True
+            
+            try:
+                subprocess.Popen(["uwsm", "app", "--", "waybar"])
+                if self.verbose:
+                    print("[DEBUG] Started waybar without specific monitor via uwsm")
+                return True
+            except Exception as e:
+                print(f"Error starting waybar: {e}")
+                return False
+
+        print(f"Configuring waybar for primary monitor: {primary_monitor}")
+
+        # Stop existing waybar processes/units
+        self._stop_waybar()
+
+        # Start waybar on the specified monitor using uwsm
+        # Create temporary config with output specified
+        import tempfile
+        import json
+        import os
+
+        if self.dry_run:
+            print(f"[DRY RUN] Would execute: uwsm app -- waybar with output={primary_monitor}")
+            return True
+
+        try:
+            # Read the current waybar config
+            config_path = os.path.expanduser("~/.config/waybar/config")
+            with open(config_path, 'r') as f:
+                config_content = f.read()
+            
+            # Parse JSON config (removing comments for parsing)
+            import re
+            # Remove // comments
+            clean_content = re.sub(r'//.*', '', config_content)
+            configs = json.loads(clean_content)
+            
+            # Add output field to the first (top) bar
+            if isinstance(configs, list) and len(configs) > 0:
+                configs[0]["output"] = primary_monitor
+            
+            # Create temporary config file
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+                json.dump(configs, f, indent=2)
+                temp_config = f.name
+            
+            # Start waybar with temporary config
+            waybar_command = ["uwsm", "app", "--", "waybar", "-c", temp_config]
+            process = subprocess.Popen(waybar_command)
+            
+            # Clean up temp config after a short delay (waybar should have read it)
+            import threading
+            def cleanup():
+                import time
+                time.sleep(2)  # Wait for waybar to start
+                try:
+                    os.unlink(temp_config)
+                except:
+                    pass
+            threading.Thread(target=cleanup, daemon=True).start()
+            
+            if self.verbose:
+                print(f"[DEBUG] Started waybar on {primary_monitor} via uwsm with temp config")
+            return True
+        except Exception as e:
+            print(f"Error starting waybar: {e}")
+            return False
+
+    def get_current_primary_monitor(self) -> Optional[str]:
+        """Detect which monitor currently has waybar running."""
+        try:
+            # Check if waybar is running and on which monitor
+            result = subprocess.run(
+                ["pgrep", "-f", "waybar"], capture_output=True, text=True, check=False
+            )
+            if result.returncode == 0:
+                # waybar is running, but we can't easily detect which monitor
+                # This is a limitation - waybar monitor detection is complex
+                if self.verbose:
+                    print("[DEBUG] Waybar is running, but cannot detect monitor")
+                return "unknown"
+            return None
+        except Exception as e:
+            if self.verbose:
+                print(f"[DEBUG] Error checking waybar status: {e}")
+            return None
+
+    def reload_waybar(self) -> bool:
+        """Reload waybar on the current primary monitor."""
+        print("Reloading waybar...")
+        
+        # Find the current active profile and its primary monitor
+        current_workspaces = self.get_current_workspaces()
+        active_profile = None
+        
+        if self.verbose:
+            print(f"[DEBUG] Checking {len(self.profiles)} profiles for active state")
+        
+        for name, profile in self.profiles.items():
+            if profile.is_active(self.monitors, current_workspaces):
+                active_profile = profile
+                if self.verbose:
+                    print(f"[DEBUG] Found active profile: {name}")
+                break
+            elif self.verbose:
+                print(f"[DEBUG] Profile {name} is not active")
+        
+        if not active_profile:
+            print("Warning: No active profile found, waybar will restart without specific monitor")
+            # Just restart waybar without specifying monitor
+            self._stop_waybar()
+            
+            if self.dry_run:
+                print("[DRY RUN] Would execute: uwsm app -- waybar (no output restriction)")
+                return True
+            
+            try:
+                subprocess.Popen(["uwsm", "app", "--", "waybar"])
+                print("Waybar restarted via uwsm")
+                return True
+            except Exception as e:
+                print(f"Error starting waybar: {e}")
+                return False
+        
+        # Get primary monitor from active profile
+        primary_monitor_config = active_profile.get_primary_monitor()
+        if primary_monitor_config:
+            actual_primary_monitor = self.find_monitor_by_config_name(primary_monitor_config)
+            if actual_primary_monitor:
+                return self.configure_waybar(actual_primary_monitor)
+            else:
+                print(f"Warning: Could not find primary monitor '{primary_monitor_config}'")
+        
+        print("No primary monitor specified in active profile, restarting waybar without specific monitor")
+        return self.configure_waybar(None)
 
     def reload_hyprland(self) -> bool:
         """Reload Hyprland configuration."""
@@ -545,6 +837,9 @@ def main() -> None:
     )
     parser.add_argument(
         "-r", "--reload", action="store_true", help="Reload Hyprland configuration"
+    )
+    parser.add_argument(
+        "--reload-waybar", action="store_true", help="Reload waybar on current primary monitor"
     )
     parser.add_argument(
         "--dry-run",
@@ -577,6 +872,11 @@ def main() -> None:
             print("Successfully reloaded Hyprland")
         else:
             print("Failed to reload Hyprland")
+    elif args.reload_waybar:
+        if manager.reload_waybar():
+            print("Successfully reloaded waybar")
+        else:
+            print("Failed to reload waybar")
     elif args.profile:
         if not manager.set_profile(args.profile):
             exit(1)
