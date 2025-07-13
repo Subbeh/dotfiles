@@ -138,7 +138,7 @@ return {
             },
             n = {
               ["dd"] = actions.delete_buffer,
-              ["<tab>"] = require('telescope.actions').close,
+              ["<tab>"] = require("telescope.actions").close,
             },
           },
         },
@@ -166,7 +166,7 @@ return {
           hidden_files = true,
           sync_with_nvim_tree = true,
           on_project_selected = function()
-            require('telescope').extensions.smart_open.smart_open({ cwd_only = true })
+            require("telescope").extensions.smart_open.smart_open({ cwd_only = true })
           end,
         },
         repo = { -- TODO: `locate -r` error
@@ -186,6 +186,7 @@ return {
             "*.git/*",
             "*.stversions/*",
             "*.direnv/*",
+            "99-archive/*",
           },
         },
       },

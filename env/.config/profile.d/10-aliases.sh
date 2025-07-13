@@ -30,6 +30,7 @@ alias gpt='chatblade'
 alias httpserver='python3 -m http.server'
 alias lip='curl -sw "\n" -4 ifconfig.me'
 alias sdiff='diff --color=always --side-by-side'
+alias ndiff='nvim -d'
 test -f ~/.claude/local/claude && alias claude="~/.claude/local/claude"
 
 # systemd
