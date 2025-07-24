@@ -457,13 +457,8 @@ class HyprlandManager:
             # Check if profile is already active (including workspace configuration)
             current_workspaces = self.get_current_workspaces()
             if profile.is_active(self.monitors, current_workspaces):
-                print(f"Profile '{profile_name}' is already active")
-                self._send_notification(
-                    "Hyprland Profile",
-                    f"Profile '{profile_name}' already active",
-                    "low",
-                    "display",
-                )
+                if self.verbose:
+                    print(f"Profile '{profile_name}' is already active")
                 return True  # Success - no action needed
 
             # Check if profile is available (all required monitors connected)

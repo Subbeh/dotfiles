@@ -321,6 +321,7 @@
     "exec": "__waybar_borgmatic",
     "return-type": "json",
     "interval": 10,
-    "tooltip": true
+    "tooltip": true,
+    "on-click-right": "systemctl --user start borgmatic.service"
   }
 }
