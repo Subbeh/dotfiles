@@ -57,9 +57,6 @@ alias cdt='cd ${TEMP_DIR:?not set}'
 alias cdn='cd ${NOTES_DIR:?not set}'
 alias cdp='cd ${PROJECT_DIR:?not set}'
 alias cdr='cd ${REPOS_DIR:?not set}'
-alias cdh='cd ${HOMELAB_DIR:?not set}'
-alias cdha='cd ${HOMELAB_DIR:?not set}/ansible'
-alias cdht='cd ${HOMELAB_DIR:?not set}/terraform'
 
 # misc
 alias dat='date +%Y-%m-%d'

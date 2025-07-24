@@ -1,5 +1,12 @@
 #!/bin/zsh
 
+# general aliases
+alias cdh='cd ${HOMELAB_DIR:?not set}'
+alias cdha='cd ${HOMELAB_DIR:?not set}/ansible'
+alias cdht='cd ${HOMELAB_DIR:?not set}/terraform'
+alias cdhk='cd ${HOMELAB_DIR:?not set}/k8s'
+alias cdhs='cd ${HOMELAB_DIR:?not set}/.secret'
+
 _chkcmd terraform && complete -o nospace -C $(which terraform) terraform
 _chkcmd aws && complete -C $(which aws_completer) aws
 _chkcmd aws-sso-util && eval "$(_AWS_SSO_UTIL_COMPLETE=zsh_source aws-sso-util)"
