@@ -14,11 +14,11 @@ $character\
 right_format = """
 $cmd_duration\
 ${custom.hermes}
+${custom.k8shome}
 $sudo\
 $jobs\
 $git_branch\
 $git_state\
-$aws\
 $golang\
 $python\
 """
@@ -99,4 +99,10 @@ format = '[$output ](bold green)'
 command = 'echo $INST'
 symbol = '󱃾'
 when = ''' test -n "$INST" '''
+format = '[$symbol ](bold blue)[$output ](dimmed white)'
+
+[custom.k8shome]
+command = ''' kubectl config view --minify --output 'jsonpath={..namespace}' '''
+symbol = '󱃾'
+when = ''' [ "$KUBECONFIG" = "$HOMELAB_DIR/.secret/kubeconfig" ] '''
 format = '[$symbol ](bold blue)[$output ](dimmed white)'
