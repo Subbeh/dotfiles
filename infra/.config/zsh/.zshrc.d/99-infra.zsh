@@ -15,10 +15,17 @@ _chkcmd task && eval "$(task --completion zsh)"
 
 # kubectl
 _chkcmd kubectl && {
+  export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+
   alias k=kubectl
   alias kns="kubectl config set-context --current --namespace"
   alias kctx="kubectl config use-context"
   source <(kubectl completion zsh)
+  _chkcmd kubectl-netshoot && {
+    source <(kubectl netshoot completion zsh)
+    alias kdbgrun="kubectl netshoot run debugger"
+    alias kdbg="kubectl netshoot debug"
+  }
   compdef k='kubectl'
 }
 
