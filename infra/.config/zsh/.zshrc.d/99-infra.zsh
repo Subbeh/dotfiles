@@ -13,7 +13,28 @@ _chkcmd aws-sso-util && eval "$(_AWS_SSO_UTIL_COMPLETE=zsh_source aws-sso-util)"
 _chkcmd mise && eval "$(mise activate zsh)"
 _chkcmd task && eval "$(task --completion zsh)"
 
-# kubectl
+# direnv hook for Zsh history switching
+# default history file
+ZSH_DEFAULT_HISTFILE="$HOME/.zsh_history"
+
+direnv_hook() {
+  # get current HISTFILE value
+  local new_histfile=${HISTFILE:-$ZSH_DEFAULT_HISTFILE}
+
+  # only reload if HISTFILE has changed
+  if [[ "$ZSH_ACTIVE_HISTFILE" != "$new_histfile" ]]; then
+    fc -AI # save current history
+    HISTFILE="$new_histfile"
+    fc -R # reload new history
+    ZSH_ACTIVE_HISTFILE="$HISTFILE"
+  fi
+}
+
+autoload -Uz add-zsh-hook
+add-zsh-hook chpwd direnv_hook
+add-zsh-hook precmd direnv_hook
+
+# kubernetes
 _chkcmd kubectl && {
   export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
@@ -28,6 +49,26 @@ _chkcmd kubectl && {
   }
   compdef k='kubectl'
 }
+
+krecon() {
+  local _app=${1:?not set}
+  local _run=0
+  kubectl get kustomization -A -ojson | jq -r '.items[].metadata | "\(.name) \(.namespace)"' | while read -r name ns; do
+    if [[ "$_app" = "$name" ]] || [[ "$_app" = "--all" ]]; then
+      flux reconcile kustomization $name -n $ns
+      _run=1
+    fi
+  done
+  ((_run)) || echo "ERROR: $_app not found"
+}
+
+_krecon() {
+  local kustomizations
+  kustomizations=($(kubectl get kustomizations -A --no-headers -o custom-columns=":metadata.name"))
+  _describe 'kustomizations' kustomizations
+}
+
+compdef _krecon krecon
 
 # ansible
 play() {
@@ -52,24 +93,3 @@ compdef _play play
 alias tinit="terraform init"
 alias tplan="terraform plan"
 alias tapply="terraform apply"
-
-# direnv hook for Zsh history switching
-# default history file
-ZSH_DEFAULT_HISTFILE="$HOME/.zsh_history"
-
-direnv_hook() {
-  # get current HISTFILE value
-  local new_histfile=${HISTFILE:-$ZSH_DEFAULT_HISTFILE}
-
-  # only reload if HISTFILE has changed
-  if [[ "$ZSH_ACTIVE_HISTFILE" != "$new_histfile" ]]; then
-    fc -AI # save current history
-    HISTFILE="$new_histfile"
-    fc -R # reload new history
-    ZSH_ACTIVE_HISTFILE="$HISTFILE"
-  fi
-}
-
-autoload -Uz add-zsh-hook
-add-zsh-hook chpwd direnv_hook
-add-zsh-hook precmd direnv_hook
