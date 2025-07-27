@@ -28,7 +28,7 @@ return {
         bash = { "shfmt" },
         go = { "goimports", "gofmt" },
         json = { "prettier_json" },
-        lua = { "lsp" },
+        -- lua = { "stylua", lsp_format = "fallback" },
         markdown = { "prettier" },
         python = { "ruff_check", "ruff" },
         sh = { "shfmt" },
