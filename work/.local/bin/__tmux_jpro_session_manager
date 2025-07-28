@@ -26,6 +26,7 @@ if [[ "$instance" ]]; then
     test -d "$session_dir" || mkdir -p "$session_dir"/{logs,data}
     echo 'export KUBECONFIG="$(expand_path ./kubeconfig)"' >"$session_dir/.envrc"
     echo "export INST=$instance" >>"$session_dir/.envrc"
+    echo 'export K9S_CONFIG_DIR=$HOME/.config/k9s/work' >>"$session_dir/.envrc"
     direnv allow "$session_dir"
     tmux new-window -t "$SESH": -n "$instance" -c "$session_dir"
 
