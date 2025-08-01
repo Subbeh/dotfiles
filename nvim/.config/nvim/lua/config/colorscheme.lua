@@ -1,6 +1,13 @@
 local colors = require "config.colors"
 local hlgroups = { -- TODO: add to individual plugins
+  -- Override default text color
   LineNr = { fg = colors.fg2 },
+
+  -- YAML syntax highlighting
+  ["@field.yaml"] = { fg = colors.green.base },
+  ["@property.yaml"] = { fg = colors.green.base },
+  ["@label.yaml"] = { fg = colors.magenta.base },
+  ["@boolean.yaml"] = { fg = colors.blue.bright },
 
   -- Noice
   NoicePopupBorder = { fg = colors.blue.base },
@@ -21,7 +28,7 @@ local hlgroups = { -- TODO: add to individual plugins
   RainbowDelimiterYellow = { fg = colors.yellow.base },
   RainbowDelimiterBlue = { fg = colors.blue.base },
   RainbowDelimiterOrange = { fg = colors.yellow.bright },
-  RainbowDelimiterGreen = { fg = colors.green.base },
+  RainbowDelimiterGreen = { fg = colors.green.bright },
   RainbowDelimiterViolet = { fg = colors.magenta.base },
   RainbowDelimiterCyan = { fg = colors.cyan.base },
 
@@ -43,11 +50,6 @@ return {
   priority = 1000, -- make sure to load this before all the other start plugins
   config = function()
     require("github-theme").setup {
-      -- options = { -- TODO:
-      -- 	darken = {
-      -- 		floats = false,
-      -- 	},
-      -- },
       specs = {
         all = colors,
       },
