@@ -30,3 +30,9 @@ ck() { watch -n"${1:-5}" "$(fc -ln -1)"; }
 
 # cd up n directories
 up() { cd "$(eval printf '../'%.0s {1..$1})" || return 1; }
+
+# create files in subdirectories
+touchr() {
+  mkdir -p "$(dirname "$1")" 2>/dev/null
+  touch "$1" && ls -l "$1"
+}
