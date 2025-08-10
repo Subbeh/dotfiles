@@ -37,7 +37,7 @@ return {
     { "<leader>fo",       "<cmd>lua require('telescope').extensions.recent_files.pick()<cr>",                        desc = "Recent Files" },
     { "<leader>fO",       "<cmd>lua require('telescope').extensions.recent_files.pick({ only_cwd = true})<cr>",      desc = "Recent Files (workspace)" },
     -- { "<leader>fo",       "<cmd>Telescope frecency workspace=CWD<cr>",                                             desc = "Frequent Files (workspace)" },
-    { "<leader>fp",       "<cmd>lua require('telescope').extensions.project.project{ display_type = 'full' }<cr>",   desc = "Projects" },
+    -- { "<leader>fp",       "<cmd>lua require('telescope').extensions.project.project{ display_type = 'full' }<cr>",   desc = "Projects" },
     { "<leader>fr",       "<cmd>Telescope repo list<cr>",                                                            desc = "Repositories" },
     { "<leader>fz",       "<cmd>Telescope zoxide list<cr>",                                                          desc = "Zoxide" },
     { "<leader>me",       "<cmd>Telescope emoji<cr>",                                                                desc = "Emojis" },
@@ -159,16 +159,17 @@ return {
             open_in_browser = "<C-x>",
           },
         },
-        project = {
-          base_dirs = {
-            os.getenv("WORKSPACE_DIR"),
-          },
-          hidden_files = true,
-          sync_with_nvim_tree = true,
-          on_project_selected = function()
-            require("telescope").extensions.smart_open.smart_open({ cwd_only = true })
-          end,
-        },
+        -- project = {
+        --   base_dirs = {
+        --     os.getenv("WORKSPACE_DIR"),
+        --   },
+        --   hidden_files = true,
+        --   order_by = "recent",
+        --   sync_with_nvim_tree = true,
+        --   on_project_selected = function()
+        --     require("telescope").extensions.smart_open.smart_open({ cwd_only = true })
+        --   end,
+        -- },
         repo = { -- TODO: `locate -r` error
           list = {
             fd_opts = {

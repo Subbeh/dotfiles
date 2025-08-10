@@ -78,7 +78,7 @@ return {
         yamlfmt = {
           prepend_args = {
             "-formatter",
-            "include_document_start=true,indent=2,retain_line_breaks_single=true,pad_line_comments=2",
+            "include_document_start=true,indent=2,retain_line_breaks_single=true,pad_line_comments=2,drop_merge_tag=true",
           },
         },
       },
