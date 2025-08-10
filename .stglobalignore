@@ -12,3 +12,12 @@ node_modules/
 
 (?d).DS_Store
 *.log
+
+(?d).git/logs/
+(?d).git/refs/remotes/
+(?d).git/FETCH_HEAD
+(?d).git/ORIG_HEAD
+(?d).git/index.lock
+(?d).git/refs/*/
+(?d).git/objects/pack/*.idx
+(?d).git/objects/pack/*.pack
