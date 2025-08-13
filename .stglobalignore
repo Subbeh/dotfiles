@@ -5,6 +5,7 @@
 .cache/
 .venv/
 .vscode/
+.ansible/
 __pycache__/
 temp/
 sessions/
@@ -13,11 +14,3 @@ node_modules/
 (?d).DS_Store
 *.log
 
-.git/logs/
-.git/refs/remotes/
-.git/FETCH_HEAD
-.git/ORIG_HEAD
-.git/index.lock
-.git/refs/*/
-.git/objects/pack/*.idx
-.git/objects/pack/*.pack
