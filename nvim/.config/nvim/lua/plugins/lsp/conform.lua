@@ -32,7 +32,7 @@ return {
         markdown = { "prettier" },
         python = { "ruff_check", "ruff" },
         sh = { "shfmt" },
-        yaml = { "yamlfmt" },
+        yaml = { "prettier" },
         zsh = { "shfmt" },
       },
 
@@ -75,12 +75,12 @@ return {
             "json",
           },
         },
-        yamlfmt = {
-          prepend_args = {
-            "-formatter",
-            "include_document_start=true,indent=2,retain_line_breaks_single=true,pad_line_comments=2,drop_merge_tag=true",
-          },
-        },
+        -- yamlfmt = {
+        --   prepend_args = {
+        --     "-formatter",
+        --     "include_document_start=true,indent=2,retain_line_breaks=true,pad_line_comments=2,drop_merge_tag=true",
+        --   },
+        -- },
       },
     })
     require("mason-conform").setup()
