@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+export BW_SESSION="$(gpg --decrypt "$BITWARDENCLI_APPDATA_DIR/.bitwarden-session.keychain")"
+
+keychain_file="${BITWARDENCLI_APPDATA_DIR}/.bitwarden-session.keychain"
+gpg_key=$(gpg --list-keys --with-colons "${COMMON_EMAIL:?not set}" |
+  awk -F: '$1=="pub" && $2!~/e/ {print $5}' |
+  tail -n1)
+
+bw_key=$(command bw unlock --raw)
+echo "$bw_key" | gpg --yes --encrypt --recipient "$gpg_key" -o "$keychain_file" &&
+  chmod 600 "$keychain_file"

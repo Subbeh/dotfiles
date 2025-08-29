@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+ITEM="$1"
+FIELD="$2"
+
+value=$(bww list items --search "$ITEM" | jq -r --arg item "$ITEM" --arg field "$FIELD" '.[] | select(.name==$item) | .fields[] | select(.name==$field) | .value')
+if [ -z "$value" ]; then
+  exit 1
+else
+  echo "$value"
+fi
