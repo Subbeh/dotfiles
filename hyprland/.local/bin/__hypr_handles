@@ -1,41 +1,5 @@
 #!/bin/bash
 
-DELL_MONITOR_DESC="Dell Inc. DELL U2723QE 7M70DP3"
-
-manage_dell_reserved_area() {
-  local event="$1"
-  
-  # Check if Dell monitor is connected
-  if ! hyprctl monitors -j | jq -r '.[].description' | grep -q "^$DELL_MONITOR_DESC$"; then
-    return
-  fi
-  
-  # Get the Dell monitor name
-  local dell_monitor=$(hyprctl monitors -j | jq -r --arg desc "$DELL_MONITOR_DESC" '.[] | select(.description == $desc) | .name')
-  
-  if [[ -z "$dell_monitor" ]]; then
-    return
-  fi
-  
-  # Get current workspace on Dell monitor
-  local dell_workspace=$(hyprctl monitors -j | jq -r --arg monitor "$dell_monitor" '.[] | select(.name == $monitor) | .activeWorkspace.id')
-  
-  if [[ -z "$dell_workspace" ]]; then
-    return
-  fi
-  
-  # Check if there are any windows on the Dell monitor workspace
-  local window_count=$(hyprctl clients -j | jq --arg workspace "$dell_workspace" '[.[] | select(.workspace.id == ($workspace | tonumber))] | length')
-  
-  if [[ "$window_count" -eq 0 ]]; then
-    # No windows on workspace, add reserved area
-    hyprctl keyword monitor "desc:$DELL_MONITOR_DESC, addreserved, 0, 0, 500, 0"
-  else
-    # Windows present on workspace, remove reserved area
-    hyprctl keyword monitor "desc:$DELL_MONITOR_DESC, addreserved, 0, 0, 0, 0"
-  fi
-}
-
 handle() {
   case $1 in
     windowtitle*)
@@ -53,22 +17,14 @@ handle() {
         hyprctl --batch "dispatch togglefloating address:0x$window_id ; dispatch resizewindowpixel exact 20% 40%,address:0x$window_id ; dispatch movewindowpixel exact 40% 30%,address:0x$window_id"
       fi
       ;;
-    openwindow*|movewindow*)
-      # Handle window open/move events for Dell monitor reserved area
-      manage_dell_reserved_area "$1"
-      ;;
-    workspace*)
-      # Handle workspace changes for Dell monitor reserved area
-      manage_dell_reserved_area "$1"
-      ;;
     monitorremoved*)
       # Extract monitor name from the event
       monitor_name=${1#*>>}
-      
+
       # Create a lock file to prevent concurrent profile changes
       lockfile="/tmp/hypr_profile_change.lock"
       debounce_file="/tmp/hypr_monitor_debounce.lock"
-      
+
       # Debounce: skip if we just processed a monitor event recently
       if [ -f "$debounce_file" ]; then
         # Check if debounce file is less than 2 seconds old
@@ -76,22 +32,22 @@ handle() {
           exit 0
         fi
       fi
-      
+
       if [ -f "$lockfile" ]; then
         echo "Profile change already in progress, skipping monitor removal handling"
         exit 0
       fi
-      
+
       touch "$lockfile"
       touch "$debounce_file"
       trap "rm -f $lockfile $debounce_file" EXIT
-      
+
       # Give a small delay to let the monitor removal settle and avoid race conditions
       sleep 1
-      
+
       # Check if we're currently in a docked profile and switch to undocked
       current_profile=$(hypr_reload.py -s 2>/dev/null | grep "ACTIVE" | awk '{print $1}')
-      
+
       # If current profile contains "docked" but not "undocked", switch to undocked
       if [[ "$current_profile" == *"docked"* && "$current_profile" != "undocked" ]]; then
         echo "Monitor $monitor_name removed, switching from $current_profile to undocked profile"
@@ -105,7 +61,7 @@ handle() {
           hypr_reload.py -p undocked
         fi
       fi
-      
+
       rm -f "$lockfile" "$debounce_file"
       ;;
   esac
