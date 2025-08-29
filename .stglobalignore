@@ -4,7 +4,6 @@
 .terraform/
 .cache/
 .venv/
-.vscode/
 .ansible/
 __pycache__/
 temp/
