@@ -5,9 +5,6 @@ from dataclasses import dataclass
 import argparse
 from typing import List, Tuple, Dict, Optional
 import subprocess
-import logging
-import sys
-from datetime import datetime
 
 # Default workspace to switch to after profile changes
 DEFAULT_WORKSPACE = 2
@@ -236,59 +233,15 @@ class Profile:
 
 
 class HyprlandManager:
-    def __init__(self, dry_run: bool = False, verbose: bool = False, debug_log: str = None):
+    def __init__(self, dry_run: bool = False, verbose: bool = False):
         self.dry_run = dry_run
         self.verbose = verbose
-        self.debug_log = debug_log
-        self._setup_logging()
-        self.logger.info("=== Hyprland Manager Starting ===")
-        self.logger.info(f"Dry run: {dry_run}, Verbose: {verbose}")
         self._validate_config()
         self.profiles: Dict[str, Profile] = {
             name: Profile(name, configs) for name, configs in PROFILES.items()
         }
         self.monitors: Dict[str, Monitor] = {}
         self.refresh_monitors()
-
-    def _setup_logging(self):
-        """Setup logging to both file and console."""
-        self.logger = logging.getLogger('hyprland_manager')
-        self.logger.setLevel(logging.DEBUG)
-        
-        # Clear any existing handlers
-        self.logger.handlers = []
-        
-        # Create formatter
-        formatter = logging.Formatter(
-            '%(asctime)s [%(levelname)s] %(message)s',
-            datefmt='%H:%M:%S.%f'
-        )
-        
-        # Console handler
-        console_handler = logging.StreamHandler(sys.stdout)
-        console_handler.setLevel(logging.INFO if not self.verbose else logging.DEBUG)
-        console_handler.setFormatter(formatter)
-        self.logger.addHandler(console_handler)
-        
-        # File handler if specified
-        if self.debug_log:
-            file_handler = logging.FileHandler(self.debug_log, mode='a')
-            file_handler.setLevel(logging.DEBUG)
-            file_handler.setFormatter(formatter)
-            self.logger.addHandler(file_handler)
-            self.logger.info(f"Debug logging to: {self.debug_log}")
-
-    def _log_debug(self, message: str):
-        """Log debug message."""
-        self.logger.debug(message)
-        
-    def _log_info(self, message: str):
-        """Log info message."""
-        self.logger.info(message)
-        
-    def _log_error(self, message: str):
-        """Log error message."""
-        self.logger.error(message)
 
     def _validate_config(self) -> None:
         """Validate the MONITORS and PROFILES configuration."""
@@ -347,7 +300,6 @@ class HyprlandManager:
 
     def refresh_monitors(self) -> bool:
         """Refresh the current monitor state from hyprctl. Returns True on success."""
-        self._log_debug("Starting monitor refresh...")
         try:
             result = subprocess.run(
                 ["hyprctl", "monitors", "all", "-j"],
@@ -355,7 +307,6 @@ class HyprlandManager:
                 text=True,
                 check=True,
             )
-            self._log_debug(f"hyprctl monitors command successful, got {len(result.stdout)} chars of output")
             monitor_data = json.loads(result.stdout)
             monitors = {}
 
@@ -363,21 +314,19 @@ class HyprlandManager:
                 try:
                     monitor = Monitor.from_hyprctl_data(mon_data)
                     monitors[monitor.name] = monitor
-                    self._log_debug(f"Parsed monitor: {monitor.name} (disabled: {monitor.disabled}, {monitor.width}x{monitor.height})")
                 except (KeyError, TypeError) as e:
-                    self._log_error(f"Failed to parse monitor data: {e}")
+                    print(f"Warning: Failed to parse monitor data: {e}")
                     continue
 
             self.monitors = monitors
-            self._log_info(f"Refreshed {len(monitors)} monitors")
             return True
 
         except subprocess.CalledProcessError as e:
-            self._log_error(f"Error running hyprctl: {e}")
+            print(f"Error running hyprctl: {e}")
             self.monitors = {}
             return False
         except json.JSONDecodeError as e:
-            self._log_error(f"Error parsing monitor data: {e}")
+            print(f"Error parsing monitor data: {e}")
             self.monitors = {}
             return False
 
@@ -429,23 +378,22 @@ class HyprlandManager:
 
     def run_hyprctl_command(self, command: List[str]) -> bool:
         """Execute a hyprctl command, respecting dry-run mode."""
-        self._log_debug(f"About to execute: {' '.join(command)}")
+        if self.verbose:
+            print(f"[DEBUG] Command: {' '.join(command)}")
 
         if self.dry_run:
-            self._log_info(f"[DRY RUN] Would execute: {' '.join(command)}")
+            print(f"[DRY RUN] Would execute: {' '.join(command)}")
             return True
 
         try:
-            self._log_debug(f"Executing command: {' '.join(command)}")
             result = subprocess.run(command, capture_output=True, text=True, check=True)
-            self._log_debug(f"Command completed successfully")
-            if result.stdout:
-                self._log_debug(f"stdout: {result.stdout.strip()}")
+            if self.verbose and result.stdout:
+                print(f"[DEBUG] stdout: {result.stdout}")
             return True
         except subprocess.CalledProcessError as e:
-            self._log_error(f"Error executing {' '.join(command)}: {e}")
+            print(f"Error executing {' '.join(command)}: {e}")
             if e.stderr:
-                self._log_error(f"stderr: {e.stderr}")
+                print(f"stderr: {e.stderr}")
             return False
 
     def _send_notification(
@@ -542,23 +490,34 @@ class HyprlandManager:
 
             success = True
 
-            # Step 1: Configure monitors in the profile FIRST (before disabling any)
-            self._log_info("=== Step 1: Configuring monitors in profile ===")
+            # Step 1: Disable monitors not in the profile
+            for monitor_name, monitor in self.monitors.items():
+                if monitor_name not in profile_monitor_names:
+                    if not monitor.disabled:
+                        print(f"Disabling monitor: {monitor_name}")
+                        if not self.run_hyprctl_command(
+                            ["hyprctl", "keyword", "monitor", f"{monitor_name},disable"]
+                        ):
+                            success = False
+                    else:
+                        print(f"Monitor {monitor_name} is already disabled")
+
+            # Step 2: Configure monitors in the profile
             for config_name, x, y, width, height, scale in profile_configs:
-                self._log_debug(f"Configuring {config_name}: {width}x{height} at {x},{y} scale {scale}")
                 actual_name = self.find_monitor_by_config_name(config_name)
                 if not actual_name:
-                    self._log_error(f"Could not find monitor for config '{config_name}'")
+                    print(f"Error: Could not find monitor for config '{config_name}'")
                     success = False
                     continue
 
                 if actual_name not in self.monitors:
-                    self._log_error(f"Monitor '{actual_name}' not found in current monitors")
+                    print(
+                        f"Error: Monitor '{actual_name}' not found in current monitors"
+                    )
                     success = False
                     continue
 
                 current_monitor = self.monitors[actual_name]
-                self._log_debug(f"Current monitor {actual_name} state: disabled={current_monitor.disabled}, {current_monitor.width}x{current_monitor.height} at {current_monitor.x},{current_monitor.y} scale={current_monitor.scale}")
 
                 # Check if monitor needs to be configured
                 needs_config = (
@@ -571,45 +530,20 @@ class HyprlandManager:
                 )
 
                 if needs_config:
+                    # Format: monitor=name,widthxheight@refresh,positionx,scale
                     monitor_config = f"{actual_name},{width}x{height},{x}x{y},{scale}"
-                    self._log_info(f"Configuring monitor: {monitor_config}")
+                    print(f"Configuring monitor: {monitor_config}")
                     if not self.run_hyprctl_command(
                         ["hyprctl", "keyword", "monitor", monitor_config]
                     ):
                         success = False
-                    else:
-                        self._log_debug("Monitor configuration completed, waiting 1.0s...")
-                        import time
-                        time.sleep(1.0)  # Longer pause to let monitor settle
                 else:
-                    self._log_debug(f"Monitor {actual_name} is already correctly configured")
-
-            # Step 2: Disable monitors not in the profile (AFTER enabling target monitors)
-            self._log_info("=== Step 2: Disabling monitors not in profile ===")
-            for monitor_name, monitor in self.monitors.items():
-                if monitor_name not in profile_monitor_names:
-                    if not monitor.disabled:
-                        self._log_info(f"Disabling monitor: {monitor_name}")
-                        if not self.run_hyprctl_command(
-                            ["hyprctl", "keyword", "monitor", f"{monitor_name},disable"]
-                        ):
-                            success = False
-                    else:
-                        self._log_debug(f"Monitor {monitor_name} is already disabled")
+                    print(f"Monitor {actual_name} is already correctly configured")
 
             # Step 3: Configure workspaces for each monitor
             if success:  # Only configure workspaces if monitor config succeeded
-                self._log_info("=== Step 3: Configuring workspaces for each monitor ===")
-                
-                # Refresh monitor state after configuration
-                self._log_debug("Refreshing monitor state after configuration...")
-                if not self.refresh_monitors():
-                    self._log_error("Failed to refresh monitor state after configuration!")
-                    success = False
-                
                 workspace_configs = profile.get_workspace_configs()
                 current_workspaces = self.get_current_workspaces()
-                self._log_debug(f"Current workspace assignments: {current_workspaces}")
 
                 # Get all workspace IDs that should exist in this profile
                 expected_workspaces = set()
@@ -617,47 +551,48 @@ class HyprlandManager:
                     for ws in workspaces:
                         if ws > 0:  # Only regular workspaces
                             expected_workspaces.add(ws)
-                self._log_debug(f"Expected workspaces in profile: {expected_workspaces}")
 
                 for config_name, workspaces in workspace_configs:
-                    self._log_debug(f"Processing workspace config for {config_name}: {workspaces}")
                     actual_name = self.find_monitor_by_config_name(config_name)
                     if not actual_name:
-                        self._log_error(f"Could not find actual monitor name for {config_name}")
                         continue  # Already logged error above
 
-                    self._log_info(f"Configuring workspaces {workspaces} for monitor {actual_name}")
+                    print(
+                        f"Configuring workspaces {workspaces} for monitor {actual_name}"
+                    )
 
                     for workspace_id in workspaces:
-                        self._log_debug(f"Processing workspace {workspace_id}")
-                        
                         # Skip special workspaces (negative IDs) - they should not be moved
                         if workspace_id < 0:
-                            self._log_debug(f"Skipping special workspace {workspace_id}")
+                            if self.verbose:
+                                print(
+                                    f"[DEBUG] Skipping special workspace {workspace_id}"
+                                )
                             continue
 
                         # Create persistent workspace on the monitor
-                        workspace_config = f"{workspace_id},monitor:{actual_name},persistent:true"
-                        self._log_info(f"Creating persistent workspace {workspace_id} on {actual_name}")
-                        
+                        workspace_config = (
+                            f"{workspace_id},monitor:{actual_name},persistent:true"
+                        )
+                        print(
+                            f"Creating persistent workspace {workspace_id} on {actual_name}"
+                        )
                         if not self.run_hyprctl_command(
                             ["hyprctl", "keyword", "workspace", workspace_config]
                         ):
-                            self._log_error(f"Failed to create workspace {workspace_id}")
                             success = False
                             continue
-                            
-                        self._log_debug("Workspace creation completed, waiting 0.2s...")
-                        import time
-                        time.sleep(0.2)  # Brief pause between operations
 
                         # Check if workspace needs to be moved
                         if current_workspaces.get(workspace_id) == actual_name:
-                            self._log_debug(f"Workspace {workspace_id} already on {actual_name}")
+                            if self.verbose:
+                                print(
+                                    f"[DEBUG] Workspace {workspace_id} already on {actual_name}"
+                                )
                             continue
 
                         # Move workspace to monitor
-                        self._log_info(f"Moving workspace {workspace_id} to {actual_name}")
+                        print(f"Moving workspace {workspace_id} to {actual_name}")
                         if not self.run_hyprctl_command(
                             [
                                 "hyprctl",
@@ -667,11 +602,7 @@ class HyprlandManager:
                                 actual_name,
                             ]
                         ):
-                            self._log_error(f"Failed to move workspace {workspace_id} to {actual_name}")
                             success = False
-                        else:
-                            self._log_debug("Workspace move completed, waiting 0.2s...")
-                            time.sleep(0.2)  # Brief pause after workspace moves
 
                 # Clean up any extra workspaces that shouldn't exist
                 for workspace_id, monitor_name in current_workspaces.items():
@@ -1134,17 +1065,12 @@ def main() -> None:
         action="store_true",
         help="Enable verbose debug output",
     )
-    parser.add_argument(
-        "--debug-log",
-        type=str,
-        help="Write debug log to specified file",
-    )
 
     args = parser.parse_args()
 
     # Initialize manager
     try:
-        manager = HyprlandManager(dry_run=args.dry_run, verbose=args.verbose, debug_log=args.debug_log)
+        manager = HyprlandManager(dry_run=args.dry_run, verbose=args.verbose)
     except Exception as e:
         print(f"Error initializing Hyprland manager: {e}")
         return
