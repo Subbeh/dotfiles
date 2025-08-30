@@ -48,8 +48,8 @@ handle() {
       # Check if we're currently in a docked profile and switch to undocked
       current_profile=$(hypr_reload.py -s 2>/dev/null | grep "ACTIVE" | awk '{print $1}')
 
-      # If current profile contains "docked" but not "undocked", switch to undocked
-      if [[ "$current_profile" == *"docked"* && "$current_profile" != "undocked" ]]; then
+      # If current profile contains "ext" or "docked", switch to undocked
+      if [[ "$current_profile" == *"ext"* || "$current_profile" == "docked" ]]; then
         echo "Monitor $monitor_name removed, switching from $current_profile to undocked profile"
         hypr_reload.py -p undocked
       else

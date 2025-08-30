@@ -490,19 +490,7 @@ class HyprlandManager:
 
             success = True
 
-            # Step 1: Disable monitors not in the profile
-            for monitor_name, monitor in self.monitors.items():
-                if monitor_name not in profile_monitor_names:
-                    if not monitor.disabled:
-                        print(f"Disabling monitor: {monitor_name}")
-                        if not self.run_hyprctl_command(
-                            ["hyprctl", "keyword", "monitor", f"{monitor_name},disable"]
-                        ):
-                            success = False
-                    else:
-                        print(f"Monitor {monitor_name} is already disabled")
-
-            # Step 2: Configure monitors in the profile
+            # Step 1: Configure monitors in the profile first
             for config_name, x, y, width, height, scale in profile_configs:
                 actual_name = self.find_monitor_by_config_name(config_name)
                 if not actual_name:
@@ -539,6 +527,20 @@ class HyprlandManager:
                         success = False
                 else:
                     print(f"Monitor {actual_name} is already correctly configured")
+
+            # Step 2: Handle monitors not in the profile (after configuring target monitors)
+            for monitor_name, monitor in self.monitors.items():
+                if monitor_name not in profile_monitor_names:
+                    if not monitor.disabled:
+                        
+                        # Default behavior: disable the monitor
+                        print(f"Disabling monitor: {monitor_name}")
+                        if not self.run_hyprctl_command(
+                            ["hyprctl", "keyword", "monitor", f"{monitor_name},disable"]
+                        ):
+                            success = False
+                    else:
+                        print(f"Monitor {monitor_name} is already disabled")
 
             # Step 3: Configure workspaces for each monitor
             if success:  # Only configure workspaces if monitor config succeeded
@@ -789,7 +791,7 @@ class HyprlandManager:
                         "[DEBUG] No waybar systemd units found, trying pkill fallback"
                     )
                 # pkill returns 1 if no processes found, which is fine
-                self.run_hyprctl_command(["pkill", "waybar"])
+                subprocess.run(["pkill", "waybar"], capture_output=True)
                 return True
 
             return stopped_any
@@ -799,7 +801,7 @@ class HyprlandManager:
                 print(f"[DEBUG] Error checking systemd units: {e}")
             # Fallback to pkill
             # pkill returns 1 if no processes found, which is fine
-            self.run_hyprctl_command(["pkill", "waybar"])
+            subprocess.run(["pkill", "waybar"], capture_output=True)
             return True
 
     def configure_waybar(self, primary_monitor: Optional[str]) -> bool:
