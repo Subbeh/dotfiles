@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# Make sure hyprpolkitdaemon is enabled
+if systemctl --user cat hyprpolkitagent.service >/dev/null 2>&1; then
+  systemctl --user enable --now hyprpolkitagent.service
+fi
+
 # Reset HYPRLAND_INSTANCE_SIGNATURE to newest Hyprland instance
 if [ "$HYPRLAND_INSTANCE_SIGNATURE" != "" ]; then
   newest_socket="$(ls -t "$XDG_RUNTIME_DIR"/hypr/*/.socket.sock 2>/dev/null | head -1)"
