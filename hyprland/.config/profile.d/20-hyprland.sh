@@ -6,12 +6,15 @@ if systemctl --user cat hyprpolkitagent.service >/dev/null 2>&1; then
 fi
 
 # Reset HYPRLAND_INSTANCE_SIGNATURE to newest Hyprland instance
-if [ "$HYPRLAND_INSTANCE_SIGNATURE" != "" ]; then
-  newest_socket="$(ls -t "$XDG_RUNTIME_DIR"/hypr/*/.socket.sock 2>/dev/null | head -1)"
-  if [ "$newest_socket" != "" ]; then
-    HYPRLAND_INSTANCE_SIGNATURE="$(basename "$(dirname "$newest_socket")")"
+update_hyprland_signature() {
+  if [ "$HYPRLAND_INSTANCE_SIGNATURE" != "" ]; then
+    newest_socket="$(ls -t "$XDG_RUNTIME_DIR"/hypr/*/.socket.sock 2>/dev/null | head -1)"
+    if [ "$newest_socket" != "" ]; then
+      HYPRLAND_INSTANCE_SIGNATURE="$(basename "$(dirname "$newest_socket")")"
+    fi
   fi
-fi
+}
+update_hyprland_signature
 
 # hyprland
 alias hl="uwsm check may-start && uwsm start hyprland.desktop"

@@ -1,6 +1,5 @@
 [pyprland]
 plugins = [
-  "shift_monitors",
   "toggle_special",
   "expose",
 ]

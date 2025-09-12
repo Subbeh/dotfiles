@@ -585,7 +585,15 @@ class HyprlandManager:
                             success = False
                             continue
 
-                        # Check if workspace needs to be moved
+                        # Brief pause to let workspace creation take effect
+                        import time
+                        time.sleep(0.1)
+
+                        # Check if workspace needs to be moved (refresh current state first)
+                        current_workspaces = self.get_current_workspaces()
+                        if self.verbose:
+                            print(f"[DEBUG] Current workspaces after creation: {current_workspaces}")
+                        
                         if current_workspaces.get(workspace_id) == actual_name:
                             if self.verbose:
                                 print(
@@ -593,46 +601,85 @@ class HyprlandManager:
                                 )
                             continue
 
-                        # Move workspace to monitor
-                        print(f"Moving workspace {workspace_id} to {actual_name}")
-                        if not self.run_hyprctl_command(
-                            [
-                                "hyprctl",
-                                "dispatch",
-                                "moveworkspacetomonitor",
-                                str(workspace_id),
-                                actual_name,
-                            ]
-                        ):
-                            success = False
-
-                # Clean up any extra workspaces that shouldn't exist
-                for workspace_id, monitor_name in current_workspaces.items():
-                    if workspace_id > 0 and workspace_id not in expected_workspaces:
-                        print(f"Cleaning up unexpected workspace {workspace_id}")
-                        # Move any windows from this workspace to workspace 2
-                        if not self.run_hyprctl_command(
-                            [
-                                "hyprctl",
-                                "dispatch",
-                                "moveworkspacetomonitor",
-                                str(workspace_id),
-                                "temp",
-                            ]
-                        ):
-                            # If that fails, try to close the workspace by switching away
+                        # Only try to move if workspace actually exists somewhere else
+                        if workspace_id in current_workspaces:
+                            current_monitor = current_workspaces[workspace_id]
+                            print(f"Moving workspace {workspace_id} from {current_monitor} to {actual_name}")
                             if not self.run_hyprctl_command(
                                 [
                                     "hyprctl",
                                     "dispatch",
-                                    "workspace",
-                                    str(DEFAULT_WORKSPACE),
+                                    "moveworkspacetomonitor",
+                                    str(workspace_id),
+                                    actual_name,
+                                ]
+                            ):
+                                success = False
+                        else:
+                            if self.verbose:
+                                print(f"[DEBUG] Workspace {workspace_id} doesn't exist yet, trying to create it via dispatch")
+                            # Try creating the workspace via dispatch if it doesn't exist
+                            if not self.run_hyprctl_command(
+                                ["hyprctl", "dispatch", "workspace", str(workspace_id)]
+                            ):
+                                if self.verbose:
+                                    print(f"[DEBUG] Failed to create workspace {workspace_id} via dispatch")
+                            else:
+                                # Brief pause and try move again
+                                time.sleep(0.1)
+                                current_workspaces = self.get_current_workspaces()
+                                if workspace_id in current_workspaces:
+                                    current_monitor = current_workspaces[workspace_id]
+                                    if current_monitor != actual_name:
+                                        print(f"Moving workspace {workspace_id} from {current_monitor} to {actual_name}")
+                                        if not self.run_hyprctl_command(
+                                            [
+                                                "hyprctl",
+                                                "dispatch",
+                                                "moveworkspacetomonitor",
+                                                str(workspace_id),
+                                                actual_name,
+                                            ]
+                                        ):
+                                            success = False
+
+                # Clean up any extra workspaces that shouldn't exist
+                # Refresh workspace list after all moves
+                current_workspaces = self.get_current_workspaces()
+                for workspace_id, monitor_name in current_workspaces.items():
+                    if workspace_id > 0 and workspace_id not in expected_workspaces:
+                        print(f"Cleaning up unexpected workspace {workspace_id}")
+                        # Find any available monitor to move workspace to, then close it
+                        target_monitor = None
+                        for mon_name in profile_monitor_names:
+                            target_monitor = mon_name
+                            break
+                        
+                        if target_monitor:
+                            # Try to move workspace to an active monitor first
+                            if not self.run_hyprctl_command(
+                                [
+                                    "hyprctl",
+                                    "dispatch",
+                                    "moveworkspacetomonitor", 
+                                    str(workspace_id),
+                                    target_monitor,
                                 ]
                             ):
                                 if self.verbose:
-                                    print(
-                                        f"[DEBUG] Could not clean up workspace {workspace_id}"
-                                    )
+                                    print(f"[DEBUG] Could not move workspace {workspace_id} to {target_monitor}")
+                        
+                        # Try to close the workspace by switching away from it
+                        if not self.run_hyprctl_command(
+                            [
+                                "hyprctl",
+                                "dispatch",
+                                "workspace",
+                                str(DEFAULT_WORKSPACE),
+                            ]
+                        ):
+                            if self.verbose:
+                                print(f"[DEBUG] Could not switch away from workspace {workspace_id}")
 
             # Step 4: Configure waybar on primary monitor (if specified)
             if success:  # Only configure waybar if everything else succeeded
@@ -642,9 +689,13 @@ class HyprlandManager:
                         primary_monitor_config
                     )
                     if actual_primary_monitor:
-                        if not self.configure_waybar(actual_primary_monitor):
-                            print("Warning: Failed to configure waybar")
-                            # Don't mark as failure since monitor/workspace config succeeded
+                        # Wait for monitors to be properly configured before starting waybar
+                        if self._wait_for_monitors_ready(profile):
+                            if not self.configure_waybar(actual_primary_monitor):
+                                print("Warning: Failed to configure waybar")
+                                # Don't mark as failure since monitor/workspace config succeeded
+                        else:
+                            print("Warning: Monitors not ready, skipping waybar configuration")
                     else:
                         print(
                             f"Warning: Could not find primary monitor '{primary_monitor_config}' for waybar"
@@ -758,6 +809,64 @@ class HyprlandManager:
                 print(f"  Running on {waybar_monitor}")
         else:
             print("  Not running")
+
+    def _wait_for_monitors_ready(self, profile, max_wait_seconds: int = 5) -> bool:
+        """Wait for monitors to be properly configured before proceeding.
+        
+        Returns True if monitors are ready, False if timeout reached.
+        """
+        import time
+        
+        print("Waiting for monitors to be ready...")
+        start_time = time.time()
+        
+        while time.time() - start_time < max_wait_seconds:
+            # Refresh monitor state
+            if not self.refresh_monitors():
+                time.sleep(0.2)
+                continue
+                
+            # Check if all expected monitors are properly configured
+            expected_configs = profile.get_monitor_configs()
+            all_ready = True
+            
+            for config_name, expected_x, expected_y, expected_width, expected_height, expected_scale in expected_configs:
+                actual_name = self.find_monitor_by_config_name(config_name)
+                if not actual_name or actual_name not in self.monitors:
+                    all_ready = False
+                    break
+                    
+                monitor = self.monitors[actual_name]
+                
+                # Check if monitor is enabled with correct configuration
+                if (monitor.disabled or 
+                    monitor.width <= 0 or monitor.height <= 0 or  # Prevent negative/zero dimensions
+                    monitor.x != expected_x or monitor.y != expected_y or
+                    monitor.width != expected_width or monitor.height != expected_height or
+                    abs(monitor.scale - expected_scale) > 0.01):
+                    all_ready = False
+                    break
+            
+            if all_ready:
+                print("All monitors are ready")
+                self._send_notification(
+                    "Monitor Setup", 
+                    "All monitors configured successfully", 
+                    "normal", 
+                    "display"
+                )
+                return True
+                
+            time.sleep(0.2)  # Check every 200ms
+        
+        print(f"Timeout waiting for monitors to be ready after {max_wait_seconds}s")
+        self._send_notification(
+            "Monitor Setup Error", 
+            f"Monitors not ready after {max_wait_seconds}s - waybar may not work correctly", 
+            "critical", 
+            "dialog-error"
+        )
+        return False
 
     def _stop_waybar(self) -> bool:
         """Stop existing waybar processes/units properly."""
