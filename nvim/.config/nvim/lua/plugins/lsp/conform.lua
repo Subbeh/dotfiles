@@ -15,10 +15,16 @@ return {
       log_level = vim.log.levels.DEBUG,
 
       -- Config
-      format_on_save = {
-        timeout_ms = 500,
-        lsp_format = "fallback",
-      },
+      format_on_save = function(bufnr)
+        -- Skip .j2 files
+        if vim.bo[bufnr].filetype == "yaml.j2" or vim.fn.expand("%", { buf = bufnr }):match("%.j2$") then
+          return nil
+        end
+        return {
+          timeout_ms = 500,
+          lsp_format = "fallback",
+        }
+      end,
       default_format_opts = {
         lsp_format = "fallback",
       },
@@ -32,7 +38,7 @@ return {
         markdown = { "prettier" },
         python = { "ruff_check", "ruff" },
         sh = { "shfmt" },
-        yaml = { "prettier" },
+        yaml = { "prettier_yaml" },
         zsh = { "shfmt" },
       },
 
@@ -75,12 +81,19 @@ return {
             "json",
           },
         },
-        -- yamlfmt = {
-        --   prepend_args = {
-        --     "-formatter",
-        --     "include_document_start=true,indent=2,retain_line_breaks=true,pad_line_comments=2,drop_merge_tag=true",
-        --   },
-        -- },
+        prettier_yaml = {
+          command = "prettier",
+          args = {
+            "--print-width",
+            "1000", -- Very high to prevent wrapping
+            "--tab-width",
+            "2",
+            "--prose-wrap",
+            "never",
+            "--parser",
+            "yaml",
+          },
+        },
       },
     })
     require("mason-conform").setup()

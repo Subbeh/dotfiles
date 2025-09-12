@@ -15,6 +15,7 @@ return {
       customTags = { "!vault scalar" },
       lint = {
         commas = "ignore",
+        comments = "disable",
       }
     },
   },
