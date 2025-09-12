@@ -13,11 +13,11 @@ _chkcmd aws-sso-util && eval "$(_AWS_SSO_UTIL_COMPLETE=zsh_source aws-sso-util)"
 _chkcmd mise && eval "$(mise activate zsh)"
 _chkcmd task && eval "$(task --completion zsh)"
 
-# direnv hook for Zsh history switching
+# histfile hook for Zsh history switching
 # default history file
 ZSH_DEFAULT_HISTFILE="$HOME/.zsh_history"
 
-direnv_hook() {
+histfile_hook() {
   # get current HISTFILE value
   local new_histfile=${HISTFILE:-$ZSH_DEFAULT_HISTFILE}
 
@@ -31,8 +31,8 @@ direnv_hook() {
 }
 
 autoload -Uz add-zsh-hook
-add-zsh-hook chpwd direnv_hook
-add-zsh-hook precmd direnv_hook
+add-zsh-hook chpwd histfile_hook
+add-zsh-hook precmd histfile_hook
 
 # kubernetes
 _chkcmd kubectl && {

@@ -35,5 +35,5 @@ export TEMP_DIR WORKSPACE_DIR
 
 test -d "${WORKSPACE_DIR}/notes" && export NOTES_DIR="${WORKSPACE_DIR}/notes"
 test -d "${WORKSPACE_DIR}/projects" && export PROJECT_DIR="${WORKSPACE_DIR}/projects"
-test -d "${WORKSPACE_DIR}/homelab" && export HOMELAB_DIR="${WORKSPACE_DIR}/homelab"
+test -d "${WORKSPACE_DIR}/home-ops" && export HOMELAB_DIR="${WORKSPACE_DIR}/home-ops"
 test -d "${WORKSPACE_DIR}/repos" && export REPOS_DIR="${WORKSPACE_DIR}/repos"

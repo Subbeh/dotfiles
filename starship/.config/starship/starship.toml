@@ -8,6 +8,7 @@ format = """
 $hostname\
 $directory\
 ${custom.direnv}\
+${custom.mise}\
 $character\
 """
 
@@ -93,6 +94,11 @@ format = '[[$symbol](bold bright-blue)$namespace](dimmed white) '
 [custom.direnv]
 command = 'echo '
 when = ''' test -n "$DIRENV_DIR" '''
+format = '[$output ](bold green)'
+
+[custom.mise]
+command = 'echo '
+when = ''' test -n "$MISE_ENV" '''
 format = '[$output ](bold green)'
 
 [custom.hermes]

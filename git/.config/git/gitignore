@@ -1,6 +1,6 @@
 .stversions/
 .direnv/
-.DS_Store
+.DS_Store/
 __pycache__/
 .claude/
 CLAUDE.md
