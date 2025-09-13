@@ -732,6 +732,9 @@ class HyprlandManager:
                     if not self.refresh_monitors():
                         print("Warning: Failed to refresh monitor state after changes")
 
+                # Note: Handler service should automatically reconnect to new instance
+                # via its built-in reconnection logic
+
                 return success
         finally:
             # Clean up lock file
@@ -912,6 +915,70 @@ class HyprlandManager:
             # pkill returns 1 if no processes found, which is fine
             subprocess.run(["pkill", "waybar"], capture_output=True)
             return True
+
+    def _restart_handler_service(self) -> bool:
+        """Restart the Hyprland event handler service to ensure proper connection."""
+        try:
+            # Find and stop existing handler service units
+            result = subprocess.run(
+                ["systemctl", "--user", "list-units", "--no-legend"],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+            handler_units = [
+                line.split()[0]
+                for line in result.stdout.splitlines()
+                if "__hypr_handles" in line and ("scope" in line or "service" in line)
+            ]
+
+            # Stop existing handler units
+            stopped_any = False
+            for unit in handler_units:
+                if self.verbose:
+                    print(f"[DEBUG] Stopping handler unit: {unit}")
+                if self.run_hyprctl_command(["systemctl", "--user", "stop", unit]):
+                    stopped_any = True
+
+            # Also clean up any lingering processes
+            try:
+                subprocess.run(["pkill", "-f", "__hypr_handles_service"], capture_output=True)
+            except Exception:
+                pass  # Ignore errors if no processes found
+
+            # Clean up lock files
+            import os
+            try:
+                os.remove("/tmp/hypr_handles_service.lock")
+                os.remove("/tmp/hypr_handles_service.pid")
+            except FileNotFoundError:
+                pass  # Files may not exist
+
+            # Brief pause to ensure clean shutdown
+            import time
+            time.sleep(1.0)
+
+            # Only start new service if we're not in a restart loop
+            if stopped_any or not handler_units:
+                print("Starting Hyprland event handler service...")
+                if self.run_hyprctl_command([
+                    "uwsm", "app", "-s", "s", "-t", "service", "--", "__hypr_handles_service"
+                ]):
+                    if self.verbose:
+                        print("[DEBUG] Handler service started successfully")
+                    return True
+                else:
+                    print("Warning: Failed to start handler service")
+                    return False
+            else:
+                if self.verbose:
+                    print("[DEBUG] No handler units to restart")
+                return True
+
+        except subprocess.CalledProcessError as e:
+            if self.verbose:
+                print(f"[DEBUG] Error managing handler service: {e}")
+            return False
 
     def configure_waybar(self, primary_monitor: Optional[str]) -> bool:
         """Configure waybar to display on the specified monitor."""
