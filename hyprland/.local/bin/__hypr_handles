@@ -1,5 +1,35 @@
 #!/bin/bash
 
+dynamic_window_layout() {
+  local profile="$(hypr_reload.py -l | awk '/ACTIVE/{print $1}')"
+  echo "INFO: monitor profile: $profile"
+  if [[ "$profile" ]] && [[ "$profile" == "ext" ]]; then
+    local active_workspace=$(hyprctl activewindow -j 2>/dev/null | jq -r '.workspace.id // empty' 2>/dev/null || echo "")
+    [[ "$active_workspace" != "1" ]] && return
+
+    local workspace_info=$(hyprctl workspaces -j 2>/dev/null | jq '.[] | select(.id == 1)' 2>/dev/null || echo "")
+    [[ -z "$workspace_info" ]] && return
+
+    local monitor_name=$(echo "$workspace_info" | jq -r '.monitor' 2>/dev/null || echo "")
+    [[ -z "$monitor_name" || "$monitor_name" == "null" ]] && return
+
+    local monitor_info=$(hyprctl monitors -j 2>/dev/null | jq --arg name "$monitor_name" '.[] | select(.name == $name)' 2>/dev/null || echo "")
+
+    local windows_count=$(echo "$workspace_info" | jq -r '.windows // 0' 2>/dev/null || echo "0")
+    if [[ "$windows_count" -eq 1 ]]; then
+      local screen_width=$(echo "$monitor_info" | jq -r '.width // 0' 2>/dev/null || echo "0")
+      [[ "$screen_width" -le 0 ]] && return
+      local reserved_width=$((screen_width * 40 / 100))
+
+      # Add 40% reserved space on the left
+      hyprctl keyword monitor "$monitor_name,addreserved,0,0,$reserved_width,0" >/dev/null 2>&1
+    else
+      # Remove reserved space
+      hyprctl keyword monitor "$monitor_name,addreserved,0,0,0,0" >/dev/null 2>&1
+    fi
+  fi
+}
+
 handle() {
   case $1 in
     windowtitle*)
@@ -13,57 +43,13 @@ handle() {
       window_title=$(echo "$window_info" | jq '.title')
 
       # Check if the title matches the characteristics of the Bitwarden popup window
-      if [[ "$window_title" == *"Extension: (Bitwarden Password Manager) - Bitwarden — Mozilla Firefox"* ]]; then
-        hyprctl --batch "dispatch togglefloating address:0x$window_id ; dispatch resizewindowpixel exact 20% 40%,address:0x$window_id ; dispatch movewindowpixel exact 40% 30%,address:0x$window_id"
-      fi
+      case "$window_title" in
+        *"Extension: (Bitwarden Password Manager) - Bitwarden — Mozilla Firefox"*)
+          hyprctl --batch "dispatch togglefloating address:0x$window_id ; dispatch resizewindowpixel exact 20% 40%,address:0x$window_id ; dispatch movewindowpixel exact 40% 30%,address:0x$window_id"
+          ;;
+      esac
       ;;
-    monitorremoved*)
-      # Extract monitor name from the event
-      monitor_name=${1#*>>}
-
-      # Create a lock file to prevent concurrent profile changes
-      lockfile="/tmp/hypr_profile_change.lock"
-      debounce_file="/tmp/hypr_monitor_debounce.lock"
-
-      # Debounce: skip if we just processed a monitor event recently
-      if [ -f "$debounce_file" ]; then
-        # Check if debounce file is less than 2 seconds old
-        if [ $(($(date +%s) - $(stat -c %Y "$debounce_file" 2>/dev/null || echo 0))) -lt 2 ]; then
-          exit 0
-        fi
-      fi
-
-      if [ -f "$lockfile" ]; then
-        echo "Profile change already in progress, skipping monitor removal handling"
-        exit 0
-      fi
-
-      touch "$lockfile"
-      touch "$debounce_file"
-      trap "rm -f $lockfile $debounce_file" EXIT
-
-      # Give a small delay to let the monitor removal settle and avoid race conditions
-      sleep 1
-
-      # Check if we're currently in a docked profile and switch to undocked
-      current_profile=$(hypr_reload.py -s 2>/dev/null | grep "ACTIVE" | awk '{print $1}')
-
-      # If current profile contains "ext" or "docked", switch to undocked
-      if [[ "$current_profile" == *"ext"* || "$current_profile" == "docked" ]]; then
-        echo "Monitor $monitor_name removed, switching from $current_profile to undocked profile"
-        hypr_reload.py -p undocked
-      else
-        # Even if no profile is active, try to switch to undocked as a safety measure
-        # Check if only internal monitor is available
-        available_monitors=$(hyprctl monitors -j 2>/dev/null | jq -r '.[].name' 2>/dev/null || echo "")
-        if [[ "$available_monitors" == "eDP-1" ]] || [[ $(echo "$available_monitors" | wc -l) -eq 1 ]]; then
-          echo "Only internal monitor detected after $monitor_name removal, switching to undocked profile"
-          hypr_reload.py -p undocked
-        fi
-      fi
-
-      rm -f "$lockfile" "$debounce_file"
-      ;;
+    openwindow* | closewindow* | movewindow* | changefloatingmode*) dynamic_window_layout ;;
   esac
 }
 

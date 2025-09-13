@@ -10,7 +10,6 @@ export QT_QPA_PLATFORMTHEME=qt5ct
 export QT_QPA_PLATFORM=wayland
 export SDL_IM_MODULE=fcitx
 export SDL_VIDEODRIVER=wayland
-export UWSM_USE_SESSION_SLICE=true
 export XDG_CURRENT_DESKTOP=Hyprland
 export XDG_SESSION_TYPE=wayland
 export XMODIFIERS=@im=fcitx
