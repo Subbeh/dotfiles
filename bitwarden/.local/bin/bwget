@@ -2,12 +2,12 @@
 
 set -euo pipefail
 
-ITEM="$1"
-FIELD="$2"
-
-value=$(bww list items --search "$ITEM" | jq -r --arg item "$ITEM" --arg field "$FIELD" '.[] | select(.name==$item) | .fields[] | select(.name==$field) | .value')
-if [ -z "$value" ]; then
-  exit 1
+if [[ "$1" == "--ssh" ]]; then
+  shift
+  value=$(bww list items --search "$1" | jq -r --arg item "$1" --arg key "$2" '.[] | select(.name==$item) | .sshKey[$key]')
 else
-  echo "$value"
+  value=$(bww list items --search "$1" | jq -r --arg item "$1" --arg field "$2" '.[] | select(.name==$item) | .fields[] | select(.name==$field) | .value')
 fi
+
+test -z "$value" && exit 1
+echo "$value"
