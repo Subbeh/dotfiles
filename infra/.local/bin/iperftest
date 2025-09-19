@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+main() {
+  local HOST=${1:?usage: iperftest <host>}
+  local REMOTE_PID
+  local rc=0
+
+  # start server on remote host, detach and print pid
+  REMOTE_PID=$(ssh -o BatchMode=yes "$HOST" \
+    'nohup iperf3 -s >/dev/null 2>&1 & printf "%s" "$!"') ||
+    {
+      echo "failed to start remote iperf3 server"
+      return 1
+    }
+
+  echo "Started remote iperf3 (pid $REMOTE_PID) on $HOST"
+
+  # ensure remote server has a moment to bind the port
+  sleep 0.5
+
+  # ensure cleanup happens if this script is interrupted
+  cleanup() {
+    echo "Killing remote iperf3 (pid $REMOTE_PID) on $HOST"
+    ssh -o BatchMode=yes "$HOST" "kill $REMOTE_PID" 2>/dev/null ||
+      ssh -o BatchMode=yes "$HOST" 'pkill -f "iperf3 -s"' 2>/dev/null || true
+  }
+  trap cleanup EXIT INT TERM
+
+  # run the client
+  iperf3 -c "$HOST"
+  rc=$?
+
+  # cleanup (trap will also run); remove trap after explicit cleanup to avoid double messages
+  trap - EXIT INT TERM
+  cleanup
+
+  return $rc
+}
+
+main "$@"
