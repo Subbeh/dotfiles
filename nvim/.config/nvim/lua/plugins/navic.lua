@@ -6,17 +6,17 @@ return {
   },
 
   config = function()
-    local lsp = require("lspconfig")
     local navic = require("nvim-navic")
     local icons = require("config.icons")
 
     require("breadcrumbs").setup()
 
-    lsp.clangd.setup({
+    vim.lsp.config.clangd = {
+      cmd = { "clangd" },
       on_attach = function(client, bufnr)
         navic.attach(client, bufnr)
       end,
-    })
+    }
 
     navic.setup({
       icons = icons.kind,
