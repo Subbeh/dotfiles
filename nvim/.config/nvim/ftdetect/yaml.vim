@@ -1,0 +1,1 @@
+autocmd BufRead,BufNewFile *.yaml.j2,*.yml.j2 set filetype=yaml.jinja | set syntax=yaml.jinja

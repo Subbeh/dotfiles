@@ -9,6 +9,9 @@ local hlgroups = { -- TODO: add to individual plugins
   ["@label.yaml"] = { fg = colors.magenta.base },
   ["@boolean.yaml"] = { fg = colors.blue.bright },
 
+  -- Jinja template syntax highlighting
+  yamlBlockMappingKey = { fg = colors.green.base },
+
   -- Noice
   NoicePopupBorder = { fg = colors.blue.base },
   NoiceCmdlinePopup = { fg = colors.fg0 },

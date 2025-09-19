@@ -20,6 +20,7 @@ return {
   { "stevearc/dressing.nvim",     opts = {} },
   { "kawre/neotab.nvim",          event = "InsertEnter",                                         opts = {} },
   { "ibhagwan/fzf-lua" },
+  { "HiPhish/jinja.vim" },
 
   {
     "sindrets/diffview.nvim", -- TODO: add keymaps
