@@ -5,11 +5,11 @@
 .cache/
 .venv/
 .ansible/
-__pycache__/
 temp/
 sessions/
 node_modules/
 
+(?d)__pycache__
 (?d).DS_Store
 *.log
 
