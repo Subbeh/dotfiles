@@ -12,4 +12,4 @@ node_modules/
 (?d)__pycache__
 (?d).DS_Store
 *.log
-
+maintenance.lock

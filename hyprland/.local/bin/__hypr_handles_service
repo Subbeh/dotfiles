@@ -7,90 +7,80 @@
 LOCK_FILE="/tmp/hypr_handles_service.lock"
 PID_FILE="/tmp/hypr_handles_service.pid"
 
-# Function to cleanup on exit
-cleanup() {
-    echo "INFO: Cleaning up handler service"
-    rm -f "$LOCK_FILE" "$PID_FILE"
-    exit 0
-}
-
-# Set up signal handlers
-trap cleanup SIGTERM SIGINT EXIT
-
 # Check for existing instance
 if [[ -f "$LOCK_FILE" ]]; then
-    if [[ -f "$PID_FILE" ]]; then
-        OLD_PID=$(cat "$PID_FILE" 2>/dev/null)
-        if [[ -n "$OLD_PID" ]] && kill -0 "$OLD_PID" 2>/dev/null; then
-            echo "INFO: Another instance is already running (PID: $OLD_PID), exiting"
-            exit 0
-        else
-            echo "INFO: Stale lock file found, removing"
-            rm -f "$LOCK_FILE" "$PID_FILE"
-        fi
+  if [[ -f "$PID_FILE" ]]; then
+    OLD_PID=$(cat "$PID_FILE" 2>/dev/null)
+    if [[ -n "$OLD_PID" ]] && kill -0 "$OLD_PID" 2>/dev/null; then
+      echo "INFO: Another instance is already running (PID: $OLD_PID), exiting"
+      exit 0
+    else
+      echo "INFO: Stale lock file found, removing"
+      rm -f "$LOCK_FILE" "$PID_FILE"
     fi
+  fi
 fi
 
 # Create lock file and store PID
 touch "$LOCK_FILE"
-echo $$ > "$PID_FILE"
+echo $$ >"$PID_FILE"
 echo "INFO: Starting handler service (PID: $$)"
 
 # Function to get the current Hyprland instance signature
 get_hyprland_signature() {
-    # Try multiple methods to get the signature
-    if [[ -n "$HYPRLAND_INSTANCE_SIGNATURE" ]]; then
-        echo "$HYPRLAND_INSTANCE_SIGNATURE"
-        return 0
-    fi
+  # Try multiple methods to get the signature
+  if [[ -n "$HYPRLAND_INSTANCE_SIGNATURE" ]]; then
+    echo "$HYPRLAND_INSTANCE_SIGNATURE"
+    return 0
+  fi
 
-    # Fallback: find running hyprland process and extract signature from environment
-    local hypr_pid=$(pgrep -x "Hyprland" | head -1)
-    if [[ -n "$hypr_pid" ]]; then
-        local signature=$(tr '\0' '\n' < "/proc/$hypr_pid/environ" 2>/dev/null | grep '^HYPRLAND_INSTANCE_SIGNATURE=' | cut -d'=' -f2)
-        if [[ -n "$signature" ]]; then
-            echo "$signature"
-            return 0
-        fi
+  # Fallback: find running hyprland process and extract signature from environment
+  local hypr_pid=$(pgrep -x "Hyprland" | head -1)
+  if [[ -n "$hypr_pid" ]]; then
+    local signature=$(tr '\0' '\n' <"/proc/$hypr_pid/environ" 2>/dev/null | grep '^HYPRLAND_INSTANCE_SIGNATURE=' | cut -d'=' -f2)
+    if [[ -n "$signature" ]]; then
+      echo "$signature"
+      return 0
     fi
+  fi
 
-    # Last resort: check for socket files in runtime dir
-    local socket_dir="$XDG_RUNTIME_DIR/hypr"
-    if [[ -d "$socket_dir" ]]; then
-        local signature=$(ls -1 "$socket_dir" 2>/dev/null | head -1)
-        if [[ -n "$signature" && -S "$socket_dir/$signature/.socket2.sock" ]]; then
-            echo "$signature"
-            return 0
-        fi
+  # Last resort: check for socket files in runtime dir
+  local socket_dir="$XDG_RUNTIME_DIR/hypr"
+  if [[ -d "$socket_dir" ]]; then
+    local signature=$(ls -1 "$socket_dir" 2>/dev/null | head -1)
+    if [[ -n "$signature" && -S "$socket_dir/$signature/.socket2.sock" ]]; then
+      echo "$signature"
+      return 0
     fi
+  fi
 
-    return 1
+  return 1
 }
 
 # Function to wait for Hyprland to be ready
 wait_for_hyprland() {
-    local max_wait=30
-    local count=0
+  local max_wait=30
+  local count=0
 
-    echo "INFO: Waiting for Hyprland to be ready..."
+  echo "INFO: Waiting for Hyprland to be ready..."
 
-    while [[ $count -lt $max_wait ]]; do
-        if signature=$(get_hyprland_signature); then
-            local socket_path="$XDG_RUNTIME_DIR/hypr/$signature/.socket2.sock"
-            if [[ -S "$socket_path" ]]; then
-                echo "INFO: Hyprland ready with signature: $signature"
-                export HYPRLAND_INSTANCE_SIGNATURE="$signature"
-                return 0
-            fi
-        fi
+  while [[ $count -lt $max_wait ]]; do
+    if signature=$(get_hyprland_signature); then
+      local socket_path="$XDG_RUNTIME_DIR/hypr/$signature/.socket2.sock"
+      if [[ -S "$socket_path" ]]; then
+        echo "INFO: Hyprland ready with signature: $signature"
+        export HYPRLAND_INSTANCE_SIGNATURE="$signature"
+        return 0
+      fi
+    fi
 
-        echo "INFO: Hyprland not ready yet, waiting... ($((count + 1))/$max_wait)"
-        sleep 1
-        ((count++))
-    done
+    echo "INFO: Hyprland not ready yet, waiting... ($((count + 1))/$max_wait)"
+    sleep 1
+    ((count++))
+  done
 
-    echo "ERROR: Timeout waiting for Hyprland to be ready"
-    return 1
+  echo "ERROR: Timeout waiting for Hyprland to be ready"
+  return 1
 }
 
 # Main handler functions (copied from original script)
@@ -149,63 +139,66 @@ handle() {
 
 # Main service loop with reconnection logic
 main_loop() {
-    local retry_count=0
-    local max_retries=5
-    local retry_delay=2
+  local retry_count=0
+  local max_retries=5
+  local retry_delay=2
 
-    while true; do
-        echo "INFO: Starting Hyprland event handler (attempt $((retry_count + 1)))"
+  while true; do
+    echo "INFO: Starting Hyprland event handler (attempt $((retry_count + 1)))"
 
-        # Wait for Hyprland to be ready
-        if ! wait_for_hyprland; then
-            echo "ERROR: Hyprland not available, retrying in ${retry_delay}s..."
-            sleep $retry_delay
-            ((retry_count++))
+    # Wait for Hyprland to be ready
+    if ! wait_for_hyprland; then
+      echo "ERROR: Hyprland not available, retrying in ${retry_delay}s..."
+      sleep $retry_delay
+      ((retry_count++))
 
-            if [[ $retry_count -ge $max_retries ]]; then
-                echo "ERROR: Maximum retries reached, exiting"
-                exit 1
-            fi
-            continue
-        fi
+      if [[ $retry_count -ge $max_retries ]]; then
+        echo "ERROR: Maximum retries reached, exiting"
+        exit 1
+      fi
+      continue
+    fi
 
-        # Get current signature and socket path
-        local signature=$(get_hyprland_signature)
-        local socket_path="$XDG_RUNTIME_DIR/hypr/$signature/.socket2.sock"
+    # Get current signature and socket path
+    local signature=$(get_hyprland_signature)
+    local socket_path="$XDG_RUNTIME_DIR/hypr/$signature/.socket2.sock"
 
-        echo "INFO: Connecting to Hyprland socket: $socket_path"
+    echo "INFO: Connecting to Hyprland socket: $socket_path"
 
-        # Reset retry count on successful connection attempt
-        retry_count=0
+    # Reset retry count on successful connection attempt
+    retry_count=0
 
-        # Connect to socket and process events
-        if socat -U - "UNIX-CONNECT:$socket_path" 2>/dev/null | while read -r line; do
-            handle "$line"
-        done; then
-            echo "INFO: Socket connection ended normally"
-        else
-            echo "WARNING: Socket connection failed or interrupted"
-        fi
+    # Connect to socket and process events
+    if socat -U - "UNIX-CONNECT:$socket_path" 2>/dev/null | while read -r line; do
+      handle "$line"
+    done; then
+      echo "INFO: Socket connection ended normally"
+    else
+      echo "WARNING: Socket connection failed or interrupted"
+    fi
 
-        echo "INFO: Connection lost, attempting to reconnect in ${retry_delay}s..."
-        sleep $retry_delay
-        ((retry_count++))
+    echo "INFO: Connection lost, attempting to reconnect in ${retry_delay}s..."
+    sleep $retry_delay
+    ((retry_count++))
 
-        if [[ $retry_count -ge $max_retries ]]; then
-            echo "ERROR: Too many connection failures, exiting"
-            exit 1
-        fi
-    done
+    if [[ $retry_count -ge $max_retries ]]; then
+      echo "ERROR: Too many connection failures, exiting"
+      exit 1
+    fi
+  done
 }
 
-# Handle signals gracefully
+# Function to cleanup on exit
 cleanup() {
-    echo "INFO: Received signal, shutting down gracefully"
-    exit 0
+  echo "INFO: Cleaning up handler service"
+  rm -f "$LOCK_FILE" "$PID_FILE"
+  exit 0
 }
 
-trap cleanup SIGTERM SIGINT
+# Set up signal handlers
+trap cleanup SIGTERM SIGINT EXIT
 
 # Start the main loop
 echo "INFO: Starting Hyprland event handler service"
 main_loop
+
