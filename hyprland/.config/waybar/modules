@@ -295,6 +295,16 @@
     "tooltip": false
   },
   //
+  // IDLE INHIBITOR
+  //
+  "idle_inhibitor": {
+    "format": "{icon}",
+    "format-icons": {
+      "activated": "<span foreground='#d7afd7'></span>",
+      "deactivated": ""
+    }
+  },
+  //
   // NETWORK
   //
   "custom/network": {
@@ -323,5 +333,13 @@
     "interval": 10,
     "tooltip": true,
     "on-click-right": "systemctl --user start borgmatic.service"
+  },
+  //
+  // KUBERNETES
+  //
+  "custom/k8s": {
+    "exec": "__waybar_k8s",
+    "interval": 10,
+    "return-type": "json"
   }
 }

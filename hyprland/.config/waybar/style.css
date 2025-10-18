@@ -156,3 +156,12 @@ window#waybar.bottom :first-child {
 #custom-borgmatic.unknown {
   color: @white;
 }
+
+/* KUBERNETES */
+#custom-k8s.k8s {
+  color: @green;
+}
+
+#custom-k8s.k8s-error {
+  color: @red;
+}

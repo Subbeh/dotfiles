@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+export KUBECONFIG="${HOMELAB_DIR:?not set}/.private/talos/kubeconfig"
+
+# Icon for Kubernetes
+K8S_ICON="⎈"
+
+# Function to get node status
+get_node_status() {
+  local timeout=5
+
+  # Try to get node information with timeout
+  local nodes_output
+  if ! nodes_output=$(timeout "$timeout" kubectl get nodes --no-headers 2>/dev/null); then
+    return 1
+  fi
+
+  # Count total and ready nodes
+  local total_nodes ready_nodes
+  total_nodes=$(echo "$nodes_output" | wc -l)
+  ready_nodes=$(echo "$nodes_output" | grep -c " Ready ")
+
+  echo "$ready_nodes $total_nodes"
+}
+
+# Main function
+main() {
+  local node_info
+  if node_info=$(get_node_status); then
+    read -r ready_nodes total_nodes <<<"$node_info"
+
+    # Determine color based on node status
+    local icon_color
+    if [[ "$ready_nodes" -eq "$total_nodes" ]] && [[ "$total_nodes" -gt 0 ]]; then
+      icon_color="#afffaf" # Green - all nodes ready
+    elif [[ "$ready_nodes" -gt 0 ]]; then
+      icon_color="#d7d7af" # Yellow - some nodes ready
+    else
+      icon_color="#d75f5f" # Red - no nodes ready
+    fi
+
+    # Output for waybar with colored icon and white text
+    printf '{"text": "<span foreground='\'%s\''>%s</span> <span foreground='\''#d7d7d7'\''>%d/%d</span>", "class": "k8s", "tooltip": "Homelab: %d/%d nodes ready"}\n' \
+      "$icon_color" "$K8S_ICON" "$ready_nodes" "$total_nodes" "$ready_nodes" "$total_nodes"
+
+  else
+    # Cluster unavailable - red icon only
+    printf '{"text": "<span foreground='\''#d75f5f'\''>%s</span>", "class": "k8s-error", "tooltip": "Kubernetes cluster unavailable"}\n' \
+      "$K8S_ICON"
+  fi
+}
+
+main "$@"

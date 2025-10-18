@@ -95,12 +95,15 @@ dynamic_window_layout() {
     [[ -z "$workspace_info" ]] && return
 
     local monitor_name=$(echo "$workspace_info" | jq -r '.monitor' 2>/dev/null || echo "")
+    local monitor_id=$(echo "$workspace_info" | jq -r '.monitorID' 2>/dev/null || echo "")
     [[ -z "$monitor_name" || "$monitor_name" == "null" ]] && return
+    [[ -z "$monitor_id" || "$monitor_name" == "null" ]] && return
 
     local monitor_info=$(hyprctl monitors -j 2>/dev/null | jq --arg name "$monitor_name" '.[] | select(.name == $name)' 2>/dev/null || echo "")
 
-    local windows_count=$(echo "$workspace_info" | jq -r '.windows // 0' 2>/dev/null || echo "0")
-    if [[ "$windows_count" -eq 1 ]]; then
+    # Count only tiled windows (non-floating) on workspace 1
+    local tiled_windows_count=$(hyprctl clients -j 2>/dev/null | jq --argjson monitor "$monitor_id" '[.[] | select(.workspace.id == 1 and .monitor == $monitor and .floating == false)] | length' 2>/dev/null || echo "0")
+    if [[ "$tiled_windows_count" -eq 1 ]]; then
       local screen_width=$(echo "$monitor_info" | jq -r '.width // 0' 2>/dev/null || echo "0")
       [[ "$screen_width" -le 0 ]] && return
       local reserved_width=$((screen_width * 40 / 100))
@@ -201,4 +204,3 @@ trap cleanup SIGTERM SIGINT EXIT
 # Start the main loop
 echo "INFO: Starting Hyprland event handler service"
 main_loop
-

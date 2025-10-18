@@ -26,6 +26,8 @@
       "custom/sep",
       "backlight",
       "custom/sep",
+      "idle_inhibitor",
+      "custom/sep",
       "custom/notification",
       "group/powermenu"
     ]
@@ -49,6 +51,8 @@
     "modules-right": [
       "custom/borgmatic",
       "custom/syncthing",
+      "custom/sep",
+      "custom/k8s",
       "custom/sep",
       "custom/network"
     ]
