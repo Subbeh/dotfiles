@@ -23,12 +23,12 @@
       "bluetooth",
       "custom/sep",
       "wireplumber",
-      "custom/sep",
+      "pulseaudio#output",
       "backlight",
       "custom/sep",
       "idle_inhibitor",
-      "custom/sep",
-      "custom/notification",
+      // "custom/sep",
+      // "custom/notification",
       "group/powermenu"
     ]
   },
