@@ -10,7 +10,7 @@ return {
     local lint = require("lint")
 
     lint.linters_by_ft = {
-      ["yaml.ansible"] = { "ansible_lint" },
+      -- ["yaml.ansible"] = { "ansible_lint" },
       go = { "golangcilint" },
       json = { "jsonlint" },
       lua = { "luacheck" },
@@ -23,6 +23,14 @@ return {
     lint.linters.ansible_lint.args = {
       "--skip-list",
       "no-changed-when",
+      "--project-dir",
+      vim.fn.expand(vim.env.HOMELAB_DIR .. "/ansible"),
+    }
+
+    -- Set environment variables for ansible-lint to prevent .ansible directory creation
+    lint.linters.ansible_lint.env = {
+      ANSIBLE_LOCAL_TEMP = vim.fn.expand("~/.cache/ansible/tmp"),
+      ANSIBLE_REMOTE_TEMP = vim.fn.expand("~/.cache/ansible/tmp"),
     }
 
     -- Configure specific linter options

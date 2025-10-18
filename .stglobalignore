@@ -4,12 +4,12 @@
 .terraform/
 .cache/
 .venv/
-.ansible/
 temp/
 sessions/
 node_modules/
 
 (?d)__pycache__
 (?d).DS_Store
+(?d).ansible/
 *.log
 maintenance.lock
