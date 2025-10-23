@@ -97,6 +97,7 @@ return {
       return not vim.tbl_contains({
         "markdown",
         "DressingInput",
+        "neovim-tips-search",
       }, vim.bo.filetype) and vim.bo.buftype ~= "prompt" and vim.b.completion ~= false
     end,
   },
