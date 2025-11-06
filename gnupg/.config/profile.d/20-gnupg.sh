@@ -17,4 +17,5 @@ fi
 
 alias gpgtest="echo test | gpg --clearsign"
 alias gpgkill="gpgconf --kill gpg-agent"
+alias gpgrestart="gpgconf --kill gpg-agent && gpg-connect-agent /bye"
 alias gpgreload="gpg-connect-agent reloadagent /bye"
