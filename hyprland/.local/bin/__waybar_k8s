@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export KUBECONFIG="${HOMELAB_DIR:?not set}/.private/talos/kubeconfig"
+export KUBECONFIG="${HOMELAB_DIR:?not set}/.private/kubernetes/kubeconfig"
 
 # Icon for Kubernetes
 K8S_ICON="⎈"
