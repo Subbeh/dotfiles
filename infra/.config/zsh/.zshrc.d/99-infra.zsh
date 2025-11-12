@@ -89,6 +89,15 @@ _play() {
 ## Register the completion function
 compdef _play play
 
+# Wrapper for upterm to use compatible TERM
+upterm() {
+  if [[ "$1" == "host" ]]; then
+    TERM=screen-256color command upterm host --server wss://${UPTERM_HOST:?not set} "${@:2}"
+  else
+    TERM=screen-256color command upterm "$@"
+  fi
+}
+
 # terraform
 alias tinit="terraform init"
 alias tplan="terraform plan"

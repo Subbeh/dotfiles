@@ -9,6 +9,7 @@ $hostname\
 $directory\
 ${custom.direnv}\
 ${custom.mise}\
+${custom.upterm}\
 $character\
 """
 
@@ -100,6 +101,10 @@ format = '[$output ](bold green)'
 command = 'echo '
 when = ''' test -n "$MISE_ENV" '''
 format = '[$output ](bold green)'
+
+[custom.upterm]
+when = ''' test -n "$UPTERM_ADMIN_SOCKET" '''
+format = '[[](bold red) upterm](bold blue) '
 
 [custom.hermes]
 command = 'echo $INST'
