@@ -32,7 +32,6 @@ alias lip='curl -sw "\n" -4 ifconfig.me'
 alias sdiff='diff --color=always --side-by-side'
 alias ndiff='nvim -d'
 alias ungron="gron --ungron"
-test -f ~/.claude/local/claude && alias claude="~/.claude/local/claude"
 
 # systemd
 alias ctl='sudo systemctl'

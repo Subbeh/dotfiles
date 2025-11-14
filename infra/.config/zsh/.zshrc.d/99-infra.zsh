@@ -90,7 +90,7 @@ _play() {
 compdef _play play
 
 # Wrapper for upterm to use compatible TERM
-upterm() {
+_chkcmd upterm && upterm() {
   if [[ "$1" == "host" ]]; then
     TERM=screen-256color command upterm host --server wss://${UPTERM_HOST:?not set} "${@:2}"
   else
