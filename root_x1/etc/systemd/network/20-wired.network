@@ -1,0 +1,9 @@
+[Match]
+Name=eth*
+
+[Network]
+DHCP=yes
+
+[DHCP]
+RouteMetric=50
+UseDomains=yes

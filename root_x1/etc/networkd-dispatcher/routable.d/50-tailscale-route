@@ -1,0 +1,20 @@
+#!/bin/bash
+# Run when any interface becomes routable
+# Manages Tailscale routing based on local network connectivity
+
+ROUTE_MAIN="10.11.0.0/16"
+ROUTE_ALWAYS_TS="10.11.80.0/24"
+TS_TABLE="52"
+
+# Check if ANY interface has an IP in the 10.11.10.0/24 range
+if ip -4 addr show | grep -q "inet 10\.11\.10\."; then
+    # Connected to local network - remove main route from Tailscale
+    ip route del "$ROUTE_MAIN" dev tailscale0 table "$TS_TABLE" 2>/dev/null || true
+    logger -t tailscale-route "Removed $ROUTE_MAIN from Tailscale (connected to local network)"
+    
+    # But always ensure 10.11.80.0/24 routes through Tailscale
+    if ! ip route show table "$TS_TABLE" | grep -q "$ROUTE_ALWAYS_TS"; then
+        ip route add "$ROUTE_ALWAYS_TS" dev tailscale0 table "$TS_TABLE" 2>/dev/null
+        logger -t tailscale-route "Added $ROUTE_ALWAYS_TS to Tailscale (always route through TS)"
+    fi
+fi

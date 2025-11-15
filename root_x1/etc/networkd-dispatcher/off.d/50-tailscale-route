@@ -1,0 +1,22 @@
+#!/bin/bash
+# Run when any interface goes offline
+# Manages Tailscale routing based on local network connectivity
+
+ROUTE_MAIN="10.11.0.0/16"
+ROUTE_ALWAYS_TS="10.11.80.0/24"
+TS_TABLE="52"
+
+# Check if ANY interface still has an IP in the 10.11.10.0/24 range
+if ! ip -4 addr show | grep -q "inet 10\.11\.10\."; then
+    # No local network connection - add main route back to Tailscale
+    if ! ip route show table "$TS_TABLE" | grep -q "$ROUTE_MAIN"; then
+        ip route add "$ROUTE_MAIN" dev tailscale0 table "$TS_TABLE" 2>/dev/null
+        logger -t tailscale-route "Added $ROUTE_MAIN to Tailscale (no local network)"
+    fi
+fi
+
+# Always ensure 10.11.80.0/24 routes through Tailscale
+if ! ip route show table "$TS_TABLE" | grep -q "$ROUTE_ALWAYS_TS"; then
+    ip route add "$ROUTE_ALWAYS_TS" dev tailscale0 table "$TS_TABLE" 2>/dev/null
+    logger -t tailscale-route "Added $ROUTE_ALWAYS_TS to Tailscale (always route through TS)"
+fi
