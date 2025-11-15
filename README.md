@@ -2,6 +2,12 @@
 
 ## Installation
 
+### Git-crypt
+
+```sh
+git-crypt unlock
+```
+
 ### Dotfile manager
 
 ```sh
