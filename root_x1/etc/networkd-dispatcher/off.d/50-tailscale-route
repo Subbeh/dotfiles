@@ -3,7 +3,8 @@
 # Manages Tailscale routing based on local network connectivity
 
 ROUTE_MAIN="10.11.0.0/16"
-ROUTE_ALWAYS_TS="10.11.80.0/24"
+ROUTE_ALWAYS_TS_IP="10.11.80.80/32"
+ROUTE_ALWAYS_TS_SUBNET="10.11.254.0/24"
 TS_TABLE="52"
 
 # Check if ANY interface still has an IP in the 10.11.10.0/24 range
@@ -15,8 +16,21 @@ if ! ip -4 addr show | grep -q "inet 10\.11\.10\."; then
     fi
 fi
 
-# Always ensure 10.11.80.0/24 routes through Tailscale
-if ! ip route show table "$TS_TABLE" | grep -q "$ROUTE_ALWAYS_TS"; then
-    ip route add "$ROUTE_ALWAYS_TS" dev tailscale0 table "$TS_TABLE" 2>/dev/null
-    logger -t tailscale-route "Added $ROUTE_ALWAYS_TS to Tailscale (always route through TS)"
+# Always ensure 10.11.80.80 goes through Tailscale
+if ! ip route show table "$TS_TABLE" | grep -q "$ROUTE_ALWAYS_TS_IP"; then
+    ip route add "$ROUTE_ALWAYS_TS_IP" dev tailscale0 table "$TS_TABLE" 2>/dev/null
+    logger -t tailscale-route "Added $ROUTE_ALWAYS_TS_IP to Tailscale (always route through TS)"
+fi
+
+# Check if connected to 10.11.254.0/24 network directly
+if ! ip -4 addr show | grep -q "inet 10\.11\.254\."; then
+    # Not connected to 254 network - route it through Tailscale
+    if ! ip route show table "$TS_TABLE" | grep -q "$ROUTE_ALWAYS_TS_SUBNET"; then
+        ip route add "$ROUTE_ALWAYS_TS_SUBNET" dev tailscale0 table "$TS_TABLE" 2>/dev/null
+        logger -t tailscale-route "Added $ROUTE_ALWAYS_TS_SUBNET to Tailscale (not connected locally)"
+    fi
+else
+    # Connected to 254 network - remove from Tailscale, use local connection
+    ip route del "$ROUTE_ALWAYS_TS_SUBNET" dev tailscale0 table "$TS_TABLE" 2>/dev/null || true
+    logger -t tailscale-route "Removed $ROUTE_ALWAYS_TS_SUBNET from Tailscale (connected locally)"
 fi
