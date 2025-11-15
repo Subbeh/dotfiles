@@ -175,7 +175,7 @@ enter_accept = false
 # keymap_cursor = { emacs = "blink-block", vim_insert = "blink-block", vim_normal = "steady-block" }
 
 # network_connect_timeout = 5
-# network_timeout = 5
+network_timeout = 5
 
 ## Timeout (in seconds) for acquiring a local database connection (sqlite)
 # local_timeout = 5
