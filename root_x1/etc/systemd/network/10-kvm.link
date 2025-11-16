@@ -3,3 +3,4 @@ MACAddress=04:bf:1b:c7:33:73
 
 [Link]
 Name=eth0
+RequiredForOnline=no
