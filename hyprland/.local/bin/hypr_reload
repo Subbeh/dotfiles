@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+MONITORS="$(hyprctl monitors -j)"
+MONITORS_ALL="$(hyprctl monitors all -j)"
+
+COUNT=$(echo "$MONITORS" | jq 'length')
+COUNT_ALL=$(echo "$MONITORS_ALL" | jq 'length')
+
+if [[ "$COUNT" -lt "$COUNT_ALL" ]]; then
+  case "$COUNT" in
+    1) ;;
+    3) ;;
+    *) ;;
+  esac
+fi
