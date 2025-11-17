@@ -1,0 +1,33 @@
+// vi: ft=jsonc
+// -------------------------------------------------------------------------
+// Global configuration
+// -------------------------------------------------------------------------
+{
+  "name": "top",
+  "position": "top",
+  "include": [
+    "~/.config/waybar/defaults"
+  ],
+  "modules-left": [
+    "hyprland/workspaces",
+    "custom/sep",
+    "hyprland/window"
+  ],
+  "modules-center": [
+    "clock#time",
+    "custom/sep",
+    "clock#date"
+  ],
+  "modules-right": [
+    "bluetooth",
+    "custom/sep",
+    "wireplumber",
+    "pulseaudio#output",
+    "backlight",
+    "custom/sep",
+    "idle_inhibitor",
+    // "custom/sep",
+    // "custom/notification",
+    "group/powermenu"
+  ]
+}

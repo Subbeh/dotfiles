@@ -1,0 +1,246 @@
+#!/usr/bin/env bash
+
+# Robust Hyprland event handler service
+# Handles window events, dynamic layouts, and monitor changes
+
+# Prevent multiple instances
+LOCK_FILE="/tmp/hypr_handles_service.lock"
+PID_FILE="/tmp/hypr_handles_service.pid"
+
+# Check for existing instance
+if [[ -f "$LOCK_FILE" ]]; then
+  if [[ -f "$PID_FILE" ]]; then
+    OLD_PID=$(cat "$PID_FILE" 2>/dev/null)
+    if [[ -n "$OLD_PID" ]] && kill -0 "$OLD_PID" 2>/dev/null; then
+      echo "INFO: Another instance is already running (PID: $OLD_PID), exiting"
+      exit 0
+    else
+      echo "INFO: Stale lock file found, removing"
+      rm -f "$LOCK_FILE" "$PID_FILE"
+    fi
+  fi
+fi
+
+# Create lock file and store PID
+touch "$LOCK_FILE"
+echo $$ >"$PID_FILE"
+echo "INFO: Starting handler service (PID: $$)"
+
+# Function to get the current Hyprland instance signature
+get_hyprland_signature() {
+  # Try multiple methods to get the signature
+  if [[ -n "$HYPRLAND_INSTANCE_SIGNATURE" ]]; then
+    echo "$HYPRLAND_INSTANCE_SIGNATURE"
+    return 0
+  fi
+
+  # Fallback: find running hyprland process and extract signature from environment
+  local hypr_pid=$(pgrep -x "Hyprland" | head -1)
+  if [[ -n "$hypr_pid" ]]; then
+    local signature=$(tr '\0' '\n' <"/proc/$hypr_pid/environ" 2>/dev/null | grep '^HYPRLAND_INSTANCE_SIGNATURE=' | cut -d'=' -f2)
+    if [[ -n "$signature" ]]; then
+      echo "$signature"
+      return 0
+    fi
+  fi
+
+  # Last resort: check for socket files in runtime dir
+  local socket_dir="$XDG_RUNTIME_DIR/hypr"
+  if [[ -d "$socket_dir" ]]; then
+    local signature=$(ls -1 "$socket_dir" 2>/dev/null | head -1)
+    if [[ -n "$signature" && -S "$socket_dir/$signature/.socket2.sock" ]]; then
+      echo "$signature"
+      return 0
+    fi
+  fi
+
+  return 1
+}
+
+# Function to wait for Hyprland to be ready
+wait_for_hyprland() {
+  local max_wait=30
+  local count=0
+
+  echo "INFO: Waiting for Hyprland to be ready..."
+
+  while [[ $count -lt $max_wait ]]; do
+    if signature=$(get_hyprland_signature); then
+      local socket_path="$XDG_RUNTIME_DIR/hypr/$signature/.socket2.sock"
+      if [[ -S "$socket_path" ]]; then
+        echo "INFO: Hyprland ready with signature: $signature"
+        export HYPRLAND_INSTANCE_SIGNATURE="$signature"
+        return 0
+      fi
+    fi
+
+    echo "INFO: Hyprland not ready yet, waiting... ($((count + 1))/$max_wait)"
+    sleep 1
+    ((count++))
+  done
+
+  echo "ERROR: Timeout waiting for Hyprland to be ready"
+  return 1
+}
+
+# Get monitor count
+get_monitor_count() {
+  hyprctl monitors -j 2>/dev/null | jq 'length' 2>/dev/null || echo "0"
+}
+
+# Dynamic window layout - adds reserved space for single window on workspace 1
+dynamic_window_layout() {
+  # Get monitor count instead of profile
+  local monitor_count=$(get_monitor_count)
+
+  # Only apply on 3 monitors (laptop + 2 external = "ext" profile equivalent)
+  if [[ "$monitor_count" -ne 3 ]]; then
+    return
+  fi
+
+  # Check if we're on workspace 1
+  local active_workspace=$(hyprctl activewindow -j 2>/dev/null | jq -r '.workspace.id // empty' 2>/dev/null || echo "")
+  [[ "$active_workspace" != "1" ]] && return
+
+  # Get workspace info
+  local workspace_info=$(hyprctl workspaces -j 2>/dev/null | jq '.[] | select(.id == 1)' 2>/dev/null || echo "")
+  [[ -z "$workspace_info" ]] && return
+
+  # Get monitor info for workspace 1
+  local monitor_name=$(echo "$workspace_info" | jq -r '.monitor' 2>/dev/null || echo "")
+  local monitor_id=$(echo "$workspace_info" | jq -r '.monitorID' 2>/dev/null || echo "")
+  [[ -z "$monitor_name" || "$monitor_name" == "null" ]] && return
+  [[ -z "$monitor_id" || "$monitor_id" == "null" ]] && return
+
+  local monitor_info=$(hyprctl monitors -j 2>/dev/null | jq --arg name "$monitor_name" '.[] | select(.name == $name)' 2>/dev/null || echo "")
+
+  # Count only tiled windows (non-floating) on workspace 1
+  local tiled_windows_count=$(hyprctl clients -j 2>/dev/null | jq --argjson monitor "$monitor_id" '[.[] | select(.workspace.id == 1 and .monitor == $monitor and .floating == false)] | length' 2>/dev/null || echo "0")
+
+  if [[ "$tiled_windows_count" -eq 1 ]]; then
+    local screen_width=$(echo "$monitor_info" | jq -r '.width // 0' 2>/dev/null || echo "0")
+    [[ "$screen_width" -le 0 ]] && return
+    local reserved_width=$((screen_width * 40 / 100))
+
+    # Add 40% reserved space on the left
+    hyprctl keyword monitor "$monitor_name,addreserved,0,0,$reserved_width,0" >/dev/null 2>&1
+  else
+    # Remove reserved space
+    hyprctl keyword monitor "$monitor_name,addreserved,0,0,0,0" >/dev/null 2>&1
+  fi
+}
+
+# Handle monitor changes - reload waybar configuration
+handle_monitor_change() {
+  local event_type="$1"
+  echo "INFO: Monitor ${event_type}, reloading waybar configuration..."
+
+  # Small delay to let Hyprland settle
+  sleep 1
+
+  # Call hypr_reload to reconfigure waybar
+  if command -v hypr_reload &>/dev/null; then
+    hypr_reload 2>&1 | while read -r line; do
+      echo "  [hypr_reload] $line"
+    done
+  else
+    echo "WARNING: hypr_reload command not found"
+  fi
+}
+
+# Main event handler
+handle() {
+  case $1 in
+    monitoradded*)
+      handle_monitor_change "added"
+      ;;
+    monitorremoved*)
+      handle_monitor_change "removed"
+      ;;
+    windowtitle*)
+      # Extract the window ID from the line
+      window_id=${1#*>>}
+
+      # Fetch the list of windows and parse it using jq to find the window by its decimal ID
+      window_info=$(hyprctl clients -j | jq --arg id "0x$window_id" '.[] | select(.address == ($id))')
+
+      # Extract the title from the window info
+      window_title=$(echo "$window_info" | jq '.title')
+
+      # Check if the title matches the characteristics of the Bitwarden popup window
+      case "$window_title" in
+        *"Extension: (Bitwarden Password Manager) - Bitwarden — Mozilla Firefox"*)
+          hyprctl --batch "dispatch togglefloating address:0x$window_id ; dispatch resizewindowpixel exact 20% 40%,address:0x$window_id ; dispatch movewindowpixel exact 40% 30%,address:0x$window_id"
+          ;;
+      esac
+      ;;
+    openwindow* | closewindow* | movewindow* | changefloatingmode*)
+      dynamic_window_layout
+      ;;
+  esac
+}
+
+# Main service loop with reconnection logic
+main_loop() {
+  local retry_count=0
+  local max_retries=5
+  local retry_delay=2
+
+  while true; do
+    echo "INFO: Starting Hyprland event handler (attempt $((retry_count + 1)))"
+
+    # Wait for Hyprland to be ready
+    if ! wait_for_hyprland; then
+      echo "ERROR: Hyprland not available, retrying in ${retry_delay}s..."
+      sleep $retry_delay
+      ((retry_count++))
+
+      if [[ $retry_count -ge $max_retries ]]; then
+        echo "ERROR: Maximum retries reached, exiting"
+        exit 1
+      fi
+      continue
+    fi
+
+    # Get current signature and socket path
+    local signature=$(get_hyprland_signature)
+    local socket_path="$XDG_RUNTIME_DIR/hypr/$signature/.socket2.sock"
+
+    echo "INFO: Connecting to Hyprland socket: $socket_path"
+
+    # Reset retry count on successful connection attempt
+    retry_count=0
+
+    # Connect to socket and process events
+    if socat -U - "UNIX-CONNECT:$socket_path" 2>/dev/null | while read -r line; do
+      handle "$line"
+    done; then
+      echo "INFO: Socket connection ended normally"
+    else
+      echo "WARNING: Socket connection failed or interrupted"
+    fi
+
+    echo "INFO: Connection lost, attempting to reconnect in ${retry_delay}s..."
+    sleep $retry_delay
+    ((retry_count++))
+
+    if [[ $retry_count -ge $max_retries ]]; then
+      echo "ERROR: Too many connection failures, exiting"
+      exit 1
+    fi
+  done
+}
+
+# Function to cleanup on exit
+cleanup() {
+  echo "INFO: Cleaning up handler service"
+  rm -f "$LOCK_FILE" "$PID_FILE"
+  exit 0
+}
+
+# Set up signal handlers
+trap cleanup SIGTERM SIGINT EXIT
+
+# Start the main loop
+echo "INFO: Starting Hyprland event handler service"
+main_loop
