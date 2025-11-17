@@ -7,3 +7,10 @@ DHCP=yes
 [DHCP]
 RouteMetric=100
 UseDomains=yes
+
+[Route]
+Gateway=_dhcp4
+
+RequiredForOnline=routable
+InitialCongestionWindow=35
+InitialAdvertisedReceiveWindow=35

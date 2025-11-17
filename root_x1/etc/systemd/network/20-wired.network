@@ -7,3 +7,9 @@ DHCP=yes
 [DHCP]
 RouteMetric=50
 UseDomains=yes
+
+[Route]
+Gateway=_dhcp4
+
+InitialCongestionWindow=35
+InitialAdvertisedReceiveWindow=35
