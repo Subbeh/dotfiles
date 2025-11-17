@@ -151,15 +151,15 @@ _load() {
       msg=$(echo "$line" | awk -F': | => ' '{ print $1 }')
       file=$(echo "$line" | awk -F': | => ' '{ print $2 }')
 
-      case "$msg" in
-        *"link nor a directory"*)
-          if [[ -d "${file%/*}" ]]; then
-            mkdir -p "$MATE_BACKUP/${file%/*}"
-          fi
-          mv "$HOME/$file" "$MATE_BACKUP/${file%/*}"
-          ;;
-        *"stowed"*) rm "$HOME/$file" ;;
-      esac
+      # case "$msg" in
+      #   *"link nor a directory"*)
+      #     if [[ -d "${file%/*}" ]]; then
+      #       mkdir -p "$MATE_BACKUP/${file%/*}"
+      #     fi
+      #     mv "$HOME/$file" "$MATE_BACKUP/${file%/*}"
+      #     ;;
+      #   *"stowed"*) rm "$HOME/$file" ;;
+      # esac
     done <<<"$(${_root/\//sudo} stow -n -d "$dir" -t "${_root:-$HOME}" "$_arg" |& grep "existing target")"
   done
 
