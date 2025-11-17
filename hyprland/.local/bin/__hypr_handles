@@ -3,27 +3,17 @@
 # Robust Hyprland event handler service
 # Handles window events, dynamic layouts, and monitor changes
 
-# Prevent multiple instances
+# Prevent multiple instances using flock
 LOCK_FILE="/tmp/hypr_handles_service.lock"
-PID_FILE="/tmp/hypr_handles_service.pid"
+LOCK_FD=201
 
-# Check for existing instance
-if [[ -f "$LOCK_FILE" ]]; then
-  if [[ -f "$PID_FILE" ]]; then
-    OLD_PID=$(cat "$PID_FILE" 2>/dev/null)
-    if [[ -n "$OLD_PID" ]] && kill -0 "$OLD_PID" 2>/dev/null; then
-      echo "INFO: Another instance is already running (PID: $OLD_PID), exiting"
-      exit 0
-    else
-      echo "INFO: Stale lock file found, removing"
-      rm -f "$LOCK_FILE" "$PID_FILE"
-    fi
-  fi
+# Try to acquire exclusive lock
+exec 201>"$LOCK_FILE"
+if ! flock -n 201; then
+  echo "INFO: Another instance is already running, exiting"
+  exit 0
 fi
 
-# Create lock file and store PID
-touch "$LOCK_FILE"
-echo $$ >"$PID_FILE"
 echo "INFO: Starting handler service (PID: $$)"
 
 # Function to get the current Hyprland instance signature
@@ -130,21 +120,69 @@ dynamic_window_layout() {
   fi
 }
 
-# Handle monitor changes - reload waybar configuration
+# Debounce configuration for monitor changes
+MONITOR_DEBOUNCE_DELAY=2  # seconds to wait for events to stabilize
+MONITOR_RELOAD_TIMESTAMP="/tmp/hypr_monitor_reload.timestamp"
+MONITOR_RELOAD_PID="/tmp/hypr_monitor_reload.pid"
+
+# Handle monitor changes - reload waybar configuration with debouncing
 handle_monitor_change() {
   local event_type="$1"
-  echo "INFO: Monitor ${event_type}, reloading waybar configuration..."
+  echo "INFO: Monitor ${event_type}, updating timestamp..."
 
-  # Small delay to let Hyprland settle
-  sleep 1
+  # Update timestamp
+  date +%s > "$MONITOR_RELOAD_TIMESTAMP"
 
-  # Call hypr_reload to reconfigure waybar
-  if command -v hypr_reload &>/dev/null; then
-    hypr_reload 2>&1 | while read -r line; do
-      echo "  [hypr_reload] $line"
-    done
-  else
-    echo "WARNING: hypr_reload command not found"
+  # Check if a debounce job is already running
+  local job_running=false
+  if [[ -f "$MONITOR_RELOAD_PID" ]]; then
+    local pid=$(cat "$MONITOR_RELOAD_PID" 2>/dev/null)
+    if [[ -n "$pid" ]] && kill -0 "$pid" 2>/dev/null; then
+      job_running=true
+      echo "INFO: Debounce timer already running (PID: $pid), timestamp updated"
+    fi
+  fi
+
+  # Start a new debounce job if none is running
+  if [[ "$job_running" == "false" ]]; then
+    echo "INFO: Starting debounce timer (${MONITOR_DEBOUNCE_DELAY}s)..."
+
+    (
+      # Store our PID
+      echo $$ > "$MONITOR_RELOAD_PID"
+
+      # Wait for events to stabilize
+      local start_time=$(cat "$MONITOR_RELOAD_TIMESTAMP" 2>/dev/null || echo "0")
+
+      while true; do
+        sleep "$MONITOR_DEBOUNCE_DELAY"
+
+        local current_time=$(cat "$MONITOR_RELOAD_TIMESTAMP" 2>/dev/null || echo "0")
+
+        # Check if timestamp changed during our sleep
+        if [[ "$current_time" == "$start_time" ]]; then
+          # No new events, execute reload
+          echo "INFO: Monitor events stabilized, executing reload..."
+
+          # Call hypr_reload to reconfigure waybar
+          if command -v hypr_reload &>/dev/null; then
+            hypr_reload 2>&1 | while read -r line; do
+              echo "  [hypr_reload] $line"
+            done
+          else
+            echo "WARNING: hypr_reload command not found"
+          fi
+
+          # Clean up and exit
+          rm -f "$MONITOR_RELOAD_PID"
+          break
+        else
+          # Timestamp changed, reset and wait again
+          echo "INFO: New monitor event detected, resetting debounce timer..."
+          start_time="$current_time"
+        fi
+      done
+    ) &
   fi
 }
 
@@ -234,7 +272,7 @@ main_loop() {
 # Function to cleanup on exit
 cleanup() {
   echo "INFO: Cleaning up handler service"
-  rm -f "$LOCK_FILE" "$PID_FILE"
+  # flock automatically releases the lock when the file descriptor closes
   exit 0
 }
 

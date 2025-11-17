@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# Waybar monitor configuration script
-# Manages waybar display based on connected monitors
+# Hyprland monitor and workspace configuration script
+# Manages waybar display and workspace assignment based on connected monitors
 
 set -euo pipefail
 
@@ -10,14 +10,40 @@ CONFIG_TMPL="${XDG_CONFIG_HOME:-$HOME/.config}/waybar/config.tmpl"
 CONFIG="${XDG_CACHE_HOME:-$HOME/.cache}/waybar_config.json"
 LOCK_FILE="/tmp/hypr_reload.lock"
 LOCK_FD=200
+LOG_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/hypr_reload.log"
 
-# Logging
+# Logging functions - write to both stderr and log file
+log_message() {
+  local level="$1"
+  shift
+  local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+  local message="[$timestamp] [hypr_reload] $level: $*"
+
+  # Write to stderr
+  echo "$message" >&2
+
+  # Write to log file
+  echo "$message" >> "$LOG_FILE"
+}
+
 log_info() {
-  echo "[hypr_reload] INFO: $*" >&2
+  log_message "INFO" "$@"
 }
 
 log_error() {
-  echo "[hypr_reload] ERROR: $*" >&2
+  log_message "ERROR" "$@"
+}
+
+log_debug() {
+  log_message "DEBUG" "$@"
+}
+
+# Initialize log file with separator
+init_log() {
+  echo "========================================" >> "$LOG_FILE"
+  log_info "Starting hypr_reload"
+  log_debug "Monitor count: $(get_monitor_count)"
+  log_debug "Monitors: $(hyprctl monitors -j 2>/dev/null | jq -r '[.[] | .name] | join(", ")')"
 }
 
 # Lock management to prevent concurrent executions
@@ -43,28 +69,62 @@ cleanup() {
 
 trap cleanup EXIT INT TERM
 
-# Determine the main monitor based on connected monitors
-get_main_monitor() {
-  local monitors count
-
-  # Get monitor data from hyprctl
-  if ! monitors=$(hyprctl monitors -j 2>/dev/null); then
+# Get monitor information
+get_monitor_info() {
+  if ! hyprctl monitors -j 2>/dev/null; then
     log_error "Failed to get monitor information from hyprctl"
     return 1
   fi
+}
 
-  count=$(echo "$monitors" | jq 'length')
+# Get monitor count
+get_monitor_count() {
+  local monitors
+  if ! monitors=$(get_monitor_info); then
+    echo "0"
+    return 1
+  fi
+  echo "$monitors" | jq 'length'
+}
+
+# Find monitor by description
+find_monitor_by_description() {
+  local description="$1"
+  local monitors
+  if ! monitors=$(get_monitor_info); then
+    return 1
+  fi
+  echo "$monitors" | jq -r --arg desc "$description" '.[] | select(.description == $desc) | .name'
+}
+
+# Find external monitor (non-eDP-1)
+find_external_monitor() {
+  local monitors
+  if ! monitors=$(get_monitor_info); then
+    return 1
+  fi
+  echo "$monitors" | jq -r '.[] | select(.name != "eDP-1") | .name' | head -1
+}
+
+# Determine the main monitor based on connected monitors
+get_main_monitor() {
+  local count
+  count=$(get_monitor_count)
+
+  log_debug "get_main_monitor: count=$count"
 
   case "$count" in
     1)
       # Single monitor - use internal display
+      log_debug "Single monitor mode: using eDP-1"
       echo "eDP-1"
       ;;
     2)
       # Two monitors (laptop + 1 external) - use the external monitor
-      # Find the monitor that is NOT eDP-1
       local external_monitor
-      external_monitor=$(echo "$monitors" | jq -r '.[] | select(.name != "eDP-1") | .name' | head -1)
+      external_monitor=$(find_external_monitor)
+
+      log_debug "Two monitor mode: external=$external_monitor"
 
       if [[ -n "$external_monitor" ]]; then
         echo "$external_monitor"
@@ -76,15 +136,17 @@ get_main_monitor() {
       ;;
     3)
       # Three monitors (laptop + 2 external) - use LG HDR 4K as primary
-      local lg_monitor
-      lg_monitor=$(echo "$monitors" | jq -r '.[] | select(.description == "LG Electronics LG HDR 4K 308NTTQFK265") | .name')
+      local lg_hdr
+      lg_hdr=$(find_monitor_by_description "LG Electronics LG HDR 4K 308NTTQFK265")
 
-      if [[ -n "$lg_monitor" ]]; then
-        echo "$lg_monitor"
+      log_debug "Three monitor mode: lg_hdr=$lg_hdr"
+
+      if [[ -n "$lg_hdr" ]]; then
+        echo "$lg_hdr"
       else
         # Fallback: use first non-eDP-1 monitor
         local fallback_monitor
-        fallback_monitor=$(echo "$monitors" | jq -r '.[] | select(.name != "eDP-1") | .name' | head -1)
+        fallback_monitor=$(find_external_monitor)
 
         if [[ -n "$fallback_monitor" ]]; then
           log_error "LG HDR 4K not found, using fallback: $fallback_monitor"
@@ -103,16 +165,177 @@ get_main_monitor() {
   esac
 }
 
+# Move workspace to monitor and make it persistent
+move_workspace_to_monitor() {
+  local workspace="$1"
+  local monitor="$2"
+
+  log_info "Setting up workspace $workspace on $monitor"
+
+  # Try to move the workspace if it already exists on another monitor
+  hyprctl dispatch moveworkspacetomonitor "$workspace" "$monitor" &>/dev/null || true
+  sleep 0.1
+
+  # Set persistent workspace rule (this affects future behavior)
+  if ! hyprctl keyword workspace "$workspace,monitor:$monitor,persistent:true" &>/dev/null; then
+    log_error "Failed to set persistent rule for workspace $workspace on $monitor"
+    return 1
+  fi
+
+  # Force workspace to exist on the target monitor by briefly switching to it
+  # This ensures it's created on the correct monitor if it doesn't exist
+  hyprctl dispatch focusmonitor "$monitor" &>/dev/null || true
+  sleep 0.05
+  hyprctl dispatch workspace "$workspace" &>/dev/null || true
+  sleep 0.05
+
+  return 0
+}
+
+# Control DPMS for a monitor
+set_monitor_dpms() {
+  local monitor="$1"
+  local state="$2"  # "on" or "off"
+
+  log_info "Setting DPMS $state for $monitor"
+  if ! hyprctl dispatch dpms "$state" "$monitor" &>/dev/null; then
+    log_error "Failed to set DPMS $state for $monitor"
+    return 1
+  fi
+
+  return 0
+}
+
+# Configure workspaces based on monitor setup
+configure_workspaces() {
+  local count
+  count=$(get_monitor_count)
+
+  log_info "Configuring workspaces for $count monitor(s)"
+
+  case "$count" in
+    1)
+      # Undocked: all workspaces on eDP-1
+      log_info "Undocked configuration: all workspaces on eDP-1"
+
+      # Turn on eDP-1 if it was off
+      set_monitor_dpms "eDP-1" "on"
+
+      # Move all workspaces to eDP-1
+      for ws in 1 2 3; do
+        move_workspace_to_monitor "$ws" "eDP-1"
+      done
+      ;;
+
+    2)
+      # Docked with 1 external: workspace 1 on eDP-1, workspaces 2-3 on external
+      log_info "Single external configuration"
+
+      local external
+      external=$(find_external_monitor)
+
+      if [[ -z "$external" ]]; then
+        log_error "Could not find external monitor for workspace configuration"
+        return 1
+      fi
+
+      # Turn on eDP-1 if it was off
+      set_monitor_dpms "eDP-1" "on"
+
+      # Move workspaces
+      move_workspace_to_monitor "1" "eDP-1"
+      move_workspace_to_monitor "2" "$external"
+      move_workspace_to_monitor "3" "$external"
+      ;;
+
+    3)
+      # Docked with 2 externals: workspace 1 on left, 2-3 on right, eDP-1 off
+      log_info "Dual external configuration"
+
+      local lg_ultrafine lg_hdr
+      lg_ultrafine=$(find_monitor_by_description "LG Electronics LG ULTRAFINE 504NTUW6F878")
+      lg_hdr=$(find_monitor_by_description "LG Electronics LG HDR 4K 308NTTQFK265")
+
+      if [[ -z "$lg_ultrafine" ]] || [[ -z "$lg_hdr" ]]; then
+        log_error "Could not find both external monitors for workspace configuration"
+        log_error "LG ULTRAFINE: ${lg_ultrafine:-not found}"
+        log_error "LG HDR 4K: ${lg_hdr:-not found}"
+        return 1
+      fi
+
+      # Move workspaces before turning off eDP-1
+      move_workspace_to_monitor "1" "$lg_ultrafine"
+      move_workspace_to_monitor "2" "$lg_hdr"
+      move_workspace_to_monitor "3" "$lg_hdr"
+
+      # Turn off eDP-1 (but don't disable it)
+      set_monitor_dpms "eDP-1" "off"
+      ;;
+
+    *)
+      log_error "Unexpected monitor count: $count, skipping workspace configuration"
+      return 1
+      ;;
+  esac
+
+  log_info "Workspace configuration complete"
+
+  # Note: Hyprland doesn't have a removeWorkspace dispatcher
+  # Empty workspaces will disappear automatically when not in use
+  # We've removed keybindings for workspaces 4+ to prevent creation
+
+  # Switch to workspace 2 as default
+  log_info "Switching to workspace 2"
+  hyprctl dispatch workspace 2 &>/dev/null
+
+  return 0
+}
+
+# Configure waybar
+configure_waybar() {
+  local main_mon="$1"
+
+  log_debug "configure_waybar called with monitor: $main_mon"
+
+  # Validate template exists
+  if [[ ! -f "$CONFIG_TMPL" ]]; then
+    log_error "Waybar config template not found: $CONFIG_TMPL"
+    return 1
+  fi
+
+  log_info "Using monitor for waybar: $main_mon"
+
+  # Generate waybar config from template
+  if ! sed "s/@@OUTPUT@@/$main_mon/" "$CONFIG_TMPL" > "$CONFIG"; then
+    log_error "Failed to generate waybar config"
+    return 1
+  fi
+
+  log_info "Generated waybar config: $CONFIG"
+  log_debug "Config content: $(cat "$CONFIG" | grep -A1 'output')"
+
+  # Always kill and restart waybar to ensure it picks up the new config
+  if pgrep -x waybar &>/dev/null; then
+    log_info "Stopping existing waybar..."
+    killall waybar 2>/dev/null || true
+    # Wait for waybar to fully terminate
+    sleep 0.5
+  fi
+
+  log_info "Starting waybar on $main_mon..."
+  waybar -c "$CONFIG" &>/dev/null &
+  log_info "Waybar started"
+
+  return 0
+}
+
 # Main function
 main() {
   # Acquire lock to prevent concurrent executions
   acquire_lock
 
-  # Validate template exists
-  if [[ ! -f "$CONFIG_TMPL" ]]; then
-    log_error "Waybar config template not found: $CONFIG_TMPL"
-    exit 1
-  fi
+  # Initialize logging
+  init_log
 
   # Get the main monitor
   local main_mon
@@ -121,33 +344,25 @@ main() {
     exit 1
   fi
 
-  log_info "Using monitor: $main_mon"
+  log_debug "Main monitor determined: $main_mon"
 
-  # Generate waybar config from template
-  if ! sed "s/@@OUTPUT@@/$main_mon/" "$CONFIG_TMPL" > "$CONFIG"; then
-    log_error "Failed to generate waybar config"
+  # Configure workspaces first (before waybar)
+  # This ensures workspaces are on the correct monitors before waybar starts
+  if ! configure_workspaces; then
+    log_error "Workspace configuration failed, but continuing with waybar setup"
+  fi
+
+  # Small delay to let workspace moves settle
+  sleep 0.2
+
+  # Configure waybar
+  if ! configure_waybar "$main_mon"; then
+    log_error "Failed to configure waybar"
     exit 1
   fi
 
-  log_info "Generated waybar config: $CONFIG"
-
-  # Reload or start waybar
-  if pgrep -x waybar &>/dev/null; then
-    log_info "Reloading waybar..."
-    if killall -SIGUSR2 waybar 2>/dev/null; then
-      log_info "Waybar reloaded successfully"
-    else
-      log_error "Failed to reload waybar, trying restart..."
-      killall waybar 2>/dev/null || true
-      sleep 0.5
-      waybar -c "$CONFIG" &>/dev/null &
-      log_info "Waybar restarted"
-    fi
-  else
-    log_info "Starting waybar..."
-    waybar -c "$CONFIG" &>/dev/null &
-    log_info "Waybar started"
-  fi
+  log_info "Monitor configuration complete"
+  log_debug "Log file: $LOG_FILE"
 }
 
 main "$@"
