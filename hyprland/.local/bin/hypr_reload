@@ -77,33 +77,34 @@ get_monitor_info() {
   fi
 }
 
-# Get monitor count
+# Get monitor count (only active monitors)
 get_monitor_count() {
   local monitors
   if ! monitors=$(get_monitor_info); then
     echo "0"
     return 1
   fi
-  echo "$monitors" | jq 'length'
+  # Only count monitors that are active (dpmsStatus: true and disabled: false)
+  echo "$monitors" | jq '[.[] | select(.dpmsStatus == true and .disabled == false)] | length'
 }
 
-# Find monitor by description
+# Find monitor by description (only active monitors)
 find_monitor_by_description() {
   local description="$1"
   local monitors
   if ! monitors=$(get_monitor_info); then
     return 1
   fi
-  echo "$monitors" | jq -r --arg desc "$description" '.[] | select(.description == $desc) | .name'
+  echo "$monitors" | jq -r --arg desc "$description" '.[] | select(.description == $desc and .dpmsStatus == true and .disabled == false) | .name'
 }
 
-# Find external monitor (non-eDP-1)
+# Find external monitor (non-eDP-1, only active)
 find_external_monitor() {
   local monitors
   if ! monitors=$(get_monitor_info); then
     return 1
   fi
-  echo "$monitors" | jq -r '.[] | select(.name != "eDP-1") | .name' | head -1
+  echo "$monitors" | jq -r '.[] | select(.name != "eDP-1" and .dpmsStatus == true and .disabled == false) | .name' | head -1
 }
 
 # Determine the main monitor based on connected monitors
@@ -165,29 +166,24 @@ get_main_monitor() {
   esac
 }
 
-# Move workspace to monitor and make it persistent
+# Move workspace to monitor (WITHOUT using keyword rules that persist and conflict)
 move_workspace_to_monitor() {
   local workspace="$1"
   local monitor="$2"
 
-  log_info "Setting up workspace $workspace on $monitor"
+  log_info "Moving workspace $workspace to $monitor"
 
-  # Try to move the workspace if it already exists on another monitor
-  hyprctl dispatch moveworkspacetomonitor "$workspace" "$monitor" &>/dev/null || true
+  # Focus the target monitor first, then create the workspace on it
+  hyprctl dispatch focusmonitor "$monitor" &>/dev/null || true
   sleep 0.1
 
-  # Set persistent workspace rule (this affects future behavior)
-  if ! hyprctl keyword workspace "$workspace,monitor:$monitor,persistent:true" &>/dev/null; then
-    log_error "Failed to set persistent rule for workspace $workspace on $monitor"
-    return 1
-  fi
-
-  # Force workspace to exist on the target monitor by briefly switching to it
-  # This ensures it's created on the correct monitor if it doesn't exist
-  hyprctl dispatch focusmonitor "$monitor" &>/dev/null || true
-  sleep 0.05
+  # Create/switch to the workspace (this ensures it exists on the focused monitor)
   hyprctl dispatch workspace "$workspace" &>/dev/null || true
-  sleep 0.05
+  sleep 0.1
+
+  # Now move it explicitly (in case it was on a different monitor)
+  hyprctl dispatch moveworkspacetomonitor "$workspace" "$monitor" &>/dev/null || true
+  sleep 0.1
 
   return 0
 }
@@ -225,6 +221,10 @@ configure_workspaces() {
       for ws in 1 2 3; do
         move_workspace_to_monitor "$ws" "eDP-1"
       done
+
+      # Switch to workspace 2 as default
+      log_info "Switching to workspace 2 on eDP-1"
+      hyprctl dispatch workspace 2 &>/dev/null || true
       ;;
 
     2)
@@ -246,6 +246,12 @@ configure_workspaces() {
       move_workspace_to_monitor "1" "eDP-1"
       move_workspace_to_monitor "2" "$external"
       move_workspace_to_monitor "3" "$external"
+
+      # Switch to workspace 2 on the external monitor
+      log_info "Switching to workspace 2 on $external"
+      hyprctl dispatch focusmonitor "$external" &>/dev/null || true
+      sleep 0.1
+      hyprctl dispatch workspace 2 &>/dev/null || true
       ;;
 
     3)
@@ -263,13 +269,28 @@ configure_workspaces() {
         return 1
       fi
 
-      # Move workspaces before turning off eDP-1
+      # Focus the main external monitor FIRST to prevent Hyprland from auto-adjusting
+      log_info "Focusing main external monitor: $lg_hdr"
+      hyprctl dispatch focusmonitor "$lg_hdr" &>/dev/null || true
+      sleep 0.3
+
+      # Turn off eDP-1 so Hyprland doesn't use it
+      set_monitor_dpms "eDP-1" "off"
+      sleep 0.5
+
+      # Now move workspaces to external monitors
       move_workspace_to_monitor "1" "$lg_ultrafine"
       move_workspace_to_monitor "2" "$lg_hdr"
       move_workspace_to_monitor "3" "$lg_hdr"
 
-      # Turn off eDP-1 (but don't disable it)
-      set_monitor_dpms "eDP-1" "off"
+      # Give Hyprland time to settle
+      sleep 0.5
+
+      # Switch to workspace 2 as the default workspace
+      log_info "Switching to workspace 2 on $lg_hdr"
+      hyprctl dispatch focusmonitor "$lg_hdr" &>/dev/null || true
+      sleep 0.1
+      hyprctl dispatch workspace 2 &>/dev/null || true
       ;;
 
     *)
@@ -283,10 +304,6 @@ configure_workspaces() {
   # Note: Hyprland doesn't have a removeWorkspace dispatcher
   # Empty workspaces will disappear automatically when not in use
   # We've removed keybindings for workspaces 4+ to prevent creation
-
-  # Switch to workspace 2 as default
-  log_info "Switching to workspace 2"
-  hyprctl dispatch workspace 2 &>/dev/null
 
   return 0
 }
@@ -336,6 +353,12 @@ main() {
 
   # Initialize logging
   init_log
+
+  # Log active monitors for debugging
+  log_debug "Active monitors:"
+  hyprctl monitors -j | jq -r '.[] | select(.dpmsStatus == true and .disabled == false) | "  \(.name) - \(.description)"' | while read -r line; do
+    log_debug "$line"
+  done
 
   # Get the main monitor
   local main_mon
