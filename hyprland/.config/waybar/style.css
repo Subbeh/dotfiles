@@ -3,9 +3,13 @@
 /* GLOBAL */
 
 * {
-  font-family: Tamzen, Siji;
-  font-size: 14px;
+  /* font-family: Tamzen, Siji; */
+  /* font-family: "M+1Code Nerd Font Propo"; */
+  /* font-family: "GohuFont 14 Nerd Font Propo"; */
+  font-family: "ProggyClean Nerd Font Propo";
+  font-size: 15px;
   font-weight: 500;
+  /* letter-spacing: -0.5px; */
   min-height: 0;
   border: 0;
   border-radius: 0;
@@ -14,7 +18,7 @@
 }
 
 window.eDP-1 * {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
 }
 
@@ -23,33 +27,43 @@ window#waybar {
   color: @fg;
 }
 
+/* window#waybar.empty #window { */
+/*   font-size: 0px; */
+/*   background-color: transparent; */
+/* } */
+
 tooltip {
   background: alpha(@bgdark, 0.9);
   color: @white;
   border: 1px solid @fg;
 }
 
-tooltip * {
-  color: @white;
-  padding: 2px;
-  font-family: FiraCode Nerd Font;
-  /* font-size: 1.05em; */
-  font-size: 12px;
+tooltip label {
+  margin: 2px;
   font-weight: normal;
+  font-size: 1.4em;
 }
+
+/* tooltip * { */
+/*   color: @white; */
+/*   padding: 2px; */
+/*   font-family: FiraCode Nerd Font; */
+/*   font-size: 12px; */
+/*   font-weight: normal; */
+/* } */
 
 /* TOP BAR */
 
-window#waybar.top label.module {
-  border-top: 2px solid transparent;
-  margin-left: 1px;
-  margin-right: 1px;
-}
+/* window#waybar.top label.module { */
+/*   border-top: 2px solid transparent; */
+/*   margin-left: 1px; */
+/*   margin-right: 1px; */
+/* } */
 
 /* BOTTOM BAR */
 
 window#waybar.bottom> :last-child {
-  margin-right: 10px;
+  margin-right: 5px;
 }
 
 window#waybar.bottom :first-child {

@@ -85,12 +85,12 @@ is_enabled() {
 
 # Initialize variables
 declare -A icons=(
-  ["eth"]=""
-  ["wifi"]=""
-  ["tailscale"]=""
-  ["vpn"]=" "
-  ["inet"]=""
-  ["dns"]=""
+  ["eth"]="󰈀"
+  ["wifi"]=""
+  ["tailscale"]="󱗼"
+  ["vpn"]="󰒄"
+  ["inet"]="󰇧"
+  ["dns"]=""
 )
 
 declare -A names=(

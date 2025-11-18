@@ -98,13 +98,13 @@ get_status() {
   fi
 
   if [[ "$total_devices" -eq 0 ]]; then
-    echo "{\"text\": \"\", \"class\": \"idle\", \"tooltip\": \"$tooltip\"}"
+    echo "{\"text\": \"󱥾\", \"class\": \"idle\", \"tooltip\": \"$tooltip\"}"
   elif [[ "$connected_devices" -eq 0 ]]; then
-    echo "{\"text\": \"\", \"class\": \"disconnected\", \"tooltip\": \"$tooltip\"}"
+    echo "{\"text\": \"󰉘\", \"class\": \"disconnected\", \"tooltip\": \"$tooltip\"}"
   elif [[ "$is_syncing" == "true" ]]; then
-    echo "{\"text\": \"\", \"class\": \"syncing\", \"tooltip\": \"$tooltip\"}"
+    echo "{\"text\": \"󰝉\", \"class\": \"syncing\", \"tooltip\": \"$tooltip\"}"
   else
-    echo "{\"text\": \"\", \"class\": \"synced\", \"tooltip\": \"$tooltip\"}"
+    echo "{\"text\": \"󱥾\", \"class\": \"synced\", \"tooltip\": \"$tooltip\"}"
   fi
 }
 

@@ -3,7 +3,8 @@
 export KUBECONFIG="${HOMELAB_DIR:?not set}/.private/kubernetes/kubeconfig"
 
 # Icon for Kubernetes
-K8S_ICON="⎈"
+K8S_ICON=""
+KS_ICON=""
 
 # Function to get node status
 get_node_status() {
@@ -23,11 +24,36 @@ get_node_status() {
   echo "$ready_nodes $total_nodes"
 }
 
+# Function to get Flux kustomization status
+get_kustomization_status() {
+  local timeout=5
+
+  # Try to get kustomization information with timeout
+  local ks_output
+  if ! ks_output=$(timeout "$timeout" kubectl get kustomizations -A --no-headers 2>/dev/null); then
+    return 1
+  fi
+
+  # Count total and ready kustomizations
+  local total_ks ready_ks
+  total_ks=$(echo "$ks_output" | wc -l)
+  ready_ks=$(echo "$ks_output" | grep -c " True ")
+
+  echo "$ready_ks $total_ks"
+}
+
 # Main function
 main() {
-  local node_info
+  local node_info ks_info
   if node_info=$(get_node_status); then
     read -r ready_nodes total_nodes <<<"$node_info"
+
+    # Get kustomization status
+    local ready_ks total_ks ks_text=""
+    if ks_info=$(get_kustomization_status); then
+      read -r ready_ks total_ks <<<"$ks_info"
+      ks_text=" <span foreground='#d7d7d7'>$KS_ICON $ready_ks/$total_ks</span>"
+    fi
 
     # Determine color based on node status
     local icon_color
@@ -39,9 +65,15 @@ main() {
       icon_color="#d75f5f" # Red - no nodes ready
     fi
 
+    # Build tooltip
+    local tooltip="Homelab: $ready_nodes/$total_nodes nodes ready"
+    if [[ -n "$ks_info" ]]; then
+      tooltip="$tooltip, $ready_ks/$total_ks kustomizations ready"
+    fi
+
     # Output for waybar with colored icon and white text
-    printf '{"text": "<span foreground='\'%s\''>%s</span> <span foreground='\''#d7d7d7'\''>%d/%d</span>", "class": "k8s", "tooltip": "Homelab: %d/%d nodes ready"}\n' \
-      "$icon_color" "$K8S_ICON" "$ready_nodes" "$total_nodes" "$ready_nodes" "$total_nodes"
+    printf '{"text": "<span foreground='\'%s\''>%s</span> <span foreground='\''#d7d7d7'\''>%d/%d</span>%s", "class": "k8s", "tooltip": "%s"}\n' \
+      "$icon_color" "$K8S_ICON" "$ready_nodes" "$total_nodes" "$ks_text" "$tooltip"
 
   else
     # Cluster unavailable - red icon only

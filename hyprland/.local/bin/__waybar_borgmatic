@@ -155,9 +155,9 @@ get_status() {
 
   # Determine status and icon
   if [[ "$service_status" == "running" ]]; then
-    echo "{\"text\": \"\", \"class\": \"running\", \"tooltip\": \"$tooltip\"}"
+    echo "{\"text\": \"\", \"class\": \"running\", \"tooltip\": \"$tooltip\"}"
   elif [[ -n "$failure_time" ]]; then
-    echo "{\"text\": \"\", \"class\": \"error\", \"tooltip\": \"$tooltip\n\nLast error: $(format_time_diff "$failure_time")\"}"
+    echo "{\"text\": \"\", \"class\": \"error\", \"tooltip\": \"$tooltip\n\nLast error: $(format_time_diff "$failure_time")\"}"
   elif [[ -n "$last_run" ]]; then
     local hours_ago
     hours_ago=$(date -d "$last_run" +%s 2>/dev/null)
@@ -165,12 +165,12 @@ get_status() {
     local diff_hours=$(((now - hours_ago) / 3600))
 
     if [[ $diff_hours -lt 24 ]]; then
-      echo "{\"text\": \"\", \"class\": \"success\", \"tooltip\": \"$tooltip\"}"
+      echo "{\"text\": \"\", \"class\": \"success\", \"tooltip\": \"$tooltip\"}"
     else
-      echo "{\"text\": \"\", \"class\": \"stale\", \"tooltip\": \"$tooltip\"}"
+      echo "{\"text\": \"\", \"class\": \"stale\", \"tooltip\": \"$tooltip\"}"
     fi
   else
-    echo "{\"text\": \"\", \"class\": \"unknown\", \"tooltip\": \"$tooltip\"}"
+    echo "{\"text\": \"\", \"class\": \"unknown\", \"tooltip\": \"$tooltip\"}"
   fi
 }
 

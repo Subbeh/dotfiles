@@ -12,7 +12,7 @@ if command -v checkupdates-with-aur &>/dev/null; then
     color="#87d7ff"
   fi
 
-  echo "{\"text\": \"<span color='$color'></span> $count\", \"tooltip\": \"$updates_fmt\"}"
+  echo "{\"text\": \"<span color='$color'>󰮯</span> $count\", \"tooltip\": \"$updates_fmt\"}"
 else
-  echo "{\"text\": \"<span color='#797979'></span> n/a\"}"
+  echo "{\"text\": \"<span color='#797979'>󰮯</span> n/a\"}"
 fi

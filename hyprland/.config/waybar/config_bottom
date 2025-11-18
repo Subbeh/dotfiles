@@ -13,15 +13,14 @@
     "custom/sep",
     "group/hardware",
     "custom/sep",
+    "custom/borgmatic",
+    "custom/syncthing",
     "custom/updates"
   ],
   "modules-center": [
     "custom/playerctl"
   ],
   "modules-right": [
-    "custom/borgmatic",
-    "custom/syncthing",
-    "custom/sep",
     "custom/k8s",
     "custom/sep",
     "custom/network"
