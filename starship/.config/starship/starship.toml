@@ -15,8 +15,8 @@ $character\
 
 right_format = """
 $cmd_duration\
-${custom.hermes}
-${custom.k8shome}
+${custom.hermes}\
+${custom.k8shome}\
 $sudo\
 $jobs\
 $git_branch\
