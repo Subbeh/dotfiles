@@ -46,7 +46,7 @@ if [[ "$instance" ]]; then
     done
 
     # set context and run clops tools
-    tmux send-keys -t '{top-left}' "__jpro_set_ctx $instance ; k9s" C-m
+    tmux send-keys -t '{top-left}' "__jpro_set_ctx $instance ; k9s -n $instance-jamfcloud-com -c po" C-m
     tmux send-keys -t '{top-right}' "jstatus3 -i $instance" C-m
     tmux send-keys -t '{bottom-left}' "hermes jpro actions get $instance" C-m
     tmux send-keys -t '{bottom-right}' "hermes jpro get $instance" C-m
