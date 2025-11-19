@@ -2,84 +2,114 @@
 
 export KUBECONFIG="${HOMELAB_DIR:?not set}/.private/kubernetes/kubeconfig"
 
-# Icon for Kubernetes
-K8S_ICON=""
-KS_ICON=""
+# Icons
+readonly K8S_ICON=""
+readonly KS_ICON=""
 
-# Function to get node status
-get_node_status() {
-  local timeout=5
+# Colors
+readonly COLOR_GREEN="#afffaf"
+readonly COLOR_YELLOW="#d7d7af"
+readonly COLOR_RED="#d75f5f"
+readonly COLOR_GRAY="#d7d7d7"
 
-  # Try to get node information with timeout
-  local nodes_output
-  if ! nodes_output=$(timeout "$timeout" kubectl get nodes --no-headers 2>/dev/null); then
+# Timeout for kubectl commands
+readonly KUBECTL_TIMEOUT=5
+
+# Get status counts for a kubectl resource
+# Args: $1 - kubectl command, $2 - grep pattern for "ready" status
+get_resource_status() {
+  local kubectl_cmd="$1"
+  local ready_pattern="$2"
+
+  local output
+  if ! output=$(timeout "$KUBECTL_TIMEOUT" $kubectl_cmd 2>/dev/null); then
     return 1
   fi
 
-  # Count total and ready nodes
-  local total_nodes ready_nodes
-  total_nodes=$(echo "$nodes_output" | wc -l)
-  ready_nodes=$(echo "$nodes_output" | grep -c " Ready ")
+  local total ready
+  total=$(echo "$output" | wc -l)
+  ready=$(echo "$output" | grep -c "$ready_pattern")
 
-  echo "$ready_nodes $total_nodes"
+  echo "$ready $total"
 }
 
-# Function to get Flux kustomization status
-get_kustomization_status() {
-  local timeout=5
+# Determine status color based on ready/total counts
+# Args: $1 - ready count, $2 - total count
+get_status_color() {
+  local ready="$1"
+  local total="$2"
 
-  # Try to get kustomization information with timeout
-  local ks_output
-  if ! ks_output=$(timeout "$timeout" kubectl get kustomizations -A --no-headers 2>/dev/null); then
-    return 1
+  if [[ "$ready" -eq "$total" ]] && [[ "$total" -gt 0 ]]; then
+    echo "$COLOR_GREEN"
+  elif [[ "$ready" -gt 0 ]]; then
+    echo "$COLOR_YELLOW"
+  else
+    echo "$COLOR_RED"
   fi
+}
 
-  # Count total and ready kustomizations
-  local total_ks ready_ks
-  total_ks=$(echo "$ks_output" | wc -l)
-  ready_ks=$(echo "$ks_output" | grep -c " True ")
+# Format a status component with icon and counts
+# Args: $1 - icon, $2 - ready count, $3 - total count, $4 - icon color
+format_status() {
+  local icon="$1"
+  local ready="$2"
+  local total="$3"
+  local icon_color="$4"
 
-  echo "$ready_ks $total_ks"
+  printf "<span foreground='%s'>%s</span> <span foreground='%s'>%d/%d</span>" \
+    "$icon_color" "$icon" "$COLOR_GRAY" "$ready" "$total"
 }
 
 # Main function
 main() {
-  local node_info ks_info
-  if node_info=$(get_node_status); then
-    read -r ready_nodes total_nodes <<<"$node_info"
-
-    # Get kustomization status
-    local ready_ks total_ks ks_text=""
-    if ks_info=$(get_kustomization_status); then
-      read -r ready_ks total_ks <<<"$ks_info"
-      ks_text=" <span foreground='#d7d7d7'>$KS_ICON $ready_ks/$total_ks</span>"
-    fi
-
-    # Determine color based on node status
-    local icon_color
-    if [[ "$ready_nodes" -eq "$total_nodes" ]] && [[ "$total_nodes" -gt 0 ]]; then
-      icon_color="#afffaf" # Green - all nodes ready
-    elif [[ "$ready_nodes" -gt 0 ]]; then
-      icon_color="#d7d7af" # Yellow - some nodes ready
-    else
-      icon_color="#d75f5f" # Red - no nodes ready
-    fi
-
-    # Build tooltip
-    local tooltip="Homelab: $ready_nodes/$total_nodes nodes ready"
-    if [[ -n "$ks_info" ]]; then
-      tooltip="$tooltip, $ready_ks/$total_ks kustomizations ready"
-    fi
-
-    # Output for waybar with colored icon and white text
-    printf '{"text": "<span foreground='\'%s\''>%s</span> <span foreground='\''#d7d7d7'\''>%d/%d</span>%s", "class": "k8s", "tooltip": "%s"}\n' \
-      "$icon_color" "$K8S_ICON" "$ready_nodes" "$total_nodes" "$ks_text" "$tooltip"
-
-  else
-    # Cluster unavailable - red icon only
-    printf '{"text": "<span foreground='\''#d75f5f'\''>%s</span>", "class": "k8s-error", "tooltip": "Kubernetes cluster unavailable"}\n' \
-      "$K8S_ICON"
+  local node_status
+  if ! node_status=$(get_resource_status "kubectl get nodes --no-headers" " Ready "); then
+    # Cluster unavailable
+    printf '{"text": "<span foreground='"'"'%s'"'"'>%s</span>", "class": "k8s-error", "tooltip": "Kubernetes cluster unavailable"}\n' \
+      "$COLOR_RED" "$K8S_ICON"
+    return
   fi
+
+  # Parse node status
+  local ready_nodes total_nodes
+  read -r ready_nodes total_nodes <<<"$node_status"
+  local node_color
+  node_color=$(get_status_color "$ready_nodes" "$total_nodes")
+
+  # Build main display text
+  local text
+  text=$(format_status "$K8S_ICON" "$ready_nodes" "$total_nodes" "$node_color")
+
+  # Build tooltip
+  local tooltip="Homelab: $ready_nodes/$total_nodes nodes ready"
+
+  # Try to get kustomization status
+  local ks_status
+  if ks_status=$(get_resource_status "kubectl get kustomizations -A --no-headers" " True "); then
+    local ready_ks total_ks
+    read -r ready_ks total_ks <<<"$ks_status"
+    local ks_color
+    ks_color=$(get_status_color "$ready_ks" "$total_ks")
+
+    # Append kustomization to display text
+    text="$text  $(format_status "$KS_ICON" "$ready_ks" "$total_ks" "$ks_color")"
+
+    # Build list of NOT ready kustomizations for tooltip
+    local failed_ks
+    failed_ks=$(kubectl get kustomizations -A --no-headers 2>/dev/null | \
+      awk '$4 != "True" {printf "%s/%s ✗\n", $1, $2}' | \
+      column -t | \
+      awk 1 ORS='\\n' | \
+      sed 's/\\n$//')
+
+    tooltip="$tooltip, $ready_ks/$total_ks kustomizations ready"
+    if [[ -n "$failed_ks" ]]; then
+      tooltip="$tooltip\\n$failed_ks"
+    fi
+  fi
+
+  # Output JSON for waybar
+  printf '{"text": "%s", "class": "k8s", "tooltip": "%s"}\n' "$text" "$tooltip"
 }
 
 main "$@"
