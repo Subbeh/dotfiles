@@ -1,0 +1,24 @@
+#!/bin/bash
+# Background daemon to continuously update jpro window status
+
+lockfile="/tmp/tmux_jpro_updater.lock"
+
+# Exit if another instance is running
+if ! mkdir "$lockfile" 2>/dev/null; then
+  exit 0
+fi
+
+# Cleanup on exit
+trap 'rmdir "$lockfile" 2>/dev/null' EXIT INT TERM
+
+# Main update loop
+while true; do
+  sleep 15
+
+  # Update all jpro windows
+  tmux list-windows -a -F '#{session_name}:#{window_index} #{@jpro_window} #{window_name}' 2>/dev/null | \
+  while read -r target flag name; do
+    [[ "$flag" == "true" ]] || continue
+    ~/.local/bin/__tmux_update_jpro_status "$target" "$name"
+  done
+done

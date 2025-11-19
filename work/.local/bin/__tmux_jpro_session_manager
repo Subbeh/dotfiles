@@ -30,6 +30,13 @@ if [[ "$instance" ]]; then
     direnv allow "$session_dir"
     tmux new-window -t "$SESH": -n "$instance" -c "$session_dir"
 
+    # Mark as jpro window and initialize status
+    tmux setw -t "$SESH:$instance" @jpro_window "true"
+    tmux setw -t "$SESH:$instance" @jpro_status ""
+
+    # Trigger initial status update
+    ~/.local/bin/__tmux_update_jpro_status "$SESH:$instance" "$instance"
+
     # select window
     tmux switchc -t "$SESH"
     tmux select-window -t "$SESH":"$instance"

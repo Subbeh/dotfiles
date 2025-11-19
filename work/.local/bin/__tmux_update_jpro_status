@@ -1,0 +1,44 @@
+#!/bin/bash
+# Update jpro action status for tmux window with colored indicator
+
+window_target="$1"
+window_name="$2"
+cache_file="/tmp/tmux_jpro_status_${window_name}"
+cache_ttl=15 # Cache for 15 seconds
+
+# Check if this is a jpro window
+is_jpro=$(tmux showw -t "$window_target" -v @jpro_window 2>/dev/null)
+[[ "$is_jpro" != "true" ]] && exit 0
+
+# Use cached value if fresh
+if [[ -f "$cache_file" ]]; then
+  cache_age=$(($(date +%s) - $(stat -f %m "$cache_file" 2>/dev/null || echo 0)))
+  if [[ $cache_age -lt $cache_ttl ]]; then
+    cached_status=$(cat "$cache_file")
+    tmux setw -t "$window_target" @jpro_status "$cached_status" 2>/dev/null
+    exit 0
+  fi
+fi
+
+# Fetch fresh status in background to avoid blocking
+(
+  status=$(hermes jpro actions get "$window_name" -l 1 -o json 2>/dev/null | jq -r '.status' 2>/dev/null)
+
+  # Map status to colored indicator (using tmux color syntax)
+  if [[ -z "$status" || "$status" == "null" || "$status" == "Stopped" ]]; then
+    # No status or stopped - show nothing
+    result=""
+  elif [[ "$status" == "Running" ]]; then
+    result=" #[fg=#d7d7af]●#[fg=default]"
+  elif [[ "$status" == "Succeeded" ]]; then
+    result=" #[fg=#afffaf]●#[fg=default]"
+  elif [[ "$status" == "Pending" ]]; then
+    result=" #[fg=#fab387]●#[fg=default]"
+  else
+    result=" #[fg=#d75f5f]●#[fg=default]"
+  fi
+
+  # Save to cache and update window option
+  echo "$result" >"$cache_file"
+  tmux setw -t "$window_target" @jpro_status "$result" 2>/dev/null
+) &
