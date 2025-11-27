@@ -5,7 +5,7 @@ action="$(printf "continue\nresume\nnew\nquit" 2>/dev/null | fzf)"
 case "$action" in
   continue | resume) claude --"$action" ;;
   new)
-    new_action="$(printf "plan\ndefault" 2>/dev/null | fzf)"
+    new_action="$(printf "default\nplan" 2>/dev/null | fzf)"
     claude --permission-mode "$new_action"
     ;;
 esac
