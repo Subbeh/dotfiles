@@ -38,6 +38,15 @@ fi
     result=" #[fg=#d75f5f]●#[fg=default]"
   fi
 
+  # Check if status changed (compare with previous)
+  if [[ -f "$cache_file" ]]; then
+    previous=$(cat "$cache_file")
+    if [[ "$result" != "$previous" ]] && [[ -n "$result" || -n "$previous" ]]; then
+      # Status changed - trigger bell in the window
+      tmux send-keys -t "$window_target" C-g 2>/dev/null
+    fi
+  fi
+
   # Save to cache and update window option
   echo "$result" >"$cache_file"
   tmux setw -t "$window_target" @jpro_status "$result" 2>/dev/null
