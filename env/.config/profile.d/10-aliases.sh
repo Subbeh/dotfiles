@@ -57,6 +57,7 @@ alias cdt='cd ${TEMP_DIR:?not set}'
 alias cdn='cd ${NOTES_DIR:?not set}'
 alias cdp='cd ${PROJECT_DIR:?not set}'
 alias cdr='cd ${REPOS_DIR:?not set}'
+alias cds='cd ${STUDY_DIR:?not set}'
 
 # misc
 alias dat='date +%Y-%m-%d'

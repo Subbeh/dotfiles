@@ -32,3 +32,10 @@ windows:
         -
         - editor:
         -
+  - study:
+      root: <%= ENV["STUDY_DIR"] %>
+      layout: e318,267x72,0,0[267x62,0,0{66x62,0,0,1,200x62,67,0,5},267x9,0,63,7]
+      panes:
+        -
+        - editor:
+        -
