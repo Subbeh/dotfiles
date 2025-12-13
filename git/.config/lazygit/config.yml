@@ -1,7 +1,7 @@
 customCommands:
   - key: "<c-p>"
     context: "files"
-    command: 'GIT_COMMITTER_DATE="$(date)" git commit --amend --no-edit --date="$(date)" && git push --force-with-lease'
+    command: 'git fetch && ([ -z "$(git rev-list HEAD..@{u} 2>/dev/null)" ] || (echo "Error: Remote has new commits! Pull first." && exit 1)) && GIT_COMMITTER_DATE="$(date)" git commit --amend --no-edit --date="$(date)" && git push --force-with-lease'
     prompts:
       - type: "confirm"
         title: "Amend & force push"
