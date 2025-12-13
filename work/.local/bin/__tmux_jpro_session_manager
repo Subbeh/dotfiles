@@ -45,7 +45,7 @@ if [[ "$instance" ]]; then
     tmux split-window -c "$session_dir"
     tmux split-window -h -p 30 -c "$session_dir"
     tmux split-window -h -t 1 -p 30 -c "$session_dir"
-    tmux select-pane -t 3
+    tmux select-pane -t 1
 
     # enable logging
     for i in {2..4}; do

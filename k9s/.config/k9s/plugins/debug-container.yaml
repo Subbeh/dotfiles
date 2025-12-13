@@ -13,7 +13,7 @@ plugins:
     confirm: true
     args:
       - -c
-      - "kubectl --kubeconfig=$KUBECONFIG debug -it --context $CONTEXT -n=$NAMESPACE $POD --target=$NAME --image=nicolaka/netshoot:v0.13 --share-processes -- bash"
+      - "kubectl --kubeconfig=$KUBECONFIG debug -it --context $CONTEXT -n=$NAMESPACE $POD --target=$NAME --image=nicolaka/netshoot:latest --share-processes -- bash"
   debug_pod:
     shortCut: Shift-D
     description: Add debug pod
@@ -26,3 +26,15 @@ plugins:
     args:
       - -c
       - "kubectl --kubeconfig=$KUBECONFIG --context $CONTEXT run tmp-shell --rm -it --restart=Never -n=$NAMESPACE --image=nicolaka/netshoot:latest"
+  debug_node:
+    shortCut: Shift-D
+    description: Add debug pod
+    dangerous: true
+    scopes:
+      - node
+    command: bash
+    background: false
+    confirm: true
+    args:
+      - -c
+      - "kubectl netshoot debug node/$NAME"
