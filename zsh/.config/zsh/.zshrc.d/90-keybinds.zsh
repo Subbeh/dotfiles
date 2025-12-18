@@ -32,12 +32,18 @@ key[Shift-Tab]="${terminfo[kcbt]}"
 [[ -n "${key[PageDown]}"      ]] && bindkey -- "${key[PageDown]}"      end-of-buffer-or-history
 [[ -n "${key[Shift-Tab]}"     ]] && bindkey -- "${key[Shift-Tab]}"     reverse-menu-complete
 
-bindkey '^a' beginning-of-line     # Ctrl-a for start of line
-bindkey '^e' end-of-line           # Ctrl-e for end of line
-bindkey '\ep' push-line            # Alt-p to push current line
-bindkey '^f' fzf-file-widget
-bindkey '\eh' dirhistory_zle_dirhistory_back &> /dev/null
-bindkey '\el' dirhistory_zle_dirhistory_future &> /dev/null
+# These keybindings need to be set after zsh-vi-mode initializes
+# otherwise zsh-vi-mode will override them
+function zvm_after_init() {
+  # Set custom keybindings
+  bindkey '^a' beginning-of-line     # Ctrl-a for start of line
+  bindkey '^e' end-of-line           # Ctrl-e for end of line
+  bindkey '\ep' push-line            # Alt-p to push current line
+  bindkey '^F' fzf-file-widget       # Ctrl-F for fzf file widget
+  bindkey '\eh' dirhistory_zle_dirhistory_back &> /dev/null
+  bindkey '\el' dirhistory_zle_dirhistory_future &> /dev/null
+  bindkey "^R" atuin-search-viins
+}
 
 # Finally, make sure the terminal is in application mode, when zle is
 # active. Only then are the values from $terminfo valid.

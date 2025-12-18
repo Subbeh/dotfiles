@@ -27,9 +27,6 @@ zstyle ':fzf-tab:*' fzf-bindings 'tab:toggle+down'
 
 eval "$(fzf --zsh)"
 
-# Bind Ctrl-F to open fzf for file completion
-bindkey -s '^F' ' $(fzf)\n'
-
 # fshow - git commit browser
 fshow() {
   git rev-parse --git-dir >/dev/null 2>&1
