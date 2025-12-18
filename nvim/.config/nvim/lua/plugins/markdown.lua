@@ -20,6 +20,19 @@ return {
           min_width = 50,
         },
       })
+
+      -- Disable markdown rendering for all README.md files
+      vim.api.nvim_create_autocmd("BufEnter", {
+        pattern = "*.md",
+        callback = function()
+          local filename = vim.fn.expand("%:t")
+
+          if filename == "README.md" then
+            vim.b.render_markdown_enabled = false
+            require("render-markdown").disable()
+          end
+        end,
+      })
     end,
   },
 }
