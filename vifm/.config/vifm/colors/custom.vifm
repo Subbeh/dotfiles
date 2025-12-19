@@ -1,0 +1,67 @@
+" vim: ft=vim
+
+highlight clear
+
+highlight Border      cterm=none          ctermfg=default   ctermbg=default
+
+highlight TopLine     cterm=none          ctermfg=blue      ctermbg=default
+highlight TopLineSel  cterm=bold          ctermfg=blue      ctermbg=default
+
+highlight Win         cterm=none          ctermfg=default   ctermbg=default
+highlight Directory   cterm=bold          ctermfg=blue      ctermbg=default
+highlight CurrLine    cterm=bold,inverse  ctermfg=default   ctermbg=default
+highlight OtherLine   cterm=bold          ctermfg=default   ctermbg=default
+highlight Selected    cterm=bold          ctermfg=black     ctermbg=Magenta
+
+highlight JobLine     cterm=bold          ctermfg=default   ctermbg=default
+highlight StatusLine  cterm=none          ctermfg=default   ctermbg=default
+highlight ErrorMsg    cterm=bold          ctermfg=red       ctermbg=default
+highlight WildMenu    cterm=bold          ctermfg=default   ctermbg=default
+highlight CmdLine     cterm=none          ctermfg=default   ctermbg=default
+
+highlight Executable  cterm=bold          ctermfg=lightgreen ctermbg=default
+highlight Link        cterm=bold          ctermfg=magenta   ctermbg=default
+highlight BrokenLink  cterm=bold,standout ctermfg=red       ctermbg=default
+highlight Device      cterm=bold,standout ctermfg=magenta   ctermbg=default
+highlight Fifo        cterm=bold,standout ctermfg=yellow    ctermbg=default
+highlight Socket      cterm=bold,standout ctermfg=magenta   ctermbg=default
+
+" executable and source code
+highlight {*.sh,*.bash,*.bat,*.dll,*.exe,*.msi,*.cmd,*.run,*.com,*.desktop,
+          \*.diff,*.sum,*.md5,*.sha,*.sha1,*.sha512,*.sha256,*.ssh,*.ftp}
+          \ cterm=none ctermfg=green ctermbg=default
+highlight {*.[ch]pp,*.c,*.h,*.cc,*.ml,*.mli,*.py,*.pyc,*.pyd,*.pyo,*.php,*.js,
+          \*.c++,*.cpp,*.cxx,*.h,*.cc,*.c,*.hs,*.lhs,*.lua,*.jl,*.go,*.ts,
+          \*.scala,*.java,*.jar,*.xul,*.clj,*.cljc,*.pl,*.pm,*.t,*.cljs,*.edn,
+          \*.rb,*.dart,*.f#,*.fs,*.fsi,*.fsscript,*.fsx,*.rlib,*.rs,*.d,*.erl,
+          \*.hrl,*.ai,*.psb,*.psd,*.jsx,*.kts,*.kt}
+          \ cterm=none ctermfg=default ctermbg=default
+" different color for files with all UPPERCASE name
+" these three highlight command work together
+highlight /^[A-Z_-]+\.[a-zA-Z0-9.]+$/I cterm=none ctermfg=yellow ctermbg=default
+highlight /^[A-Z_-]+$/I cterm=none ctermfg=yellow ctermbg=default
+highlight /^.[A-Z_-]+$/I cterm=none ctermfg=yellow ctermbg=default
+" archive or data within a container which needs a special program to read
+highlight {*.db,*.sql,*.sqlite,*.gpg,*.csv,*.gnumeric,*.xlsx,*.xls,*.blend*,
+          \*.aseprite}
+          \ cterm=none ctermfg=red ctermbg=default
+highlight {*.zip,*.jar,*.war,*.ear,*.oxt,*.apk,*.vsix,*.tar,*.bz2,*.tbz2,
+          \*.tgz,*.gz,*.xz,*.txz,*.deb,*.zst,*.tzst,*.rar,*.iso,*.7zip,*.7z}
+          \ cterm=bold ctermfg=red ctermbg=default
+" plain text
+highlight {*.djvu,*.htm,*.html,*.xhtml,*.md,*[^0-9].[1-9],*.css,*.scss,*.sass,
+          \*.org,*.pandoc,*.pdc,*.tex,*.txt,*.toml,*.yml,*.yaml,*.xml,*.json,
+          \*.conf,*.ini,config,*.cfg,*.pub,*.log,*.rss,*.gradle,[mM]akefile,
+          \[mM]akefile.*,*.mak,*.mk,}
+          \ cterm=none ctermfg=yellow ctermbg=default
+" document
+highlight {*.pdf,*.epub,*.cbz,*.cbr,*.cbt,*.cb7,
+          \*.pptx,*.ppt,*.doc,*.docx,*.xls,*.xls[mx],*.mobi}
+          \ cterm=bold ctermfg=yellow ctermbg=default
+" multimedia
+highlight {*.mp3,*.m4a,*.flac,*.ogg,*.m3u}
+          \ cterm=none ctermfg=173 ctermbg=default
+highlight {*.bmp,*.jpg,*.jpeg,*.png,*.gif,*.webp,*.svg,*.avif,*.jxl,*.ico}
+          \ cterm=none ctermfg=173 ctermbg=default
+highlight {*.mp4,*.m4v,*.mkv,*.webm}
+          \ cterm=bold ctermfg=173 ctermbg=default
