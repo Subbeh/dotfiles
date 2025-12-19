@@ -15,6 +15,7 @@ return {
       json = { "jsonlint" },
       lua = { "luacheck" },
       python = { "ruff" },
+      vim = { "vint" },
       yaml = { "yamllint" },
       tf = { "tflint" },
     }
