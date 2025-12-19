@@ -27,6 +27,20 @@ zstyle ':fzf-tab:*' fzf-bindings 'tab:toggle+down'
 
 eval "$(fzf --zsh)"
 
+# Enable preview for fzf-file-widget (Ctrl-F)
+export FZF_CTRL_T_OPTS="
+  --preview 'kitty +kitten icat --clear --transfer-mode file 2>/dev/null;
+    if [ -d {} ]; then
+      eza -1a --color=always --icons {} 2>/dev/null || ls -lah {};
+    elif file {} | grep -qE \"image|bitmap\"; then
+      kitty +kitten icat --place \"80x24@0x0\" --scale-up --transfer-mode file {};
+    else
+      bat --color=always --style=numbers,changes --line-range=:500 {} 2>/dev/null || cat {};
+    fi'
+  --preview-window=right:60%
+  --bind 'ctrl-/:toggle-preview'
+"
+
 # fshow - git commit browser
 fshow() {
   git rev-parse --git-dir >/dev/null 2>&1

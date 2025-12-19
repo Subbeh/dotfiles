@@ -2,7 +2,7 @@
 
 export FZF_TMUX="${TMUX:+1}"
 export FZF_TMUX_OPTS='-p80%,80%'
-export FZF_PREVIEW_COMMAND='less {} 2>/dev/null'
+export FZF_PREVIEW_COMMAND='bat --color=always {} 2>/dev/null'
 export FZF_DEFAULT_COMMAND="fd --type f || git ls-tree -r --name-only HEAD || rg --files || find ."
 export FZF_DEFAULT_OPTS="--multi --bind 'tab:toggle+down' \
 --bind ctrl-q:abort \
