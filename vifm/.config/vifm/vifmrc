@@ -421,6 +421,17 @@ elseif $DISPLAY != ''
     endif
 endif
 
+" Create file/directory
+command create :
+\|  let $last_char = expand(system("str=\"%a\"; echo \"${str: -1}\""))
+\|  if $last_char == "/"
+\|    mkdir "%a"
+\|  else
+\|    touch "%a"
+\|  endif
+
+nnoremap a :create<space>
+
 " ------------------------------------------------------------------------------
 " Misc
 " ------------------------------------------------------------------------------
