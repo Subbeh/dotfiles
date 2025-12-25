@@ -26,6 +26,10 @@ highlight Device      cterm=bold,standout ctermfg=magenta   ctermbg=default
 highlight Fifo        cterm=bold,standout ctermfg=yellow    ctermbg=default
 highlight Socket      cterm=bold,standout ctermfg=magenta   ctermbg=default
 
+highlight User1       cterm=bold          ctermbg=lightblue ctermfg=0
+highlight User2       cterm=none          ctermbg=none      ctermfg=lightblue
+highlight User3       cterm=none          ctermbg=none
+
 " executable and source code
 highlight {*.sh,*.bash,*.bat,*.dll,*.exe,*.msi,*.cmd,*.run,*.com,*.desktop,
           \*.diff,*.sum,*.md5,*.sha,*.sha1,*.sha512,*.sha256,*.ssh,*.ftp}

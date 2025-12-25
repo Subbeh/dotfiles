@@ -74,12 +74,7 @@ colorscheme custom Default-256 Default
 " Percent sign can be followed by optional minimum field width.  Add '-' before
 " minimum field width if you want field to be right aligned.
 
-
-highlight User1       cterm=bold          ctermbg=lightblue ctermfg=0
-highlight User2       cterm=none          ctermbg=none      ctermfg=lightblue
-highlight User3       cterm=none          ctermbg=none
-
-set viewcolumns=-{name}..,7{size},12{perms},7{uname}..,-7{gname}..
+set viewcolumns=-{name}..,7{size},12{perms},7{uname}..,-7{gname}..,-10{mtime}.
 set statusline="%1* %d %3* %{system('file -bi ' . expand('%c'))} %T %= %1* %a / %c "
 
 " change status line depending on the windows width size
