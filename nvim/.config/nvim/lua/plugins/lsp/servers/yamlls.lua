@@ -10,7 +10,9 @@ return {
         url = "",
       },
       schemas = require('schemastore').yaml.schemas(),
-      validate = { enable = true },
+      validate = true,
+      hover = true,
+      completion = true,
       format = { enable = true },
       customTags = { "!vault scalar" },
       lint = {

@@ -1,8 +1,6 @@
 return {
-  "neovim/nvim-lspconfig",
+  "williamboman/mason.nvim",
   dependencies = {
-    { "williamboman/mason.nvim" },
-    { "williamboman/mason-lspconfig.nvim" },
     { "b0o/schemastore.nvim" },
     { "folke/lazydev.nvim" },
     { "mfussenegger/nvim-ansible" },
@@ -122,17 +120,23 @@ return {
       end,
     })
 
-    -- Set up mason first
+    -- Set up Mason for LSP server installation
     require("mason").setup()
-    require("mason-lspconfig").setup()
 
-    -- Load all LSP configurations from the servers directory
+    -- Register all LSP server configurations with vim.lsp.config
     local servers_path = vim.fn.stdpath("config") .. "/lua/plugins/lsp/servers"
-
     for _, file in ipairs(vim.fn.readdir(servers_path)) do
       if file:match("%.lua$") then
         local server_name = file:gsub("%.lua$", "")
-        vim.lsp.config(server_name, require("plugins.lsp.servers." .. server_name))
+        local config = require("plugins.lsp.servers." .. server_name)
+
+        -- Register the config
+        vim.lsp.config(server_name, config)
+
+        -- Enable the server for its filetypes
+        if config.filetypes then
+          vim.lsp.enable(server_name)
+        end
       end
     end
   end,
