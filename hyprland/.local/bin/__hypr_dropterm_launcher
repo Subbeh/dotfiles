@@ -27,13 +27,7 @@ _check_active() {
 }
 
 _set_properties() {
-  hyprctl keyword windowrulev2 "workspace special:dropterm,class:^($WINDOW_CLASS)$"
-  hyprctl keyword windowrulev2 "float,class:^($WINDOW_CLASS)$"
-  hyprctl keyword windowrulev2 "opacity 0.9,class:^($WINDOW_CLASS)$"
-  hyprctl keyword windowrulev2 "noblur,class:^($WINDOW_CLASS)$"
-  hyprctl keyword windowrulev2 "size 80% 50%, class:^($WINDOW_CLASS)$"
-  hyprctl keyword windowrulev2 "move 10% 0%, class:^($WINDOW_CLASS)$"
-  hyprctl keyword windowrulev2 "animationOverride slidefadevert -15%,class:^($WINDOW_CLASS)$"
+  hyprctl keyword windowrule "workspace special:dropterm, float on, opacity 0.9, no_blur on, size (monitor_w*0.8) (monitor_h*0.5), move ((monitor_w*0.1)) ((monitor_h*0)), animation slidefadevert -15%, match:class ^(WINDOW_CLASS)$"
 }
 
 _new_session() {

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
+set -x
 
 # Robust Hyprland event handler service
 # Handles window events, dynamic layouts, and monitor changes
 
 # Prevent multiple instances using flock
 LOCK_FILE="/tmp/hypr_handles_service.lock"
-LOCK_FD=201
 
 # Try to acquire exclusive lock
 exec 201>"$LOCK_FILE"
@@ -112,16 +112,28 @@ dynamic_window_layout() {
     [[ "$screen_width" -le 0 ]] && return
     local reserved_width=$((screen_width * 40 / 100))
 
-    # Add 40% reserved space on the left
+    # Get current monitor configuration
+    local monitor_res=$(echo "$monitor_info" | jq -r '"\(.width)x\(.height)@\(.refreshRate)"' 2>/dev/null)
+    local monitor_pos=$(echo "$monitor_info" | jq -r '"\(.x)x\(.y)"' 2>/dev/null)
+    local monitor_scale=$(echo "$monitor_info" | jq -r '.scale' 2>/dev/null)
+
+    # CRITICAL: Must set full monitor config FIRST in 0.53, then add reserved space
+    # Otherwise addreserved resets the monitor configuration
+    hyprctl keyword monitor "$monitor_name,$monitor_res,$monitor_pos,$monitor_scale" >/dev/null 2>&1
     hyprctl keyword monitor "$monitor_name,addreserved,0,0,$reserved_width,0" >/dev/null 2>&1
   else
-    # Remove reserved space
+    # Remove reserved space - also need full config first
+    local monitor_res=$(echo "$monitor_info" | jq -r '"\(.width)x\(.height)@\(.refreshRate)"' 2>/dev/null)
+    local monitor_pos=$(echo "$monitor_info" | jq -r '"\(.x)x\(.y)"' 2>/dev/null)
+    local monitor_scale=$(echo "$monitor_info" | jq -r '.scale' 2>/dev/null)
+
+    hyprctl keyword monitor "$monitor_name,$monitor_res,$monitor_pos,$monitor_scale" >/dev/null 2>&1
     hyprctl keyword monitor "$monitor_name,addreserved,0,0,0,0" >/dev/null 2>&1
   fi
 }
 
 # Debounce configuration for monitor changes
-MONITOR_DEBOUNCE_DELAY=2  # seconds to wait for events to stabilize
+MONITOR_DEBOUNCE_DELAY=2 # seconds to wait for events to stabilize
 MONITOR_RELOAD_TIMESTAMP="/tmp/hypr_monitor_reload.timestamp"
 MONITOR_RELOAD_PID="/tmp/hypr_monitor_reload.pid"
 
@@ -131,7 +143,7 @@ handle_monitor_change() {
   echo "INFO: Monitor ${event_type}, updating timestamp..."
 
   # Update timestamp
-  date +%s > "$MONITOR_RELOAD_TIMESTAMP"
+  date +%s >"$MONITOR_RELOAD_TIMESTAMP"
 
   # Check if a debounce job is already running
   local job_running=false
@@ -149,7 +161,7 @@ handle_monitor_change() {
 
     (
       # Store our PID
-      echo $$ > "$MONITOR_RELOAD_PID"
+      echo $$ >"$MONITOR_RELOAD_PID"
 
       # Wait for events to stabilize
       local start_time=$(cat "$MONITOR_RELOAD_TIMESTAMP" 2>/dev/null || echo "0")
