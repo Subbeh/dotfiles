@@ -50,6 +50,7 @@ return {
       { "<leader>p",  group = "Session" },
       { "<leader>s",  group = "System" },
       { "<leader>u",  group = "UI" },
+      { "<leader>x",  group = "Copy" },
     },
   },
 }

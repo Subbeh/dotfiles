@@ -38,6 +38,7 @@ return {
         markdown = { "prettier" },
         python = { "ruff_check", "ruff" },
         sh = { "shfmt" },
+        terraform = { "terraform_fmt" },
         yaml = { "prettier_yaml" },
         zsh = { "shfmt" },
       },
@@ -95,6 +96,11 @@ return {
             "--parser",
             "yaml",
           },
+        },
+        terraform_fmt = {
+          command = "terraform",
+          args = { "fmt", "-" },
+          stdin = true,
         },
       },
     })

@@ -1,8 +1,7 @@
 return {
+  filetypes = { "terraform", "terraform-vars" },
   settings = {
-    terraformls = {
-      filetypes = { "tf" },
-    },
+    terraformls = {},
     tflint = {},
   },
 }

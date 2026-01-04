@@ -63,6 +63,20 @@ keymap("v", "p", '"_dP', opts)
 keymap({ "n", "v" }, "<leader>Y", "\"+y", { desc = "Yank into \" register" })
 keymap({ "n", "v" }, "<leader>D", "\"_d", { desc = "Delete into \" register" })
 
+-- Copy file path and contents to clipboard
+keymap("n", "<leader>xp", function()
+	local path = vim.fn.expand("%:p")
+	vim.fn.setreg("+", path)
+	print("Copied path: " .. path)
+end, { desc = "Copy full file path to clipboard" })
+
+keymap("n", "<leader>xf", function()
+	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+	local content = table.concat(lines, "\n")
+	vim.fn.setreg("+", content)
+	print("Copied buffer contents to clipboard")
+end, { desc = "Copy buffer contents to clipboard" })
+
 -- Close all
 keymap("n", "<leader>q", "<cmd>qa<cr>", { desc = "Close All" })
 
