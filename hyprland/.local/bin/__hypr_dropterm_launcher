@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -x
 
 WINDOW_CLASS="dropterm"
 STATE_FILE="/tmp/hypr_dropterm_active"
@@ -27,13 +26,12 @@ _check_active() {
 }
 
 _set_properties() {
-  hyprctl keyword windowrulev2 "workspace special:dropterm,class:^($WINDOW_CLASS)$"
-  hyprctl keyword windowrulev2 "float,class:^($WINDOW_CLASS)$"
-  hyprctl keyword windowrulev2 "opacity 0.9,class:^($WINDOW_CLASS)$"
-  hyprctl keyword windowrulev2 "noblur,class:^($WINDOW_CLASS)$"
-  hyprctl keyword windowrulev2 "size 80% 50%, class:^($WINDOW_CLASS)$"
-  hyprctl keyword windowrulev2 "move 10% 0%, class:^($WINDOW_CLASS)$"
-  hyprctl keyword windowrulev2 "animationOverride slidefadevert -15%,class:^($WINDOW_CLASS)$"
+  hyprctl keyword windowrule "match:class ^($WINDOW_CLASS)$, workspace special:dropterm"
+  hyprctl keyword windowrule "match:class ^($WINDOW_CLASS)$, float on"
+  hyprctl keyword windowrule "match:class ^($WINDOW_CLASS)$, no_blur on"
+  hyprctl keyword windowrule "match:class ^($WINDOW_CLASS)$, size (monitor_w*0.8) (monitor_h*0.5)"
+  hyprctl keyword windowrule "match:class ^($WINDOW_CLASS)$, move ((monitor_w*0.1)) ((monitor_h*0))"
+  hyprctl keyword windowrule "match:class ^($WINDOW_CLASS)$, animation slidefadevert -15%"
 }
 
 _new_session() {
