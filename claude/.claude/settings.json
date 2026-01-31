@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(cat:*)",
+      "Bash(curl:*)",
+      "Bash(dig:*)",
+      "Bash(echo:*)",
+      "Bash(find:*)",
+      "Bash(gh issue list:*)",
+      "Bash(gh issue view:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)",
+      "Bash(git log:*)",
+      "Bash(git status:*)",
+      "Bash(grep:*)",
+      "Bash(head:*)",
+      "Bash(ls:*)",
+      "Bash(nslookup:*)",
+      "Bash(systemctl status:*)",
+      "Bash(tree:*)",
+      "Read(//data/workspace/**)",
+      "Read(/~/.config/**)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:*.sbbh.cloud)",
+      "WebSearch"
+    ],
+    "deny": [],
+    "ask": []
+  },
+  "enabledPlugins": {
+    "repomix-mcp@repomix": true,
+    "repomix-commands@repomix": true,
+    "repomix-explorer@repomix": true,
+    "learning-output-style@claude-code-plugins": false,
+    "frontend-design@claude-code-plugins": true,
+    "claude-mem@thedotmack": true
+  },
+  "alwaysThinkingEnabled": true
+}

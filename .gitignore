@@ -2,3 +2,4 @@
 .stversions/
 .backup/
 *.swp
+!claude/.claude
