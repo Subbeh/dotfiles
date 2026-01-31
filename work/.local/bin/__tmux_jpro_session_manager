@@ -13,7 +13,7 @@ fi
 
 if [[ -z "${1:-}" ]]; then
   instance=$(
-    find "${DIR:?not set}/sessions" -depth 1 -type d -exec stat -f '%B %N' {} \; | sort -rn | awk -F/ '{print $NF}' | fzf --bind=enter:replace-query+print-query --reverse --header "existing sessions:" --tmux center,20% || exit 0
+    basename $(ls -td "${DIR:?not set}/sessions/"*) | fzf --bind=enter:print-query,tab:accept --reverse --header "existing sessions (tab to select):" --tmux center,20% || exit 0
   )
 else
   instance="$1"
