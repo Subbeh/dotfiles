@@ -1,0 +1,77 @@
+[user]
+  email = git@sbbh.cloud
+  name = Steven Terwindt
+  username = subbeh
+  signingkey = 1BFE9EB0434D7D1C
+
+[sendemail]
+  from = Steven Terwindt <steven@sbbh.cloud>
+
+{{- if eq .Profile "work" }}
+[includeIf "gitdir:/Users/steven.terwindt/workspace/jamf/"]
+	path = config-work.inc
+{{- end }}
+
+[credential]
+  helper = cache
+
+[url "git@github.com:"]
+  insteadOf = https://github.com/
+
+[core]
+  excludesFile = ~/.config/git/gitignore
+
+[init]
+  defaultBranch = main
+
+[push]
+  autoSetupRemote = true
+  followTags = true
+
+[pull]
+  rebase = true
+
+[merge]
+  ff = only
+  tool = nvimdiff
+
+[fetch]
+  prune = true
+
+[revert]
+  reference = true
+
+[rerere]
+  enabled = true
+
+[diff]
+  colorMoved = default
+  colorMovedWS = allow-indentation-change
+  tool = difft
+
+[difftool "difft"]
+  cmd = difft "$LOCAL" "$REMOTE"
+  prompt = false
+
+[pager]
+  difftool = true
+
+[trailer]
+  separators = ":#"
+
+[trailer "fix"]
+  key = "Fix #"
+
+[filter "lfs"]
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
+
+[alias]
+  st = status
+  co = checkout
+  rv = remote -v
+  lg = log --oneline --decorate --branches --remotes --tags --abbrev-commit --graph
+  ll = log --oneline --decorate --branches --remotes --tags --abbrev-commit --stat
+

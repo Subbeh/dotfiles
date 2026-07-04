@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+pid=$1
+while [ "$pid" -gt 1 ] 2>/dev/null; do
+  pid=$(ps -o ppid= -p "$pid" 2>/dev/null | tr -d ' ')
+  comm=$(ps -o comm= -p "$pid" 2>/dev/null)
+  case "$comm" in
+    *sshd*)
+      echo 1
+      exit 1
+      ;;
+  esac
+done
+
+echo 0

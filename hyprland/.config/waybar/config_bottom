@@ -1,0 +1,30 @@
+// vi: ft=jsonc
+// -------------------------------------------------------------------------
+// Global configuration
+// -------------------------------------------------------------------------
+{
+  "name": "bottom",
+  "position": "bottom",
+  "include": [
+    "~/.config/waybar/defaults"
+  ],
+  "modules-left": [
+    "battery",
+    "custom/sep",
+    "group/hardware",
+    "custom/sep",
+    "custom/borgmatic",
+    "custom/syncthing",
+    "custom/chezmoi",
+    "custom/updates"
+  ],
+  "modules-center": [
+    "custom/playerctl"
+  ],
+  "modules-right": [
+    "custom/k8s",
+    "custom/sep",
+    "custom/network"
+  ]
+}
+

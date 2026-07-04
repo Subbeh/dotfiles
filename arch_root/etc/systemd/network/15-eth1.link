@@ -1,0 +1,6 @@
+[Match]
+MACAddress=ee:39:a3:7c:ce:25
+
+[Link]
+Name=eth1
+RequiredForOnline=no

@@ -1,0 +1,69 @@
+#!/bin/bash
+set -xeuo pipefail
+
+test -d "${XDG_CACHE_HOME:?not set}/tmux" || mkdir -p "$_"
+exec 2>>"${XDG_CACHE_HOME}/tmux/jamf_session.log"
+
+SESH="work"
+DIR="${JAMF_DIR:?not set}"
+
+if ! tmux has-session -t "${SESH:?not set}" 2>/dev/null; then
+  tmuxinator start "$SESH" --no-attach
+fi
+
+if [[ -z "${1:-}" ]]; then
+  instance=$(
+    basename $(ls -td "${DIR:?not set}/sessions/"*) | fzf --bind=enter:print-query,tab:accept --reverse --header "existing sessions (tab to select):" --tmux center,20% || exit 0
+  )
+else
+  instance="$1"
+fi
+
+if [[ "$instance" ]]; then
+  session_dir="${DIR}/sessions/$instance"
+
+  if ! tmux list-windows -t "$SESH":"$instance" &>/dev/null; then
+    test -d "$session_dir" || mkdir -p "$session_dir"/{logs,data}
+    echo 'export KUBECONFIG="$(expand_path ./kubeconfig)"' >"$session_dir/.envrc"
+    echo "export INST=$instance" >>"$session_dir/.envrc"
+    echo 'export K9S_CONFIG_DIR=$HOME/.config/k9s/work' >>"$session_dir/.envrc"
+    direnv allow "$session_dir"
+    tmux new-window -t "$SESH": -n "$instance" -c "$session_dir"
+
+    # Mark as jpro window and initialize status
+    tmux setw -t "$SESH:$instance" @jpro_window "true"
+    tmux setw -t "$SESH:$instance" @jpro_status ""
+
+    # Trigger initial status update
+    ~/.local/bin/__tmux_jpro_status_update "$SESH:$instance" "$instance"
+
+    # select window
+    tmux switchc -t "$SESH"
+    tmux select-window -t "$SESH":"$instance"
+
+    # create layout
+    tmux split-window -c "$session_dir"
+    tmux split-window -h -p 30 -c "$session_dir"
+    tmux split-window -h -t 1 -p 30 -c "$session_dir"
+    tmux select-pane -t 1
+
+    # enable logging
+    for i in {2..4}; do
+      tmux pipe-pane -t "$i" "cat >> ${session_dir}/logs/pane_$i.log"
+    done
+
+    # set context and run clops tools
+    tmux send-keys -t '{top-left}' "__jpro_set_ctx $instance ; k9s -n $instance-jamfcloud-com -c po" C-m
+    tmux send-keys -t '{top-right}' "cd $DIR/cloud-ops-tools/src/scripts && ./jtop.py -i $instance" C-m
+    tmux send-keys -t '{bottom-left}' "hermes jpro actions get $instance" C-m
+    tmux send-keys -t '{bottom-right}' "hermes jpro get $instance" C-m
+
+    # bind key for sketchybar context
+    # tmux bind-key -T prefix C "run-shell 'KUBECONFIG=${JAMF_DIR:?not set}/kubeconfig hermes jpro set-ctx #{window_name} && open swiftbar://refreshplugin?name=hermes'"
+    tmux bind-key -T prefix C "run-shell -b '$HOME/.config/clopsbar/plugins/hermes.10s.sh set_context #{window_name}'"
+  else
+    # select window
+    tmux switchc -t "$SESH"
+    tmux select-window -t "$SESH":"$instance"
+  fi
+fi

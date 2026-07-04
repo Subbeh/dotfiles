@@ -1,0 +1,136 @@
+#!/usr/bin/env bash
+
+# Derive the Claude session directory for the current working directory
+_claude_project_dir() {
+  local encoded
+  encoded=$(printf '%s' "$PWD" | sed 's|[/.]|-|g')
+  echo "$HOME/.claude/projects/$encoded"
+}
+
+# Format seconds into human-readable relative time
+_rel_time() {
+  local secs=$1
+  if ((secs < 60)); then
+    echo "${secs}s ago"
+  elif ((secs < 3600)); then
+    echo "$((secs / 60))m ago"
+  elif ((secs < 86400)); then
+    echo "$((secs / 3600))h ago"
+  else
+    echo "$((secs / 86400))d ago"
+  fi
+}
+
+# Build list of sessions: "<reltime> — <first-msg-snippet>  [uuid]"
+_session_list() {
+  local proj_dir
+  proj_dir=$(_claude_project_dir)
+  [[ -d "$proj_dir" ]] || return
+
+  local now
+  now=$(date +%s)
+
+  # Sort by modification time, newest first
+  while IFS= read -r file; do
+    local uuid
+    uuid=$(basename "$file" .jsonl)
+
+    local mod secs rel_time
+    mod=$(stat -f "%m" "$file" 2>/dev/null) || continue
+    secs=$((now - mod))
+    rel_time=$(_rel_time "$secs")
+
+    local first_msg
+    if command -v jq &>/dev/null; then
+      first_msg=$(jq -r '
+        select(.type == "user" and (.message.content != null) and (.promptSource == "typed")) |
+        .message.content |
+        if type == "string" then . else (map(select(.type == "text") | .text) | join("")) end
+      ' "$file" 2>/dev/null | grep -v '^\s*$' | grep -v '^<' | head -1 | cut -c1-80)
+    fi
+    first_msg=${first_msg:-"(no message)"}
+
+    printf '%s — %s  [%s]\n' "$rel_time" "$first_msg" "$uuid"
+  done < <(ls -t "$proj_dir"/*.jsonl 2>/dev/null | head -20)
+}
+
+# Render last exchanges from a session file for fzf preview
+_preview_session() {
+  local uuid=$1
+  local proj_dir
+  proj_dir=$(_claude_project_dir)
+  local file="$proj_dir/$uuid.jsonl"
+  [[ -f "$file" ]] || {
+    echo "Session file not found"
+    return
+  }
+
+  local raw
+  if command -v jq &>/dev/null; then
+    raw=$(jq -r '
+      select((.type == "user" or .type == "assistant") and .message != null) |
+      select(.message.content != null) |
+      (if .type == "user" then "## USER" else "## ASSISTANT" end) as $heading |
+      (.message.content | if type == "string" then . else (map(select(.type == "text") | .text) | join("")) end) as $text |
+      select($text | test("^<") | not) |
+      select($text | length > 0) |
+      "\($heading)\n\($text)\n"
+    ' "$file" 2>/dev/null | tail -200)
+  else
+    raw=$(grep -o '"type":"[^"]*","message"' "$file" | tail -20)
+  fi
+
+  if command -v bat &>/dev/null; then
+    printf '%s' "$raw" | bat --language md --style plain --color always
+  else
+    printf '%s' "$raw"
+  fi
+}
+
+pick_session() {
+  local proj_dir
+  proj_dir=$(_claude_project_dir)
+  [[ -d "$proj_dir" ]] || {
+    echo "No sessions found for $PWD" >&2
+    return 1
+  }
+
+  local script
+  script=$(realpath "$0")
+
+  local selected
+  selected=$(_session_list | fzf \
+    --prompt="session> " \
+    --preview="uuid=\$(echo {} | grep -o '\[.*\]\$' | tr -d '[]'); \"$script\" --preview-session \"\$uuid\"" \
+    --preview-window=right:60%:wrap)
+
+  [[ -z "$selected" ]] && return
+
+  local uuid
+  uuid=$(echo "$selected" | grep -o '\[.*\]$' | tr -d '[]')
+  [[ -z "$uuid" ]] && return
+
+  claude --resume "$uuid"
+}
+
+main() {
+  if [[ "$1" == "--preview-session" ]]; then
+    _preview_session "$2"
+    return
+  fi
+
+  local action
+  action=$(printf 'new\ncontinue\npick session\nnew (plan)\nnew (auto-mode)\nnew (accept-edits)\nquit' | fzf --prompt="claude> ")
+
+  case "$action" in
+    continue) claude --continue ;;
+    new) claude --permission-mode default ;;
+    "new (plan)") claude --permission-mode plan ;;
+    "new (auto-mode)") CLAUDE_CODE_ENABLE_AUTO_MODE=1 claude --permission-mode auto ;;
+    "new (accept-edits)") claude --permission-mode acceptEdits ;;
+    "pick session") pick_session ;;
+    quit | "") ;;
+  esac
+}
+
+main "$@"

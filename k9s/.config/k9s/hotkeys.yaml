@@ -1,0 +1,19 @@
+---
+#  $XDG_CONFIG_HOME/k9s/hotkeys.yaml
+hotKeys:
+  shift-0:
+    shortCut: Shift-0
+    description: Viewing nodes
+    command: nodes
+  shift-1:
+    shortCut: Shift-1
+    description: View namespaces
+    command: ns
+  shift-2:
+    shortCut: Shift-2
+    description: View deployments
+    command: deployments
+  shift-3:
+    shortCut: Shift-3
+    description: View pods
+    command: pods

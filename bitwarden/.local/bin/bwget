@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if [[ "$1" == "--ssh" ]]; then
+  shift
+  value=$(bw list items --search "$1" | jq -r --arg item "$1" --arg key "$2" '.[] | select(.name==$item) | .sshKey[$key]')
+else
+  value=$(bw list items --search "$1" | jq -r --arg item "$1" --arg field "$2" '.[] | select(.name==$item) | .fields[] | select(.name==$field) | .value')
+fi
+
+test -z "$value" && exit 1
+echo "$value"
+

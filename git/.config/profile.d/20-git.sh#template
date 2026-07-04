@@ -1,0 +1,3 @@
+#!/bin/sh
+
+export GITHUB_TOKEN="{{ required .Vars.github.cli_token }}"

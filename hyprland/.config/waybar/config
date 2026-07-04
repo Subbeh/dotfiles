@@ -1,0 +1,19 @@
+// vi: ft=jsonc
+// -------------------------------------------------------------------------
+// Global configuration
+// -------------------------------------------------------------------------
+[
+  {
+    "output": "eDP-1",
+    "include": [
+      "~/.config/waybar/config_top"
+    ]
+  },
+  {
+    "output": "eDP-1",
+    "include": [
+      "~/.config/waybar/config_bottom"
+    ]
+  }
+]
+

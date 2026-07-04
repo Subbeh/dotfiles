@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+status=$(mate status --short 2>/dev/null)
+rc=$?
+
+case "$1" in
+  tmux)
+    [[ $rc -ne 0 ]] && echo "" && exit 0
+    [[ -z "$status" ]] && echo "#[fg=colour2]#[fg=default]" && exit 0
+
+    # Parse the short status output
+    parts=()
+    for token in $status; do
+      case "$token" in
+        +*) parts+=("#[fg=colour15]$token") ;; # added: white
+        ~*) parts+=("#[fg=colour12]$token") ;; # modified: blue
+        !*) parts+=("#[fg=colour9]$token") ;;  # conflict: red
+        \?*) parts+=("#[fg=colour3]$token") ;; # orphan: yellow
+      esac
+    done
+
+    [[ ${#parts[@]} -eq 0 ]] && exit 0
+    IFS=' '
+    echo "#[fg=colour12]#[fg=default] ${parts[*]}"
+    ;;
+  waybar)
+    [[ $rc -ne 0 ]] && exit 0
+
+    if [[ -z "$status" ]]; then
+      jq -cn '{text: "", class: "clean", tooltip: "statemate: up to date"}'
+    else
+      # Get full status for tooltip
+      full_status=$(mate status 2>/dev/null)
+      jq -cn --arg t " $status" --arg tip "$full_status" \
+        '{text: $t, class: "dirty", tooltip: $tip}'
+    fi
+    ;;
+  *)
+    echo "$status"
+    ;;
+esac

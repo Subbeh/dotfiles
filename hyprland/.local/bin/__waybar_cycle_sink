@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+
+# Simple script to cycle through audio outputs
+# Usage: __waybar_cycle_sink [next|prev]
+
+get_default_sink_id() {
+    wpctl status | awk '/Sinks:/,/Sources:/' | grep '\*' | sed 's/^[^0-9]*//' | awk '{print $1}' | tr -d '.' | head -1
+}
+
+list_sink_ids() {
+    wpctl status | awk '/Sinks:/,/Sources:/' | grep -E '^\s*[│├└]\s*\*?\s*[0-9]+\.' | sed 's/^[^0-9]*//' | awk '{print $1}' | tr -d '.'
+}
+
+cycle_next() {
+    local current_id
+    current_id=$(get_default_sink_id)
+
+    local -a sink_ids
+    while IFS= read -r id; do
+        [[ -n "$id" ]] && sink_ids+=("$id")
+    done <<< "$(list_sink_ids)"
+
+    [[ ${#sink_ids[@]} -le 1 ]] && return
+
+    # Find current index
+    local current_index=-1
+    for i in "${!sink_ids[@]}"; do
+        if [[ "${sink_ids[$i]}" == "$current_id" ]]; then
+            current_index=$i
+            break
+        fi
+    done
+
+    # Next index (wrap around)
+    local next_index=$(( (current_index + 1) % ${#sink_ids[@]} ))
+    wpctl set-default "${sink_ids[$next_index]}"
+}
+
+cycle_prev() {
+    local current_id
+    current_id=$(get_default_sink_id)
+
+    local -a sink_ids
+    while IFS= read -r id; do
+        [[ -n "$id" ]] && sink_ids+=("$id")
+    done <<< "$(list_sink_ids)"
+
+    [[ ${#sink_ids[@]} -le 1 ]] && return
+
+    # Find current index
+    local current_index=-1
+    for i in "${!sink_ids[@]}"; do
+        if [[ "${sink_ids[$i]}" == "$current_id" ]]; then
+            current_index=$i
+            break
+        fi
+    done
+
+    # Previous index (wrap around)
+    local prev_index=$(( current_index == 0 ? ${#sink_ids[@]} - 1 : current_index - 1 ))
+    wpctl set-default "${sink_ids[$prev_index]}"
+}
+
+case "${1:-next}" in
+    next)
+        cycle_next
+        ;;
+    prev)
+        cycle_prev
+        ;;
+    *)
+        cycle_next
+        ;;
+esac
