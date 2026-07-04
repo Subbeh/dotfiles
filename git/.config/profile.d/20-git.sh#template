@@ -1,3 +1,3 @@
 #!/bin/sh
 
-export GITHUB_TOKEN="{{ required .Vars.github.cli_token }}"
+export GITHUB_TOKEN="{{ bitwarden "github.com" "field" "gh-cli-token" }}"
