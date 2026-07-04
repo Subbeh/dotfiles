@@ -1,0 +1,33 @@
+packages:
+  common:
+    - 7zip
+    - age
+    - bat
+    - btop
+    - direnv
+    - dog
+    - duf
+    - dust
+    - eza
+    - fd
+    - fwupd
+    - fzf
+    - go-task
+    - htop
+    - lazygit
+    - ncdu
+    - ripgrep
+    - sops
+    - speedtest-cli
+    - starship
+    - stow
+    - tailscale
+    - taskwarrior-tui
+    - tldr
+    - vlc
+    - wget
+    - xh
+    - yarn
+    - yazi
+    - yq
+    - zoxide

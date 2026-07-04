@@ -1,0 +1,3 @@
+packages:
+  pacman:
+    - xdg-desktop-portal-hyprland

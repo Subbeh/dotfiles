@@ -1,0 +1,5 @@
+packages:
+  common:
+    - neovim
+    - lua-language-server
+    - luarocks

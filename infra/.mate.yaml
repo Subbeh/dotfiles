@@ -1,0 +1,20 @@
+packages:
+  common:
+    - docker
+    - helmfile
+    - k9s
+    - krew
+    - kubecolor
+    - kubectx
+    - kustomize
+    - mise
+    - pyenv
+    - talhelper
+    - talosctl
+    - upterm
+    - iperf3
+    - arp-scan
+    - dnsmasq
+    - inetutils
+    - mtr
+    - socat

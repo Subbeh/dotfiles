@@ -16,6 +16,8 @@ case "$1" in
         ~*) parts+=("#[fg=colour12]$token") ;; # modified: blue
         !*) parts+=("#[fg=colour9]$token") ;;  # conflict: red
         \?*) parts+=("#[fg=colour3]$token") ;; # orphan: yellow
+        \**) parts+=("#[fg=colour5]$token") ;; # pending scripts: magenta
+        s*) parts+=("#[fg=colour11]$token") ;; # pending secrets: bright yellow
       esac
     done
 
