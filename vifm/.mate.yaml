@@ -1,0 +1,13 @@
+packages:
+  common:
+    - poppler
+    - qutebrowser
+    - inkscape
+    - feh
+    - docx2txt
+  pacman:
+    - zathura
+    - zathura-pdf-poppler
+    - dumptorrrent
+    - fuse-zip
+    - fuseiso

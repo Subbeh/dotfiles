@@ -3,9 +3,9 @@ packages:
   common:
     - vlc
     - firefox
+    - mpv
   brew:
     - google-chrome
   pacman:
     - chromium
     - gnome-disk-utility
-    - mpv

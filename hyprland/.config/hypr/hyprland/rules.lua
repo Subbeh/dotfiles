@@ -17,11 +17,11 @@ hl.window_rule({
   },
   no_focus = true,
 })
-hl.window_rule({
-  name = "fix-xwayland-no-focus",
-  match = { xwayland = true },
-  no_focus = true,
-})
+-- hl.window_rule({
+--   name = "fix-xwayland-no-focus",
+--   match = { xwayland = true },
+--   no_focus = true,
+-- })
 hl.window_rule({
   name = "fix-xwayland-float",
   match = { xwayland = true },

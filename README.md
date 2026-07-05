@@ -4,23 +4,13 @@ Managed with [statemate](https://github.com/subbeh/statemate).
 
 ## Setup on a new machine
 
-1. Install statemate:
-   ```sh
-   # macOS
-   brew install subbeh/tap/statemate
+Run the bootstrap script. It installs prerequisites (statemate, yay/brew,
+Bitwarden CLI), fetches the age key from Bitwarden, clones this repository, and
+applies the configuration:
 
-   # Arch Linux
-   yay -S statemate
-   ```
+```sh
+curl -fsSL https://raw.githubusercontent.com/Subbeh/dotfiles/main/install.sh | bash
+```
 
-2. Clone this repository:
-   ```sh
-   git clone <your-repo-url> ~/.dotfiles
-   cd ~/.dotfiles
-   ```
-
-3. Register and apply:
-   ```sh
-   mate init    # Register this directory
-   mate apply   # Deploy configuration
-   ```
+You'll be prompted to log in to Bitwarden during the run to retrieve the
+decryption key for secrets.

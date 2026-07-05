@@ -19,6 +19,8 @@ hl.bind("SUPER + H",                      hl.dsp.focus({ direction = "left" }))
 hl.bind("SUPER + L",                      hl.dsp.focus({ direction = "right" }))
 hl.bind("SUPER + K",                      hl.dsp.focus({ direction = "up" }))
 hl.bind("SUPER + J",                      hl.dsp.focus({ direction = "down" }))
+hl.bind("SUPER + CTRL + SHIFT + H",       hl.dsp.window.move({ workspace = "e-1" }))
+hl.bind("SUPER + CTRL + SHIFT + L",       hl.dsp.window.move({ workspace = "e+1" }))
 hl.bind("SUPER + mouse:272",              hl.dsp.window.drag(),                                              { mouse = true })
 hl.bind("SUPER + SHIFT + mouse:272",      hl.dsp.window.resize(),                                            { mouse = true })
 
@@ -34,14 +36,14 @@ hl.bind("SUPER + S",                      function() Func.toggle_special() end)
 hl.bind("F12",                            Dropterm())
 hl.bind("SUPER + CTRL + H",               hl.dsp.focus({ workspace = "e-1" }))
 hl.bind("SUPER + CTRL + L",               hl.dsp.focus({ workspace = "e+1" }))
-hl.bind("SUPER + CTRL + SHIFT + H",       hl.dsp.window.move({ workspace = "e-1" }))
-hl.bind("SUPER + CTRL + SHIFT + L",       hl.dsp.window.move({ workspace = "e+1" }))
 for i = 1,                                9 do
   hl.bind("SUPER + " .. i,                hl.dsp.focus({ workspace = i }))
   hl.bind("SUPER + CTRL + SHIFT + " .. i, hl.dsp.window.move({ workspace = i }))
 end
+hl.bind("SUPER + CTRL + M",               function() Func.move_all_workspaces(hl.get_active_monitor()) end)
 
 -- WAYBAR
+hl.bind("SUPER + CTRL + W",               function() StartWaybar(hl.get_active_monitor().name) end)
 hl.bind("SUPER + CTRL + 1",               function() StartWaybar(Monitors.laptop.name) end)
 hl.bind("SUPER + CTRL + 2",               function() StartWaybar(Monitors.ext1.desc) end)
 hl.bind("SUPER + CTRL + 3",               function() StartWaybar(Monitors.ext2.desc) end)

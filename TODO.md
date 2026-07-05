@@ -6,3 +6,6 @@
 - [ ] fix jpro status in tmux statusbar
 - [ ] nvim: fix root plugin with new dotfiles dir
 - [ ] add root-level files (/etc/)
+- [ ] use `git-delta` as pager and git-diff
+- [ ] fix lessfilter (https://github.com/mgechev/dotfiles/blob/master/.lessfilter)
+- [ ] hyprcursor & hyprsunset

@@ -4,7 +4,6 @@ packages:
     - helmfile
     - k9s
     - krew
-    - kubecolor
     - kubectx
     - kustomize
     - mise
@@ -18,3 +17,7 @@ packages:
     - inetutils
     - mtr
     - socat
+  brew:
+    - kubecolor
+  aur:
+    - kubecolor

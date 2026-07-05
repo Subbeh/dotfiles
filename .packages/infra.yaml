@@ -9,6 +9,7 @@ packages:
     - k9s
     - iperf3
     - docker
+    - syncthing
     - freelens
     - krew
     - openssh

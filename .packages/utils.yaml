@@ -65,3 +65,5 @@ packages:
     - dmenu
     - keyd
     - yubikey-manager
+  aur:
+    - gnu-netcat
