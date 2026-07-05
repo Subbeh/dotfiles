@@ -1,0 +1,19 @@
+# development
+packages:
+  common:
+    - yarn
+    - go-task
+    - mise
+    - pyenv
+    - go
+    - lua
+    - pipx
+    - pipenv
+    - pylint
+    - python
+    - ruff
+    - lua-language-server
+    - cmake
+    - pkgfile
+  pacman:
+    - go-tools

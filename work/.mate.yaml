@@ -1,0 +1,5 @@
+packages:
+  brew:
+    - jamf/internal-tap/cloudtools
+    - jamf/internal-tap/hermes
+    - jamf/taskrunner/trcli

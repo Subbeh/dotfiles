@@ -1,0 +1,11 @@
+# apps
+packages:
+  common:
+    - vlc
+    - firefox
+  brew:
+    - google-chrome
+  pacman:
+    - chromium
+    - gnome-disk-utility
+    - mpv

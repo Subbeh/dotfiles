@@ -15,6 +15,9 @@ variables:
     - laptop-personal-ssh-key
     - laptop-work-ssh-key
 
+include:
+  - .packages/system.yaml
+
 sources:
   - atuin
   - bitwarden
@@ -60,9 +63,6 @@ profiles:
         - laptop-work-ssh-key
         - github-ssh-key
         - home-ops-ssh-key
-    packages:
-      brew:
-        - slack
   linux:
     detection:
       os: linux

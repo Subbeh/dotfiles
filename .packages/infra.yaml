@@ -1,0 +1,35 @@
+# infra
+packages:
+  common:
+    - arp-scan
+    - aws-sso-util
+    - httpie
+    - inetutils
+    - croc
+    - k9s
+    - iperf3
+    - docker
+    - freelens
+    - krew
+    - openssh
+    - kubecolor
+    - kubectx
+    - kustomize
+    - tailscale
+    - dnsmasq
+    - socat
+    - upterm
+    - tmate
+    - helmfile
+    - mtr
+    - talhelper
+    - bind
+    - cilium-cli
+    - cloudflared
+    - talosctl
+    - vault
+    - fluxcd
+  brew:
+    - awscli
+  pacman:
+    - aws-cli

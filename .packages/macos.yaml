@@ -1,0 +1,11 @@
+# macos
+packages:
+  brew:
+    - alt-tab
+    - subbeh/tap/statemate
+    - menu-bar-splitter
+    - qmk/qmk/qmk
+    - raycast
+    - sf-symbols
+    - swiftbar
+    - switchaudio-osx

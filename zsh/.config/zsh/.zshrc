@@ -61,3 +61,4 @@ for script in "$ZDOTDIR"/.zshrc.d/*.zsh; do
 	fi
 done
 
+export PATH="$HOME/.local/bin:$PATH"

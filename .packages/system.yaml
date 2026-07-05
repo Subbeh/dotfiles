@@ -1,0 +1,23 @@
+# system
+packages:
+  common:
+    - zsh
+  brew:
+  pacman:
+    - brightnessctl
+    - bolt
+    - efibootmgr
+    - exfat-utils
+    - intel-media-driver
+    - intel-ucode
+    - keychain
+    - linux-firmware
+    - linux-headers
+    - bluez-utils
+    - dhcpcd
+    - reflector
+    - pipewire-alsa
+    - pavucontrol
+    - pipewire-pulse
+    - linux-lts
+    - linux-lts-headers
