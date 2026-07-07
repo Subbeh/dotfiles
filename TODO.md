@@ -9,3 +9,4 @@
 - [ ] use `git-delta` as pager and git-diff
 - [ ] fix lessfilter (https://github.com/mgechev/dotfiles/blob/master/.lessfilter)
 - [ ] hyprcursor & hyprsunset
+- [ ] nvim: replace lazy with pack: https://echasnovski.com/blog/2026-03-13-a-guide-to-vim-pack
