@@ -48,13 +48,11 @@ profiles:
       os: darwin
     sources:
       - macos
-      - karabiner
   work:
     extends: macos
     detection:
       user: steven.terwindt
     sources:
-      - aws
       - syncthing
       - work
     variables:
@@ -71,7 +69,7 @@ profiles:
     detection:
       command: "test -f /etc/arch-release"
     sources:
-      - arch_root
+      - arch
       - firefox
       - hyprland
       - infra
