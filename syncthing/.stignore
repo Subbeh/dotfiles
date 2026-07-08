@@ -1,0 +1,19 @@
+// the line below is .stignore's content, i.e. put this in the root of your sync folder(s) (where .stfolder resides)
+// main reason for include is because syncthing then syncs this file too, and updates don't ruin my careful ignore project ;-)
+// see also https://forum.syncthing.net/t/useful-stignore-patterns/1175
+
+!zsh_history
+
+.direnv/
+.terraform/
+.cache/
+.venv/
+temp/
+sessions/
+node_modules/
+
+(?d)__pycache__
+(?d).DS_Store
+(?d).ansible/
+*.log
+maintenance.lock

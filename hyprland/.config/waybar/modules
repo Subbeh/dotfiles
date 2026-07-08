@@ -342,7 +342,7 @@
     "return-type": "json",
     "interval": 10,
     "tooltip": true,
-    "on-click": "chezmoi apply",
+    "on-click": "mate apply",
   },
   //
   // KUBERNETES
