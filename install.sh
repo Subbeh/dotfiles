@@ -42,7 +42,7 @@ while [[ $# -gt 0 ]]; do
       fi
       shift
       ;;
-    -h|--help)
+    -h | --help)
       usage
       ;;
     *)
@@ -66,18 +66,17 @@ install_darwin() {
     echo "==> Installing Homebrew..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   fi
-  brew install --quiet age bitwarden-cli go
+  brew install --quiet age bitwarden-cli go jq
 }
 
 install_linux() {
+  sudo pacman -S --needed --noconfirm git base-devel age bitwarden-cli go jq openssh
   if ! command -v yay &>/dev/null; then
     echo "==> Installing yay..."
-    sudo pacman -S --needed --noconfirm git base-devel age bitwarden-cli go
     git clone https://aur.archlinux.org/yay.git /tmp/yay
     (cd /tmp/yay && makepkg -si --noconfirm)
     rm -rf /tmp/yay
   fi
-  # yay -Syu --needed --noconfirm age bitwarden-cli go
 }
 
 install_statemate_binary() {
@@ -129,16 +128,15 @@ install_statemate
 echo "==> Logging in to Bitwarden..."
 if [[ -z "${BW_SESSION:-}" ]]; then
   if ! bw login --check &>/dev/null; then
-    BW_SESSION="$(bw login --raw)" || {
+    bw login </dev/tty || {
       echo "Bitwarden login failed" >&2
       exit 1
     }
-  else
-    BW_SESSION="$(bw unlock --raw)" || {
-      echo "Bitwarden unlock failed" >&2
-      exit 1
-    }
   fi
+  BW_SESSION="$(bw unlock --raw </dev/tty)" || {
+    echo "Bitwarden unlock failed" >&2
+    exit 1
+  }
   if [[ -z "${BW_SESSION:-}" ]]; then
     echo "Failed to obtain Bitwarden session" >&2
     exit 1
@@ -152,6 +150,13 @@ echo "==> Fetching age key from Bitwarden..."
 mkdir -p "$AGE_KEY_DIR"
 bw get item statemate | jq -r '.fields[] | select(.name=="age-key").value' >"$AGE_KEY_DIR/key.txt"
 chmod 600 "$AGE_KEY_DIR/key.txt"
+
+echo "==> Fetching GitHub SSH key from Bitwarden..."
+SSH_KEY="$HOME/.ssh/keys/id_github-ssh-key"
+mkdir -p "$(dirname "$SSH_KEY")"
+bw get item github-ssh-key | jq -r '.sshKey.privateKey' >"$SSH_KEY"
+chmod 600 "$SSH_KEY"
+export GIT_SSH_COMMAND="ssh -i $SSH_KEY -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new"
 
 echo "==> Cloning dotfiles..."
 if [[ -d "$SOURCE_DIR" ]]; then
