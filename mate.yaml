@@ -56,7 +56,7 @@ profiles:
       - work
     variables:
       email: "steven.terwindt@jamf.com"
-      workspace_dir: "~/workspace"
+      workspaceDir: "~/workspace"
       sshKeys:
         - laptop-work-ssh-key
         - github-ssh-key
@@ -75,7 +75,7 @@ profiles:
       - infra
       - syncthing
     variables:
-      workspace_dir: "/data/workspace"
+      workspaceDir: "/data/workspace"
       sshKeys:
         - laptop-personal-ssh-key
         - github-ssh-key

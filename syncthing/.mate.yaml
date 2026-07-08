@@ -1,1 +1,1 @@
-target_base: "{{ .Vars.workspace_dir }}"
+target_base: "{{ .Vars.workspaceDir }}"
