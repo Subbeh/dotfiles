@@ -1,9 +1,0 @@
-{
-  "diagnostics": {
-    "disable": ["undefined-global"],
-    "globals": "hl"
-  },
-  "workspace": {
-    "library": ["/usr/share/hypr/stubs"]
-  }
-}

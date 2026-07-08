@@ -1,6 +1,0 @@
-targets:
-  etc: /etc
-
-owner: root
-group: root
-perm: "644"

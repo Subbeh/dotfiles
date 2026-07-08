@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-# $1 = #{pane_id} passed from the keybinding
-
-parent=$(tmux show-env -g TPAD_PARENT_SESSION 2>/dev/null | cut -d= -f2)
-[[ -z "$parent" ]] && exit 1
-
-tmux join-pane -s "$1" -t "$parent"

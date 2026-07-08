@@ -1,8 +1,0 @@
-packages:
-  brew:
-    - jamf/internal-tap/cloudtools
-    - jamf/internal-tap/hermes
-    - jamf/taskrunner/trcli
-    - atlassian/acli/acli
-    - slack
-    - zoom

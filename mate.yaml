@@ -1,85 +1,17 @@
 # Statemate configuration
 # See: https://github.com/subbeh/statemate
 
-# Source directories to manage (stow-style)
-# Each directory's contents are deployed relative to target_base
-# Example: sources: [nvim, zsh, git] will look for nvim/, zsh/, git/ in this directory
-
 # Default target for deployed files (default: $HOME)
 target_base: "~"
 
-# Template variables
-variables:
-  email: "steven001@gmail.com"
-  authorizedSshKeys:
-    - laptop-personal-ssh-key
-    - laptop-work-ssh-key
-
-include:
-  - .packages/system.yaml
-
-sources:
-  - atuin
-  - bitwarden
-  - claude
-  - env
-  - fd
-  - fzf
-  - git
-  - gnupg
-  - k9s
-  - kitty
-  - statemate
-  - nvim
-  - ripgrep
-  - ssh
-  - starship
-  - task
-  - tmux
-  - vifm
-  - vivid
-  - zsh
+sources: []
 
 # Profiles for machine-specific configuration
 profiles:
-  macos:
-    detection:
-      os: darwin
-    sources:
-      - macos
-  work:
-    extends: macos
-    detection:
-      user: steven.terwindt
-    sources:
-      - syncthing
-      - work
-    variables:
-      email: "steven.terwindt@jamf.com"
-      workspaceDir: "~/workspace"
-      sshKeys:
-        - laptop-work-ssh-key
-        - github-ssh-key
-        - home-ops-ssh-key
-  linux:
-    detection:
-      os: linux
   arch:
-    extends: linux
     detection:
       command: "test -f /etc/arch-release"
-    sources:
-      - arch
-      - firefox
-      - hyprland
-      - infra
-      - syncthing
-    variables:
-      workspaceDir: "/data/workspace"
-      sshKeys:
-        - laptop-personal-ssh-key
-        - github-ssh-key
-        - home-ops-ssh-key
+    sources: []
 
 # Age encryption for sensitive files
 age:

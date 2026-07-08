@@ -1,7 +1,0 @@
-packages:
-  common:
-    - git-crypt
-    - gitleaks
-    - git-delta
-    - lazygit
-    - pre-commit

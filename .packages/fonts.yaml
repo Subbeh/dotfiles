@@ -1,7 +1,0 @@
-# fonts
-packages:
-  brew:
-    - font-fira-code-nerd-font
-    - font-fira-mono-nerd-font
-  pacman:
-    - ttf-firacode-nerd

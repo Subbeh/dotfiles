@@ -1,9 +1,0 @@
-#!/bin/sh
-
-{{ if eq .OS "darwin" -}}
-export PROFILE_OS=darwin
-{{ else if eq .OS "linux" -}}
-export PROFILE_OS=linux
-{{ else -}}
-export PROFILE_OS=unknown
-{{ end }}
