@@ -7,4 +7,6 @@ elif [ "$PROFILE_OS" = "linux" ]; then
 fi
 
 source <($_bin completion zsh)
+
+rm -f "$BIN_DIR/mate"
 ln -s "$_bin" "$BIN_DIR/mate" 2>/dev/null

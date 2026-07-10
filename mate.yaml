@@ -8,15 +8,19 @@
 # Default target for deployed files (default: $HOME)
 target_base: "~"
 
+include:
+  - .matedata/secrets.yaml#encrypted
+
+ignore:
+  - "*.md"
+  - "!claude/**/*.md"
+
 # Template variables
 variables:
-  email: "steven001@gmail.com"
+  email: "{{ .Vars.email.personal }}"
   authorizedSshKeys:
     - laptop-personal-ssh-key
     - laptop-work-ssh-key
-
-include:
-  - .packages/system.yaml
 
 sources:
   - atuin

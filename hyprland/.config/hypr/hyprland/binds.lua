@@ -58,9 +58,9 @@ hl.bind("XF86AudioPlay",                  hl.dsp.exec_cmd("playerctl play-pause"
 hl.bind("XF86AudioPrev",                  hl.dsp.exec_cmd("playerctl previous"),                             { locked = true })
 
 -- SCREENSHOTS
-hl.bind("SUPER + ALT + 1",                hl.dsp.exec_cmd("hyprshot -m region -o $TEMP_DIR/screenshots"))
-hl.bind("SUPER + ALT + 2",                hl.dsp.exec_cmd("hyprshot -m active -o $TEMP_DIR/screenshots"))
-hl.bind("SUPER + ALT + 3",                hl.dsp.exec_cmd("hyprshot -m window -o $TEMP_DIR/screenshots"))
+hl.bind("SUPER + SHIFT + 1",                hl.dsp.exec_cmd("hyprshot -m active -o $TEMP_DIR/screenshots"))
+hl.bind("SUPER + SHIFT + 2",                hl.dsp.exec_cmd("hyprshot -m window -o $TEMP_DIR/screenshots"))
+hl.bind("SUPER + SHIFT + 4",                hl.dsp.exec_cmd("hyprshot -m region -o $TEMP_DIR/screenshots"))
 
 -- GESTURES
 hl.gesture({ fingers = 3, direction = "horizontal", action = "workspace" })
