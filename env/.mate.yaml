@@ -1,0 +1,5 @@
+packages:
+  common:
+    - tree
+    - onefetch
+    - pandoc-cli

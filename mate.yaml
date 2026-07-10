@@ -4,14 +4,29 @@
 # Default target for deployed files (default: $HOME)
 target_base: "~"
 
-sources: []
+variables:
+  authorizedSshKeys:
+    - laptop-personal-ssh-key
+    - laptop-work-ssh-key
+
+sources:
+  - env
+
+ignore:
+  - "*.md"
 
 # Profiles for machine-specific configuration
 profiles:
-  arch:
+  personal:
     detection:
       command: "test -f /etc/arch-release"
-    sources: []
+    sources:
+      - ssh
+    variables:
+      sshKeys:
+        - laptop-personal-ssh-key
+        - github-ssh-key
+        - home-ops-ssh-key
 
 # Age encryption for sensitive files
 age:

@@ -1,0 +1,12 @@
+packages:
+  pacman:
+    - base
+    - base-devel
+    - dhcpcd
+    - grub
+    - linux
+    - openssh
+    - os-prober
+    - vim
+  aur:
+    - yay

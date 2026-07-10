@@ -172,4 +172,5 @@ fi
 echo "==> Applying configuration..."
 cd "$SOURCE_DIR"
 mate init
+mate secrets fetch
 mate apply

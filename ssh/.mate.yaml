@@ -1,0 +1,8 @@
+generate:
+  {{- range $key := (var "sshKeys") }}
+  - target: ".ssh/keys/id_{{ $key }}"
+    mode: "0600"
+    content: |
+{{ indent 6 (bitwarden $key "ssh" "private") }}
+  {{- end }}
+
