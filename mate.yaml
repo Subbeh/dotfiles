@@ -26,9 +26,14 @@ profiles:
       command: "test -f /etc/arch-release"
     sources:
       - arch
-      - gnupg
-      - ssh
       - bitwarden
+      - eza
+      - fd
+      - git
+      - gnupg
+      - hyprland
+      - ssh
+      - zsh
     variables:
       sshKeys:
         - laptop-personal-ssh-key

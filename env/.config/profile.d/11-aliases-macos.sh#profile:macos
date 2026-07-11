@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# clipboard
+alias cc="fc -ln -1 | pbcopy"
+alias xc="pbcopy"
+alias xp="pwd | tr -d '\n' | pbcopy"
+
+# misc
+alias bu="brew update && brew upgrade --quiet --force"

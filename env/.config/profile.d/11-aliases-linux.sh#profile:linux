@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# system
+alias dmesg='dmesg --color=auto'
+alias dmesgg='dmesg --human --follow-new --decode --kernel'
+alias ctl='sudo systemctl'
+alias ctls='sudo systemctl status'
+alias jrnl='sudo journalctl -b'
+alias jrnle='sudo journalctl -p3 -xb'
+alias jrnlu='sudo journalctl -b -u'
+alias svc='systemctl --type=service'
+alias err='journalctl -b -p err'
+alias userctl='systemctl --user'
+alias ip='ip -color=auto'

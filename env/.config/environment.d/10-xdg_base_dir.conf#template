@@ -1,0 +1,19 @@
+XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
+XDG_CACHE_HOME=${XDG_CACHE_HOME:-$HOME/.cache}
+XDG_DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share}
+XDG_STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
+XDG_DATA_DIRS=${XDG_DATA_DIRS:-/usr/local/share/:/usr/share/}
+XDG_CONFIG_DIRS=${XDG_CONFIG_DIRS:-${XDG_CONFIG_DIRS:-/etc/xdg}}
+
+# Extensions
+XDG_SRC_HOME=${XDG_SRC_HOME:-$HOME/.local/src}
+XDG_BIN_HOME=${XDG_BIN_HOME:-$HOME/.local/bin}
+
+{{ if eq .OS "linux" -}}
+XDG_DATA_HOME=/data
+{{ end }}
+
+XDG_WORKSPACE_HOME=${XDG_DATA_HOME:-$HOME}/workspace
+XDG_TEMP_HOME=${XDG_DATA_HOME:-$HOME}/temp
+XDG_NOTES_HOME=${XDG_WORKSPACE_HOME}/notes
+XDG_PROJECTS_HOME=${XDG_WORKSPACE_HOME}/projects
