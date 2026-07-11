@@ -64,7 +64,7 @@ source "$XDG_CONFIG_HOME/zsh/keybinds"
 # See: https://wiki.archlinux.org/title/Command-line_shell#/etc/profile
 
 if [[ ! -o login ]]; then
-  emulate sh -c 'test -r "$XDG_CONFIG_HOME/sh/profile.d.sh" && . "$XDG_CONFIG_HOME/sh/profile.d.sh"'
+  emulate sh -c 'test -r "$XDG_CONFIG_HOME/sh/profile.d.sh" && . "$_"'
 fi
 
 for script in "$XDG_CONFIG_HOME"/zsh/.zshrc.d/*.zsh; do
@@ -78,6 +78,12 @@ zstyle :completion:* cache-path "$XDG_CACHE_HOME/zsh/zcompcache"
 
 autoload -U compinit
 compinit -u -C -d "${XDG_CACHE_HOME}/zsh/zcompdump"
+
+src() {
+  source "$ZDOTDIR/.zshrc"
+  [[ -n $DIRENV_DIR ]] && direnv reload
+  [[ -n $MISE_SHELL ]] && _mise_hook
+}
 
 TRAPUSR1() {
   rehash
