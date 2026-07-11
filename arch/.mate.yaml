@@ -1,9 +1,13 @@
 packages:
   pacman:
+    - age
     - base
     - base-devel
     - dhcpcd
+    - git
+    - go
     - grub
+    - jq
     - linux
     - openssh
     - os-prober

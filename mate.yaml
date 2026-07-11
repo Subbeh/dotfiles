@@ -17,10 +17,15 @@ ignore:
 
 # Profiles for machine-specific configuration
 profiles:
+  linux:
+    detection:
+      os: linux
   personal:
+    extends: linux
     detection:
       command: "test -f /etc/arch-release"
     sources:
+      - arch
       - gnupg
       - ssh
       - bitwarden

@@ -9,6 +9,8 @@ BUILD_FROM_SOURCE=false
 SOURCE_BRANCH="main"
 DOTFILES_BRANCH="main"
 
+export BITWARDENCLI_APPDATA_DIR="$HOME/.local/share/bitwardencli"
+
 usage() {
   cat <<EOF
 Usage: $(basename "$0") [OPTIONS]
@@ -172,5 +174,4 @@ fi
 echo "==> Applying configuration..."
 cd "$SOURCE_DIR"
 mate init
-mate secrets fetch
-mate apply
+mate apply --force
