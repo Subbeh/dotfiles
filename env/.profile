@@ -4,17 +4,6 @@
 # Most of this script is a user scoped version of /etc/profile from the
 # Arch Linux's 'filesystem' package
 
-# Prepend "$1" to $PATH when not already in.
-# This function API is accessible to scripts in $XDG_CONFIG_HOME/profile.d
-prepend_path() {
-  case ":$PATH:" in
-    *:"$1":*) ;;
-    *)
-      PATH="$1${PATH:+:$PATH}"
-      ;;
-  esac
-}
-
 # Use systemd-environment-d-generator(8) to generate environment, and export
 # those variables
 #
@@ -27,18 +16,6 @@ for generator in /usr/lib/systemd/user-environment-generators/*; do
   set +a
 done
 
-# Load profiles from $XDG_CONFIG_HOME/profile.d
-if test -d "$XDG_CONFIG_HOME"/profile.d/; then
-  for profile in "$XDG_CONFIG_HOME"/profile.d/*.sh; do
-    test -r "$profile" && . "$profile"
-  done
-  unset profile
-fi
-
-prepend_path "$HOME/.local/bin"
-
-# Force PATH to be environment
-export PATH
-
-# Unload our profile API functions
-unset -f prepend_path
+# Load profiles from $XDG_CONFIG_HOME/profile.d (also sourced by zsh's .zshrc
+# for interactive non-login shells, which do not run this file)
+. "${XDG_CONFIG_HOME:-$HOME/.config}"/sh/profile.d.sh

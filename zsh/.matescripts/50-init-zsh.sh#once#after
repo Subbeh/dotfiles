@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+mkdir -pv "${XDG_CACHE_HOME}/zsh" "${XDG_STATE_HOME}/zsh"
+pkill -u "$USER" zsh --signal=USR1

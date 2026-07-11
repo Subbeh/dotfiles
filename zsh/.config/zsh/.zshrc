@@ -62,6 +62,11 @@ source "$XDG_CONFIG_HOME/zsh/keybinds"
 # Adopt the behavior of the system wide configuration for application specific settings
 #
 # See: https://wiki.archlinux.org/title/Command-line_shell#/etc/profile
+
+if [[ ! -o login ]]; then
+  emulate sh -c 'test -r "$XDG_CONFIG_HOME/sh/profile.d.sh" && . "$XDG_CONFIG_HOME/sh/profile.d.sh"'
+fi
+
 for script in "$XDG_CONFIG_HOME"/zsh/.zshrc.d/*.zsh; do
   if [ -r "$script" ]; then
     source "$script"
