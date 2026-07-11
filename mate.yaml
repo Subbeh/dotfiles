@@ -21,7 +21,9 @@ profiles:
     detection:
       command: "test -f /etc/arch-release"
     sources:
+      - gnupg
       - ssh
+      - bitwarden
     variables:
       sshKeys:
         - laptop-personal-ssh-key

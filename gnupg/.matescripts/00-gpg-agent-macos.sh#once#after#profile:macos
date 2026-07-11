@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+launchctl load "$HOME/Library/LaunchAgents/gnupg.gpg-agent.plist"

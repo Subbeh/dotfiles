@@ -1,0 +1,11 @@
+packages:
+  common:
+    - gnupg
+    - yubikey-personalization
+  brew:
+    - ykman
+    - pinentry-mac
+  pacman:
+    - pcsclite
+    - ccid
+    - pcsc-tools

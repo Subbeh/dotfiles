@@ -1,0 +1,12 @@
+{{- if eq .OS "darwin" }}
+pinentry-program /opt/homebrew/bin/pinentry-mac
+{{- else if eq .OS "linux" }}
+pinentry-program /usr/bin/pinentry
+{{- end }}
+
+enable-ssh-support
+allow-preset-passphrase
+default-cache-ttl 60480000
+default-cache-ttl-ssh 60480000
+max-cache-ttl 60480000
+max-cache-ttl-ssh 60480000
