@@ -1,0 +1,16 @@
+# vim: ft=sh
+
+export CLUTTER_BACKEND=wayland
+export GDK_BACKEND=wayland
+export GLFW_IM_MODULE=ibus
+export LIBVA_DRIVER_NAME=iHD
+export MOZ_ENABLE_WAYLAND=1
+export QT_AUTO_SCREEN_SCALE_FACTOR=1.25
+export QT_QPA_PLATFORMTHEME=qt6ct
+export QT_QPA_PLATFORM=wayland
+export QT_QPA_PLATFORM=wayland
+export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+export SDL_VIDEODRIVER=wayland
+export XDG_CURRENT_DESKTOP=Hyprland
+export XDG_SESSION_DESKTOP=Hyprland
+export XDG_SESSION_TYPE=wayland

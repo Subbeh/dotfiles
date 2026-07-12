@@ -1,0 +1,15 @@
+packages:
+  pacman:
+    - cliphist
+    - hypridle
+    - hyprland
+    - hyprlock
+    - hyprpaper
+    - hyprpolkitagent
+    - swaync
+    - thunar
+    - uwsm
+    - waybar
+    - xdg-desktop-portal-hyprland
+    - flameshot
+    - rofi

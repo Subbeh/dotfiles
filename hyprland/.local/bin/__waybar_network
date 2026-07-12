@@ -1,0 +1,167 @@
+#!/usr/bin/env bash
+set -uo pipefail
+
+CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/waybar-network"
+mkdir -p "$CACHE_DIR"
+
+COLOR_FG="#d7d7d7"
+COLOR_CONNECTED="#afffaf"
+COLOR_DISCONNECTED="#797979"
+
+# Function to check if a service is enabled and cache its status
+is_enabled() {
+  local status=false
+  local ip_addrs=""
+  local country=""
+  local country_iso=""
+  local extra_info=""
+
+  case "$1" in
+    "eth")
+      if ip -j link show | jq -e '.[] | select(.link_type == "ether" and (.operstate == "UP") and (.ifname | startswith("w") | not))' >/dev/null; then
+        status=true
+        ip_addrs=$(ip -j addr show | jq -r '.[] | 
+          select(.operstate == "UP" and .link_type == "ether" and 
+          (.ifname | startswith("w") | not)) | 
+          .addr_info[] | select(.family == "inet" and .scope == "global").local')
+      fi
+      ;;
+    "wifi")
+      if ip -j link show | jq -e '.[] | select(.ifname | startswith("wl")) | select(.operstate == "UP")' >/dev/null; then
+        status=true
+        ip_addrs=$(ip -j addr show | jq -r '.[] | 
+          select(.ifname | startswith("wl")) | 
+          select(.operstate == "UP") | 
+          .addr_info[] | select(.family == "inet" and .scope == "global").local')
+        local ssid
+        local signal
+        ssid=$(nmcli -t -f active,ssid dev wifi | awk -F: '/^yes:/ {print $2}')
+        signal=$(nmcli -f IN-USE,SIGNAL dev wifi | awk '/^\*/ {print $2}')
+        [[ -n "$ssid" ]] && extra_info+="ssid=$ssid\n"
+        [[ -n "$signal" ]] && extra_info+="signal=$signal"
+      fi
+      ;;
+    "tailscale")
+      if ip -j link show | jq -e '.[] | select(.ifname == "tailscale0") | select(.flags | contains(["UP"]))' >/dev/null; then
+        status=true
+        ip_addrs=$(ip -j addr show | jq -r '.[] | 
+          select(.ifname == "tailscale0") | 
+          .addr_info[] | select(.family == "inet" and .scope == "global").local')
+      fi
+      ;;
+    "vpn")
+      if ip -j link show | jq -e '.[] | select(.ifname == "proton0") | select(.flags | contains(["UP"]))' >/dev/null; then
+        status=true
+      fi
+      ;;
+    "inet")
+      if ping -c 1 1.1.1.1 &>/dev/null; then
+        status=true
+        ifconfig="$(curl -s -4 ifconfig.co/json)"
+        ip_addrs="$(echo "$ifconfig" | jq -r '.ip')"
+        country_iso=$(echo "$ifconfig" | jq -r '.country_iso')
+        country="$(echo "$ifconfig" | jq -r '.country')"
+      fi
+      ;;
+    "dns")
+      if nslookup google.com &>/dev/null; then
+        status=true
+        ip_addrs=$(grep -m 1 "nameserver" /etc/resolv.conf | awk '{print $2}')
+      fi
+      ;;
+  esac
+
+  # Cache the results
+  {
+    echo "status=$status"
+    [[ -n "$ip_addrs" ]] && echo -e ip_addrs="$ip_addrs"
+    [[ -n "$country" ]] && echo -e country="\"$country\""
+    [[ -n "$country_iso" ]] && echo -e country_iso="$country_iso"
+    [[ -n "$extra_info" ]] && echo -e "$extra_info"
+  } >"$CACHE_DIR/$1"
+
+  $status
+}
+
+# Initialize variables
+declare -A icons=(
+  ["eth"]="󰈀"
+  ["wifi"]=""
+  ["tailscale"]="󱗼"
+  ["vpn"]="󰒄"
+  ["inet"]="󰇧"
+  ["dns"]=""
+)
+
+declare -A names=(
+  ["eth"]="Ethernet "
+  ["wifi"]="WiFi     "
+  ["tailscale"]="Tailscale"
+  ["vpn"]="VPN      "
+  ["inet"]="Internet "
+  ["dns"]="DNS      "
+)
+
+# Build the output
+output=""
+tooltip=""
+any_enabled=false
+
+for service in eth wifi tailscale vpn inet dns; do
+  if is_enabled "$service"; then
+    output+="<span color='$COLOR_CONNECTED'>${icons[$service]}</span> "
+
+    # Add IP address to the bar for eth and wifi
+    if [[ "$service" == "eth" || "$service" == "wifi" || "$service" == "tailscale" ]]; then
+      # Read IP from cache
+      if [[ -f "$CACHE_DIR/$service" ]]; then
+        ip_addr=$(grep "ip_addrs=" "$CACHE_DIR/$service" | cut -d= -f2 | head -n1)
+        if [[ -n "$ip_addr" ]]; then
+          output+="<span color='$COLOR_FG'>${ip_addr}</span> "
+        fi
+      fi
+    fi
+
+    # Add country code for inet
+    if [[ "$service" == "inet" && -f "$CACHE_DIR/$service" ]]; then
+      country_iso=$(grep "country_iso=" "$CACHE_DIR/$service" | cut -d= -f2 | head -n1)
+      country=$(grep "country=" "$CACHE_DIR/$service" | cut -d= -f2 | head -n1 | sed 's/"//g')
+      output+="<span color='$COLOR_FG'>${country_iso}</span> "
+    fi
+
+    tooltip+="${names[$service]} : Connected\n"
+
+    # Add detailed info to tooltip
+    if [[ -f "$CACHE_DIR/$service" ]]; then
+      ip_addrs=$(grep "ip_addrs=" "$CACHE_DIR/$service" | cut -d= -f2)
+      [[ -n "$ip_addrs" ]] && tooltip+="  IP: $ip_addrs\n"
+
+      if [[ "$service" == "wifi" ]]; then
+        ssid=$(grep "ssid=" "$CACHE_DIR/$service" | cut -d= -f2)
+        signal=$(grep "signal=" "$CACHE_DIR/$service" | cut -d= -f2)
+        [[ -n "$ssid" ]] && tooltip+="  SSID: $ssid\n"
+        [[ -n "$signal" ]] && tooltip+="  Signal: $signal%\n"
+      fi
+
+      if [[ "$service" == "inet" ]]; then
+        [[ -n "$country" ]] && tooltip+="  Country: $country\n"
+      fi
+    fi
+
+    any_enabled=true
+  else
+    output+="<span color='$COLOR_DISCONNECTED'>${icons[$service]}</span>  "
+    tooltip+="${names[$service]} : Disconnected\n"
+  fi
+done
+
+# Trim trailing spaces but keep one at the end
+output="${output%   } "
+tooltip="${tooltip%\\n}"
+
+# If no icons are enabled, show a disconnected icon
+if [[ "$any_enabled" == "false" ]]; then
+  output="<span color='$COLOR_DISCONNECTED'>󰲛</span>"
+fi
+
+printf '{"text": "%s", "tooltip": "%s"}\n' "$output" "$tooltip"

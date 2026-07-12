@@ -1,0 +1,200 @@
+@import "theme.css";
+
+/* GLOBAL */
+
+* {
+  /* font-family: Tamzen, Siji; */
+  /* font-family: "M+1Code Nerd Font Propo"; */
+  /* font-family: "GohuFont 14 Nerd Font Propo"; */
+  font-family: "ProggyClean Nerd Font Propo";
+  font-size: 15px;
+  font-weight: 500;
+  /* letter-spacing: -0.5px; */
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
+}
+
+window.eDP-1 * {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+window#waybar {
+  background: transparent;
+  color: @fg;
+}
+
+/* window#waybar.empty #window { */
+/*   font-size: 0px; */
+/*   background-color: transparent; */
+/* } */
+
+tooltip {
+  background: alpha(@bgdark, 0.9);
+  color: @white;
+  border: 1px solid @fg;
+}
+
+tooltip label {
+  margin: 2px;
+  font-weight: normal;
+  font-size: 1.1em;
+}
+
+/* tooltip * { */
+/*   color: @white; */
+/*   padding: 2px; */
+/*   font-family: FiraCode Nerd Font; */
+/*   font-size: 12px; */
+/*   font-weight: normal; */
+/* } */
+
+/* TOP BAR */
+
+/* window#waybar.top label.module { */
+/*   border-top: 2px solid transparent; */
+/*   margin-left: 1px; */
+/*   margin-right: 1px; */
+/* } */
+
+/* BOTTOM BAR */
+
+window#waybar.bottom> :last-child {
+  margin-right: 5px;
+}
+
+window#waybar.bottom :first-child {
+  margin-left: 5px;
+}
+
+/* WORKSPACES */
+
+#workspaces * {
+  font-weight: bold;
+}
+
+#workspaces button {
+  color: @fg;
+}
+
+#workspaces button:hover {
+  color: @bg;
+  background: @blue;
+  border-top: 2px solid transparent;
+}
+
+#workspaces button.active {
+  color: @white;
+  background: @bg;
+  border-top: 2px solid @blue;
+}
+
+#workspaces button.special {
+  color: @white;
+  background: transparent;
+  border-top: 2px solid @magenta;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+/* POWERMENU */
+
+#powermenu {
+  background: @blue;
+  color: @bgdark;
+  padding: 5px;
+  margin-left: 8px;
+}
+
+#powermenu * {
+  padding-right: 2px;
+}
+
+/* NETWORK */
+
+#network_wlan *,
+#network_eth * {
+  padding-right: 2px;
+}
+
+#custom-syncthing {
+  padding: 0 5px;
+  color: @white;
+}
+
+#custom-syncthing.offline {
+  color: @fg;
+}
+
+#custom-syncthing.starting {
+  color: @blue;
+}
+
+#custom-syncthing.syncing {
+  color: @orange;
+}
+
+#custom-syncthing.synced {
+  color: @green;
+}
+
+#custom-syncthing.disconnected {
+  color: @red;
+}
+
+#custom-syncthing.idle {
+  color: @white;
+}
+
+/* BORGMATIC */
+
+#custom-borgmatic {
+  padding: 0 5px;
+}
+
+#custom-borgmatic.running {
+  color: @orange;
+}
+
+#custom-borgmatic.error {
+  color: @red;
+}
+
+#custom-borgmatic.success {
+  color: @green;
+}
+
+#custom-borgmatic.stale {
+  color: @white;
+}
+
+#custom-borgmatic.unknown {
+  color: @white;
+}
+
+/* CHEZMOI */
+
+#custom-chezmoi {
+  padding: 0 5px;
+}
+
+#custom-chezmoi.clean {
+  color: @green;
+}
+
+#custom-chezmoi.dirty {
+  color: @orange;
+}
+
+/* KUBERNETES */
+#custom-k8s.k8s {
+  color: @green;
+}
+
+#custom-k8s.k8s-error {
+  color: @red;
+}
+

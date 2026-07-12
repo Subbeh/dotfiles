@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+DIR="${XDG_CONFIG_HOME}/rofi"
+MODI="${1:?not set}"
+CONFIG="${2:?not set}"
+
+## Run
+rofi \
+  -show "${MODI}" \
+  -theme "${DIR}/${CONFIG}.rasi" \
+  -run-command "uwsm app -- {cmd}"
