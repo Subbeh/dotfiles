@@ -3,3 +3,5 @@ packages:
     - tree
     - onefetch
     - pandoc-cli
+  brew:
+    - coreutils

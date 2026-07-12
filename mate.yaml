@@ -32,7 +32,10 @@ profiles:
       - git
       - gnupg
       - hyprland
+      - ripgrep
       - ssh
+      - starship
+      - statemate
       - zsh
     variables:
       sshKeys:

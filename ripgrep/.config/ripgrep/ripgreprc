@@ -1,0 +1,14 @@
+--hidden
+--follow
+--ignore-case
+--one-file-system
+--search-zip
+
+# ignore
+--glob=!.git/*
+--glob=!.direnv/*
+--glob=!.venv/*
+--glob=!node_modules/*
+--glob=!.terraform/*
+--glob=!*.tfstate*
+--glob=!.terraform.lock.hcl
