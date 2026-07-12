@@ -6,6 +6,7 @@ packages:
     - hyprlock
     - hyprpaper
     - hyprpolkitagent
+    - ttf-proggyclean-nerd
     - swaync
     - thunar
     - uwsm
