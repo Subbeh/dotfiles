@@ -43,7 +43,7 @@ function Dropterm()
       prev_ws = active
       local ws = hl.get_workspace("special:" .. CLASS)
       if ws == nil or ws.is_empty then
-        hl.exec_cmd("uwsm app -- kitty --class " .. CLASS .. " -o font_size=9 -o window_padding_width='20 10 10 10'" .. " -e zsh -c 'tmux new-session -A -s " .. CLASS .. "'")
+        hl.exec_cmd("kitty --class " .. CLASS .. " -o font_size=9 -o window_padding_width='20 10 10 10'" .. " -e zsh -c 'tmux new-session -A -s " .. CLASS .. "'")
       else
         hl.dispatch(hl.dsp.workspace.toggle_special(CLASS))
         resize_dropterm()

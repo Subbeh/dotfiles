@@ -10,10 +10,9 @@ if [ "$PROFILE_OS" = "linux" ]; then
   update_hyprland_signature
 
   # hyprland
-  alias hl="uwsm check may-start && uwsm start hyprland-uwsm.desktop"
+  alias hl="start-hyprland"
   alias hyprlog="hyprctl rollinglog -f"
   alias hyprcd='cd $XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/'
-  alias hyprstop='uwsm stop'
   alias hyprkill='loginctl terminate-session 1'
   alias hyprnuke='loginctl terminate-user ""'
   alias hyprsig=update_hyprland_signature

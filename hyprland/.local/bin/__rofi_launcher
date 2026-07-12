@@ -7,5 +7,4 @@ CONFIG="${2:?not set}"
 ## Run
 rofi \
   -show "${MODI}" \
-  -theme "${DIR}/${CONFIG}.rasi" \
-  -run-command "uwsm app -- {cmd}"
+  -theme "${DIR}/${CONFIG}.rasi"

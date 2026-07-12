@@ -9,11 +9,16 @@ packages:
     - ttf-proggyclean-nerd
     - swaync
     - thunar
-    - uwsm
+    - libnewt
     - waybar
     - xdg-desktop-portal-hyprland
     - flameshot
     - rofi
+    - pipewire
+    - wireplumber
+    - qt5-wayland
+    - qt6-wayland
+    - noto-fonts
 ignore:
   - .luacheckrc
   - .luarc.json
