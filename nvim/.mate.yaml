@@ -1,0 +1,5 @@
+packages:
+  common:
+    - luacheck
+    - stylua
+    - yaml-language-server

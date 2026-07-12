@@ -1,7 +1,7 @@
 -- stylua: ignore start
 -- SYSTEM
 hl.bind("SUPER + SHIFT + R",              function () hl.dsp.exec_cmd("hyprctl reload") StartWaybar() end)
-hl.bind("CTRL + ALT + DELETE",            hl.dsp.exec_cmd("hyprctl dispatch exit"))
+hl.bind("CTRL + ALT + DELETE",            hl.dsp.exec_cmd("hyprctl dispatch 'hl.dsp.exit()'"))
 
 -- APPS
 hl.bind("SUPER + RETURN",                 hl.dsp.exec_cmd(TERM))
