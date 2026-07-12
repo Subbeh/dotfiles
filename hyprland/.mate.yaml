@@ -14,3 +14,7 @@ packages:
     - xdg-desktop-portal-hyprland
     - flameshot
     - rofi
+ignore:
+  - .luacheckrc
+  - .luarc.json
+  - .stylua.toml

@@ -1,6 +1,60 @@
 --- @class Func
 local Func = {}
 
+--- Select the active machine profile by matching the internal eDP-1 panel's
+--- description against Profiles[*].panel. Falls back to a generic layout built
+--- from the connected outputs. Sets the Monitors and Panel globals.
+Func.select_profile = function()
+  local live = hl.get_monitors()
+  local internal
+  for _, m in ipairs(live) do
+    if m.name == "eDP-1" then
+      internal = m
+      break
+    end
+  end
+
+  Profile = nil
+  if internal then
+    for name, p in pairs(Profiles) do
+      if internal.description:find(p.panel, 1, true) then
+        Profile = p
+        Profile.name = name
+        break
+      end
+    end
+  end
+
+  if not Profile then
+    Profile = Func.build_fallback(live, internal)
+    Profile.name = "generic"
+  end
+
+  Monitors = Profile.monitors
+  Panel = "eDP-1"
+  for _, m in ipairs(Monitors) do
+    if m.key == "laptop" then
+      Panel = m.name
+    end
+  end
+end
+
+--- Build a generic profile from the connected outputs: the internal panel
+--- becomes "laptop", the rest "ext1..N", each at preferred mode / auto position.
+--- No workspace pins, so Hyprland distributes workspaces normally.
+Func.build_fallback = function(live, internal)
+  local mons, idx = {}, 0
+  for _, m in ipairs(live) do
+    if internal and m.name == internal.name then
+      mons[#mons + 1] = { key = "laptop", name = m.name, mode = "preferred", position = "auto", scale = 1 }
+    else
+      idx = idx + 1
+      mons[#mons + 1] = { key = "ext" .. idx, name = m.name, mode = "preferred", position = "auto", scale = 1 }
+    end
+  end
+  return { monitors = mons }
+end
+
 Func.toggle_hyprexpo = function(action)
   if hl.plugin and hl.plugin.hyprexpo then
     hl.plugin.hyprexpo.expo("toggle")
@@ -21,19 +75,18 @@ Func.toggle_special = function()
 end
 
 Func.reload_layout = function()
-  local count = #hl.get_monitors()
-  if count == 1 then
-    StartWaybar(Monitors.laptop.name)
-  else
-    local ext2 = nil
-    for _, mon in ipairs(hl.get_monitors()) do
-      if mon.description:find(Monitors.ext2.desc, 1, true) then
-        ext2 = mon
-        break
+  -- Put waybar on the profile's preferred monitor if it's live, else the panel.
+  local target = Panel
+  for _, m in ipairs(Monitors) do
+    if m.waybar then
+      for _, mon in ipairs(hl.get_monitors()) do
+        if (m.name and mon.name == m.name) or (m.desc and mon.description:find(m.desc, 1, true)) then
+          target = mon.name
+        end
       end
     end
-    StartWaybar(ext2 and ext2.name or Monitors.laptop.name)
   end
+  StartWaybar(target)
   hl.dispatch(hl.dsp.focus({ workspace = "2" }))
 end
 
@@ -47,11 +100,11 @@ end
 Func.apply_outputs = function()
   local externals = 0
   for _, mon in ipairs(hl.get_monitors()) do
-    if mon.name ~= Monitors.laptop.name then
+    if mon.name ~= Panel then
       externals = externals + 1
     end
   end
-  hl.monitor({ output = Monitors.laptop.name, disabled = Func.lid_closed and externals > 0 })
+  hl.monitor({ output = Panel, disabled = Func.lid_closed and externals > 0 })
   Func.reload_layout()
 end
 

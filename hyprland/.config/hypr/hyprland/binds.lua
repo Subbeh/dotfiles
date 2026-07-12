@@ -44,9 +44,9 @@ hl.bind("SUPER + CTRL + M",               function() Func.move_all_workspaces(hl
 
 -- WAYBAR
 hl.bind("SUPER + CTRL + W",               function() StartWaybar(hl.get_active_monitor().name) end)
-hl.bind("SUPER + CTRL + 1",               function() StartWaybar(Monitors.laptop.name) end)
-hl.bind("SUPER + CTRL + 2",               function() StartWaybar(Monitors.ext1.desc) end)
-hl.bind("SUPER + CTRL + 3",               function() StartWaybar(Monitors.ext2.desc) end)
+for i, m in ipairs(Monitors) do
+  hl.bind("SUPER + CTRL + " .. i,         function() StartWaybar(m.name or m.desc) end)
+end
 
 -- MEDIA
 hl.bind("XF86AudioRaiseVolume",           hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true,   repeating = true })

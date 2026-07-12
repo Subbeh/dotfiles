@@ -10,7 +10,7 @@ hl.on("hyprland.start", function()
   hl.exec_cmd("uwsm app -s b -- Thunar --daemon")
   hl.exec_cmd("uwsm app -- kitty --hold __tmuxinator_sessions", { workspace = "special:term silent" })
   hl.exec_cmd("uwsm app -s a -- firefox-default.desktop", { workspace = "2" })
-  StartWaybar(Monitors.laptop.name)
+  StartWaybar(Panel)
 end)
 
 hl.on("monitor.added", Func.apply_outputs)

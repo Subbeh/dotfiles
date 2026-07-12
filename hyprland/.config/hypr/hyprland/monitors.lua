@@ -1,4 +1,4 @@
-for _, m in pairs(Monitors) do
+for _, m in ipairs(Monitors) do
   hl.monitor({
     output = m.name and m.name or "desc:" .. m.desc,
     mode = m.mode,
