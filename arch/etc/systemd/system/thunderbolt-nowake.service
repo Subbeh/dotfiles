@@ -1,0 +1,24 @@
+# Disarm Thunderbolt/dock wakeup sources before every suspend.
+#
+# Boot-time udev (99-thunderbolt-dock-nowake.rules) is not enough: the
+# Thunderbolt stack RE-ENABLES power/wakeup on the TB DMA ports (0000:00:0d.2/
+# 0d.3, ACPI TDM0/TDM1) every time the dock connects. So a dock plugged into a
+# lid-closed sleeping laptop still wakes it (s2idle), re-establishes the docked
+# display config, and a later resume-while-undocked makes i915 fail to restore
+# the modeset:  [drm] *ERROR* Restoring old state failed with -28  -> black screen.
+#
+# Running the disarm at suspend time (after any dock churn) closes that race.
+# The LID wake source is left untouched, so opening the lid still resumes.
+# See memory: i915-resume-black-screen.
+[Unit]
+Description=Disarm Thunderbolt/dock wakeup before suspend (i915 -28 resume workaround)
+Before=sleep.target
+StopWhenUnneeded=yes
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/sh -c 'for d in 0000:00:07.0 0000:00:07.2 0000:00:0d.0 0000:00:0d.2 0000:00:0d.3 0000:00:14.0; do echo disabled > /sys/bus/pci/devices/$d/power/wakeup 2>/dev/null; done; for w in TDM0 TDM1 XHCI; do grep -q "^$w[[:space:]].*\\*enabled" /proc/acpi/wakeup && echo $w > /proc/acpi/wakeup; done; true'
+
+[Install]
+WantedBy=sleep.target

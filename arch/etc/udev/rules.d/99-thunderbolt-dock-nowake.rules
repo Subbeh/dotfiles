@@ -1,0 +1,14 @@
+# Prevent the Thunderbolt dock from waking a suspended (lid-closed) laptop.
+#
+# Without this, plugging the Dell WD22TB4 into a sleeping laptop resumes it via
+# PCIe hotplug on the Thunderbolt root port (pciehp Slot(5) = 0000:00:07.2),
+# establishes the docked display config, and a later resume-while-undocked makes
+# i915 fail to restore the modeset:
+#     i915 ... [drm] *ERROR* Restoring old state failed with -28   -> black screen.
+# Disabling wakeup on the TB PCIe ports / host controller breaks that chain; the
+# lid switch still wakes the machine normally. See memory: i915-resume-black-screen.
+ACTION=="add|change", SUBSYSTEM=="pci", KERNEL=="0000:00:07.0", ATTR{power/wakeup}="disabled"
+ACTION=="add|change", SUBSYSTEM=="pci", KERNEL=="0000:00:07.2", ATTR{power/wakeup}="disabled"
+ACTION=="add|change", SUBSYSTEM=="pci", KERNEL=="0000:00:0d.0", ATTR{power/wakeup}="disabled"
+ACTION=="add|change", SUBSYSTEM=="pci", KERNEL=="0000:00:0d.2", ATTR{power/wakeup}="disabled"
+ACTION=="add|change", SUBSYSTEM=="pci", KERNEL=="0000:00:0d.3", ATTR{power/wakeup}="disabled"

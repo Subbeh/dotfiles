@@ -68,20 +68,25 @@ Ask the user using AskUserQuestion:
 
 **Branch creation:**
 
+Create branch from current HEAD (not from main) — this avoids stash/pop complexity:
+
 ```bash
 git switch -c <branch-name>
 ```
 
-If `git switch -c` fails (uncommitted changes conflict with switch):
-```bash
-git stash -u
-git switch -c <branch-name>
-git stash pop
-```
+This works with uncommitted changes because no file content changes during the switch.
 
-If stash pop has conflicts, abort and report: "Stash pop failed with conflicts. Resolve manually or commit to main."
+**If on any other branch:**
 
-**If on any other branch:** Proceed to commit execution without prompting.
+Check if the branch name relates to the changes being committed. If there's a clear mismatch (e.g., branch is `feat/ignore-config` but changes are about profile attributes), ask the user:
+
+**Question:** "Branch `feat/ignore-config` doesn't seem to match these changes. What would you like to do?"
+**Options:**
+
+1. "Create new branch" → Derive name from changes, create branch
+2. "Commit anyway" → Proceed on current branch
+
+If branch name reasonably matches the changes, proceed without prompting.
 
 ## Single Commit Mode
 
@@ -249,7 +254,81 @@ Created 3 commits:
 
 ## After Committing
 
-This skill creates local commits only. It does NOT push to remote. If the user wants to push, they should run `git push` separately or ask explicitly.
+After all commits succeed, ask the user:
+
+**Question:** "Push and create PR?"
+**Options:**
+
+1. "Push and create PR" → Sync, push, then create PR (see below)
+2. "Push only" → Sync, then run `git push -u origin <branch-name>`, done
+3. "No" → Done
+
+**Check upstream status before push:**
+
+If `git status` shows "upstream is gone" (remote branch was deleted), ask the user:
+
+**Question:** "Remote branch was deleted (PR likely merged/closed). What would you like to do?"
+**Options:**
+
+1. "Create new branch and push" → Create new branch from current HEAD, push, then offer PR creation
+2. "Push anyway (recreate old branch)" → Push to same branch name, do NOT offer PR (old PR may reopen)
+3. "Cancel" → Done, do not push
+
+**Sync before push:**
+
+```bash
+git fetch origin
+```
+
+**Step 1: Check if behind main**
+
+```bash
+git rev-list --count HEAD..origin/main
+```
+
+If count > 0, the branch is behind main. Ask the user:
+
+**Question:** "Branch is X commits behind main. Rebase before pushing?"
+**Options:**
+
+1. "Yes, rebase onto main" → Run `git rebase origin/main`
+2. "No, push as-is" → Proceed without rebase
+
+If rebase has conflicts:
+```bash
+git rebase --abort
+```
+Report: "Rebase onto main has conflicts. Resolve manually with `git rebase origin/main` and re-run `/commit`." Stop here — do not push.
+
+**Step 2: Check if behind own upstream (existing branches only)**
+
+Skip for newly created branches (no upstream yet).
+
+```bash
+git rev-list --count HEAD..origin/<branch-name>
+```
+
+If count > 0 (behind remote), attempt rebase:
+```bash
+git rebase origin/<branch-name>
+```
+
+If rebase has conflicts:
+```bash
+git rebase --abort
+```
+Report: "Branch is behind remote and rebase has conflicts. Resolve manually with `git pull --rebase` and re-run `/commit`." Stop here — do not push.
+
+If both checks pass (or user chose to skip), proceed with push.
+
+**PR creation:**
+
+```bash
+git push -u origin <branch-name>
+gh pr create --fill
+```
+
+Use `--fill` to auto-populate title and body from commit message(s). If multiple commits, the PR body will list them.
 
 ## Edge Cases
 
