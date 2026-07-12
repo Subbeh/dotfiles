@@ -8,6 +8,7 @@ packages:
     - go
     - grub
     - jq
+    - less
     - linux
     - openssh
     - os-prober
