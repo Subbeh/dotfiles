@@ -1,37 +1,40 @@
-TERM = "kitty"
-FILEMANAGER = "thunar"
+local Config = require("config") ---@class Config
 
-Monitors = {
+MONITORS = {
   -- stylua: ignore start
-  laptop = {
-    name = "eDP-1",
-    mode = "1920x1080",
-    position = "0x0",
-    scale = 1,
+  { name = "internal_xps", desc = "Sharp Corporation 0x14AE",                 mode = "1920x1080" },
+  { name = "lg_27",        desc = "LG Electronics LG ULTRAFINE 504NTUW6F878", mode = "3840x2160", scale = 1.25 },
+  { name = "lg_32",        desc = "LG Electronics LG HDR 4K 308NTTQFK265",    mode = "3840x2160", scale = 1.25 },
+}
+
+PROFILES = {
+  {
+    name = "undocked",
+    monitors = {
+      internal_xps = {
+        ws = { 1, 2, 3 },
+        waybar = true,
+      },
+    },
   },
-  ext1 = {
-    desc = "LG Electronics LG ULTRAFINE 504NTUW6F878",
-    mode = "3840x2160",
-    position = "0x-1800",
-    scale = 1.25,
-  },
-  ext2 = {
-    desc = "LG Electronics LG HDR 4K 308NTTQFK265",
-    mode = "3840x2160",
-    position = "3072x-1800",
-    scale = 1.25,
+  {
+    name = "docked",
+    monitors = {
+      internal_xps = {},
+      lg_27 = {
+        ws = { 1 },
+      },
+      lg_32 = {
+        ws = { 2, 3 },
+        waybar = true,
+      },
+    },
   },
 }
 
-Utils = require("hyprland.lib.utils")
-Func = require("hyprland.lib.functions")
+--- Initialises the Hyprland session: applies machine config and loads all subsystems.
+local function init()
+  Config.setup()
+end
 
-require("hyprland.lib.dropterm")
-require("hyprland.lib.waybar")
-require("hyprland.lib.dynamic_layout")
-require("hyprland.env")
-require("hyprland.config")
-require("hyprland.rules")
-require("hyprland.monitors")
-require("hyprland.events")
-require("hyprland.binds")
+init()

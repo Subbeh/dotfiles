@@ -26,7 +26,7 @@ end
 Utils.get_monitor = function(query)
   local live = hl.get_monitors()
 
-  for key, cfg in pairs(Monitors) do
+  for _, cfg in ipairs(Monitors) do
     local mon
     for _, m in ipairs(live) do
       if (cfg.name and m.name == cfg.name) or (cfg.desc and m.description:find(cfg.desc, 1, true)) then
@@ -36,7 +36,7 @@ Utils.get_monitor = function(query)
     end
 
     local info = {
-      name = key,
+      name = cfg.name,
       id = mon and mon.name or cfg.name,
       desc = mon and mon.description or cfg.desc,
     }

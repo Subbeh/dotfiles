@@ -1,15 +1,3 @@
--- WORKSPACE RULES
-for _, m in ipairs(Monitors) do
-  if m.ws then
-    hl.workspace_rule({
-      workspace = m.ws,
-      persistent = true,
-      monitor = m.name or "desc:" .. m.desc,
-      default = m.default,
-    })
-  end
-end
-
 -- WINDOW RULES
 hl.window_rule({
   -- Fix some dragging issues with XWayland
