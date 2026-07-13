@@ -4,7 +4,7 @@
 --- each references catalog monitors by name and attaches ws pins + a waybar flag),
 --- picks the most-specific profile whose monitors are all connected, computes each
 --- monitor's position from its mode/scale, and applies hl.monitor + workspace rules.
-local Monitors = {}
+local M = {}
 
 --- Index MONITORS by name.
 --- @return table<string, table>
@@ -65,7 +65,7 @@ end
 
 --- Selects the active profile and builds the global Monitors list + Panel.
 --- Picks the most-specific (most monitors) profile whose monitors are all connected.
-Monitors.select = function()
+M.select = function()
   local live = hl.get_monitors()
   local by_name = catalog()
 
@@ -108,7 +108,7 @@ Monitors.select = function()
 end
 
 --- Applies monitor modes/positions and persistent workspace rules for the active list.
-Monitors.apply = function()
+M.apply = function()
   for _, m in ipairs(Monitors) do
     hl.monitor({
       output = "desc:" .. m.desc,
@@ -128,4 +128,4 @@ Monitors.apply = function()
   end
 end
 
-return Monitors
+return M

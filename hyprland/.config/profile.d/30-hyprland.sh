@@ -12,9 +12,7 @@ if [ "$PROFILE_OS" = "linux" ]; then
   # hyprland
   alias hl="start-hyprland"
   alias hyprlog="hyprctl rollinglog -f"
-  alias hyprcd='cd $XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/'
-  alias hyprkill='loginctl terminate-session 1'
-  alias hyprnuke='loginctl terminate-user ""'
+  alias hyprcd='cd $XDG_RUNTIME_DIR/hypr/${HYPRLAND_INSTANCE_SIGNATURE:-$(basename $(find $XDG_RUNTIME_DIR/hypr/*/ -maxdepth 1 -type d | tail -1))}/'
   alias hyprsig=update_hyprland_signature
 
   hyprdbg() {
