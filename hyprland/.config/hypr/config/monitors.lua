@@ -110,6 +110,7 @@ end
 --- Applies monitor modes/positions and persistent workspace rules for the active list.
 M.apply = function()
   for _, m in ipairs(Monitors) do
+    Utils.debug("TEST: " .. m.name .. " - " .. m.mode .. " - " .. m.position .. " - " .. m.scale)
     hl.monitor({
       output = "desc:" .. m.desc,
       mode = m.mode,
