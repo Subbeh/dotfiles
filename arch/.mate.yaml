@@ -10,6 +10,7 @@ packages:
     - jq
     - less
     - linux
+    - lsof
     - openssh
     - os-prober
     - vim
