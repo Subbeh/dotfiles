@@ -128,4 +128,23 @@ M.apply = function()
   end
 end
 
+--- Selects the profile, applies the layout, and moves waybar onto the panel.
+local function layout()
+  M.select()
+  M.apply()
+  if Panel then
+    StartWaybar(Panel)
+  end
+end
+
+--- Runs the layout now (handles `hyprctl reload`, when monitors are live) and
+--- re-runs it on startup + hotplug. hl.get_monitors() is empty at config-load on a
+--- cold boot, so the hyprland.start handler is what applies the layout then.
+M.init = function()
+  layout()
+  hl.on("hyprland.start", layout)
+  hl.on("monitor.added", layout)
+  hl.on("monitor.removed", layout)
+end
+
 return M

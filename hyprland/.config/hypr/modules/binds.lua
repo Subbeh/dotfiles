@@ -42,7 +42,7 @@ end
 
 -- WAYBAR
 hl.bind("SUPER + CTRL + W",               function() StartWaybar(hl.get_active_monitor().name) end)
-for i, m in ipairs(Monitors) do
+for i, m in ipairs(MONITORS) do
   hl.bind("SUPER + CTRL + " .. i,         function() StartWaybar(m.desc) end)
 end
 

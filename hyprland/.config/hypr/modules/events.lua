@@ -10,7 +10,6 @@ hl.on("hyprland.start", function()
   hl.exec_cmd("Thunar --daemon")
   hl.exec_cmd("kitty --hold __tmuxinator_sessions", { workspace = "special:term silent" })
   hl.exec_cmd("firefox-default.desktop", { workspace = "2" })
-  StartWaybar(Panel)
 end)
 
 hl.on("hyprland.shutdown", function()

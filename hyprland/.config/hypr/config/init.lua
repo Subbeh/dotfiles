@@ -9,15 +9,16 @@ Config.setup = function()
   require("lib.waybar") -- defines global StartWaybar
   require("lib.dropterm") -- defines global Dropterm
 
-  local Monitors = require("config.monitors")
-  Monitors.select() -- sets globals Monitors (active ordered list) + Panel
-
   require("modules.env")
   require("modules.settings")
   require("modules.rules")
-  Monitors.apply() -- hl.monitor() + persistent workspace rules
   require("modules.events")
   require("modules.binds")
+
+  -- Selects the profile and applies the monitor layout now (for hyprctl reload) and
+  -- on start/hotplug. Sets the globals Monitors + Panel. Runs last so its start
+  -- handler applies the layout after Hyprland has enumerated outputs.
+  require("config.monitors").init()
 end
 
 return Config
