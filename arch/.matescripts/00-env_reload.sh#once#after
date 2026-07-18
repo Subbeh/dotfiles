@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+systemctl --user daemon-reexec
+dbus-update-activation-environment --systemd --all
+exec $SHELL -l
