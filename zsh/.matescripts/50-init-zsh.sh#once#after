@@ -2,5 +2,5 @@
 
 set -euo pipefail
 
-mkdir -pv "$XDG_CACHE_HOME/zsh" "$XDG_STATE_HOME/zsh"
+mkdir -pv "${XDG_CACHE_HOME:-$HOME/.cache}/zsh" "${XDG_STATE_HOME:-$HOME/.local/state}/zsh"
 pkill -u "$USER" zsh --signal=USR1 || true
