@@ -64,6 +64,9 @@ local function apply_profile(profile, live)
               })
             end
           end
+          if role.waybar then
+            StartWaybar(mon.description)
+          end
           x = x + logical_width(cat)
         else
           hl.monitor({
