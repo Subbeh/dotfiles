@@ -72,6 +72,7 @@ M.select = function()
   local chosen
   for _, profile in ipairs(PROFILES) do
     if profile_matches(profile, by_name, live) then
+      Utils.debug("PROFILE: " .. profile)
       if not chosen or monitor_count(profile) > monitor_count(chosen) then
         chosen = profile
       end
@@ -110,7 +111,7 @@ end
 --- Applies monitor modes/positions and persistent workspace rules for the active list.
 M.apply = function()
   for _, m in ipairs(Monitors) do
-    Utils.debug("TEST: " .. m.name .. " - " .. m.mode .. " - " .. m.position .. " - " .. m.scale)
+    -- Utils.debug("TEST: " .. m.name .. " - " .. m.mode .. " - " .. m.position .. " - " .. m.scale)
     hl.monitor({
       output = "desc:" .. m.desc,
       mode = m.mode,
