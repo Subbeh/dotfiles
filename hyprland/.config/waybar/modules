@@ -35,7 +35,7 @@
   // TIME & DATE
   //
   "clock#time": {
-    "format": "<span foreground='#87d7ff'></span> <span foreground='#d7d7d7'>{:%R %Z}</span>",
+    "format": "<span foreground='#87d7ff'></span> <span foreground='#d7d7d7'>{:%R %Z}</span>",
     "tooltip-format": "{tz_list}",
     "timezones": [
       "Australia/Melbourne",
@@ -49,7 +49,7 @@
     }
   },
   "clock#date": {
-    "format": "<span foreground='#87d7ff'>󰸗</span> <span foreground='#d7d7d7'>{:%A %d %B %Y}</span>",
+    "format": "<span foreground='#87d7ff'></span> <span foreground='#d7d7d7'>{:%A %d %B %Y}</span>",
     "tooltip-format": "<tt><big>{calendar}</big></tt>",
     "calendar": {
       "mode": "month",

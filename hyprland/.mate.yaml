@@ -20,6 +20,8 @@ packages:
     - qt5-wayland
     - qt6-wayland
     - noto-fonts
+  aur:
+    - siji-ttf
 ignore:
   - .luacheckrc
   - .luarc.json
