@@ -18,6 +18,7 @@ Config.setup = function()
   -- Selects the profile and applies the monitor layout now (for hyprctl reload) and
   -- on start/hotplug. Sets the globals Monitors + Panel. Runs last so its start
   -- handler applies the layout after Hyprland has enumerated outputs.
+  hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })
   require("config.monitors").init()
 end
 
