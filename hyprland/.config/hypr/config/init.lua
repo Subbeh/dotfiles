@@ -9,11 +9,11 @@ Config.setup = function()
   require("lib.waybar") -- defines global StartWaybar
   require("lib.dropterm") -- defines global Dropterm
 
-  require("modules.env")
-  require("modules.settings")
-  require("modules.rules")
-  require("modules.events")
-  require("modules.binds")
+  require("config.env")
+  require("config.settings")
+  require("config.rules")
+  require("config.events")
+  require("config.binds")
 
   -- Selects the profile and applies the monitor layout now (for hyprctl reload) and
   -- on start/hotplug. Sets the globals Monitors + Panel. Runs last so its start
