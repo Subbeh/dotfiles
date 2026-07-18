@@ -34,21 +34,43 @@ local function get_monitor(desc)
   end
 end
 
-local function set_monitor(profile, monitor)
-  local mon_name = profile.monitors[get_monitor(monitor.description)]
-  if mon_name then
-    Utils.debug("MATCH: " .. monitor.description)
-  else
-    Utils.debug("NO MATCH: " .. monitor.description)
-  end
+local function logical_width(cat)
+  local px = tonumber(cat.mode:match("(%d+)x"))
+  return math.floor(px / (cat.scale or 1) + 0.5)
 end
 
 local function apply_profile(profile, live)
   for _, p in ipairs(PROFILES) do
     if p.name == profile then
-      Utils.debug("APPLYING: " .. p.name)
+      local x = 0
       for _, mon in ipairs(live) do
-        set_monitor(p, mon)
+        local name = get_monitor(mon.description)
+        local role = name and p.monitors[name]
+        if role then
+          local cat = MONITORS[name]
+          local scale = cat.scale or 1
+          hl.monitor({
+            output = "desc:" .. mon.description,
+            mode = cat.mode,
+            position = x .. "x0",
+            scale = tostring(scale),
+          })
+          if role.ws then
+            for _, n in ipairs(role.ws) do
+              hl.workspace_rule({
+                workspace = tostring(n),
+                monitor = "desc:" .. mon.description,
+                persistent = true,
+              })
+            end
+          end
+          x = x + logical_width(cat)
+        else
+          hl.monitor({
+            output = "desc:" .. mon.description,
+            disabled = true,
+          })
+        end
       end
     end
   end
