@@ -98,6 +98,24 @@
     "design-capacity": true
   },
   //
+  // CPU
+  //
+  "cpu": {
+    "format": " {icon0}{icon1}{icon2}{icon3}{icon4}{icon5}{icon6}{icon7}{icon8}{icon9}{icon10}{icon11} ",
+    "format-alt": " {usage}%",
+    "format-icons": [
+      "<span color='#afffaf'>▁</span>",
+      "<span color='#bceaa3'>▂</span>",
+      "<span color='#c6d497'>▃</span>",
+      "<span color='#cdbe8b'>▄</span>",
+      "<span color='#d2a880'>▅</span>",
+      "<span color='#d59175'>▆</span>",
+      "<span color='#d7796a'>▇</span>",
+      "<span color='#d75f5f'>█</span>"
+    ],
+    "interval": 1
+  },
+  //
   // CPU TEMP
   //
   "temperature": {
@@ -117,24 +135,6 @@
       "<span foreground='#d7796a'></span>",
       "<span foreground='#d75f5f'></span>"
     ]
-  },
-  //
-  // CPU
-  //
-  "cpu": {
-    "format": " {icon0}{icon1}{icon2}{icon3}{icon4}{icon5}{icon6}{icon7}{icon8}{icon9}{icon10}{icon11} ",
-    "format-alt": " {usage}%",
-    "format-icons": [
-      "<span color='#afffaf'>▁</span>",
-      "<span color='#bceaa3'>▂</span>",
-      "<span color='#c6d497'>▃</span>",
-      "<span color='#cdbe8b'>▄</span>",
-      "<span color='#d2a880'>▅</span>",
-      "<span color='#d59175'>▆</span>",
-      "<span color='#d7796a'>▇</span>",
-      "<span color='#d75f5f'>█</span>"
-    ],
-    "interval": 1
   },
   //
   // MEMORY

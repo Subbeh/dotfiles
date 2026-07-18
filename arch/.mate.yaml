@@ -11,9 +11,9 @@ packages:
     - less
     - linux
     - lsof
-    - openbsd-netcat
     - openssh
     - os-prober
     - vim
   aur:
     - yay
+    - gnu-netcat
