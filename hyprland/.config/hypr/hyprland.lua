@@ -1,11 +1,24 @@
 local Config = require("config") ---@class Config
 
 MONITORS = {
-  -- stylua: ignore start
-  { name = "internal_x1",  desc = "BOE 0x094C",                               mode = "1920x1200" },
-  { name = "internal_xps", desc = "Sharp Corporation 0x14AE",                 mode = "1920x1080" },
-  { name = "lg_27",        desc = "LG Electronics LG ULTRAFINE 504NTUW6F878", mode = "3840x2160", scale = 1.25 },
-  { name = "lg_32",        desc = "LG Electronics LG HDR 4K 308NTTQFK265",    mode = "3840x2160", scale = 1.25 },
+  internal_x1 = {
+    desc = "BOE 0x094C",
+    mode = "1920x1200",
+  },
+  internal_xps = {
+    desc = "Sharp Corporation 0x14AE",
+    mode = "1920x1080",
+  },
+  lg_27 = {
+    desc = "LG Electronics LG ULTRAFINE 504NTUW6F878",
+    mode = "3840x2160",
+    scale = 1.25,
+  },
+  lg_32 = {
+    desc = "LG Electronics LG HDR 4K 308NTTQFK265",
+    mode = "3840x2160",
+    scale = 1.25,
+  },
 }
 
 PROFILES = {
