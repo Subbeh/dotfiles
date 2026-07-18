@@ -18,13 +18,31 @@ local function match_profile(profile, live)
   return true
 end
 
+local function get_profile(live)
+  for _, profile in ipairs(PROFILES) do
+    if match_profile(profile, live) then
+      return profile.name
+    end
+  end
+end
+
+local function apply_profile(profile)
+  for _, p in ipairs(PROFILES) do
+    if p.name == profile then
+      Utils.debug("APPLYING: " .. p.name)
+      for _, mon in ipairs(p.monitors) do
+        Utils.debug("TEST")
+      end
+    end
+  end
+end
+
 local function reload_layout()
   local live = hl.get_monitors()
   if #live > 0 then
-    for _, profile in ipairs(PROFILES) do
-      if match_profile(profile, live) then
-        Utils.debug("MATCHED: " .. profile.name)
-      end
+    local profile = get_profile(live)
+    if profile then
+      apply_profile(profile)
     end
   end
 end
