@@ -1,0 +1,9 @@
+---
+name: dropterm
+startup_window: dropterm
+attach: false
+root: ~/
+
+windows:
+  - dropterm:
+  - updates:

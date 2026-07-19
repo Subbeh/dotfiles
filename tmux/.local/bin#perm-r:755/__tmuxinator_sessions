@@ -1,0 +1,19 @@
+#!/bin/sh
+
+sessions=$(tmuxinator list | sed -E '1d;s/ +/\n/g' | grep -v dropterm)
+session_count=$(echo "$sessions" | wc -l)
+if [ "$session_count" -eq 1 ]; then
+  session=$sessions
+else
+  session=$(echo "$sessions" | fzf --reverse --header "tmuxinator sessions:" --height ~100% --tmux center,20% --border)
+fi
+
+if [ "$session" != "" ]; then
+  tmux has-session -t "$session" 2>/dev/null || tmuxinator start "$session"
+
+  if [ "$TMUX" != "" ]; then
+    tmux switch-client -t "$session"
+  else
+    tmux attach -t "$session"
+  fi
+fi

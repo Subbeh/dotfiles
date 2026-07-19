@@ -38,6 +38,7 @@ profiles:
       - ssh
       - starship
       - statemate
+      - tmux
       - zsh
     variables:
       sshKeys:
