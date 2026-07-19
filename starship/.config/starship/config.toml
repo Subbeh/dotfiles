@@ -27,8 +27,6 @@ $python\
 
 [directory]
 truncate_to_repo = false
-# repo_root_style = 'bold bright-blue'
-# repo_root_format = '[$before_root_path]($before_repo_root_style)[$repo_root]($repo_root_style)[$path](blue)[$read_only]($read_only_style) '
 truncation_length = 8
 truncation_symbol = '+/'
 style = 'bold bright-blue'
@@ -117,5 +115,3 @@ command = ''' kubectl config view --minify --output 'jsonpath={..namespace}' '''
 symbol = '󱃾'
 when = ''' [ "$KUBECONFIG" = "$HOMELAB_DIR/.secret/kubeconfig" ] '''
 format = '[$symbol ](bold blue)[$output ](dimmed white)'
-
-

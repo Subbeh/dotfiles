@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+zsh_path="$(command -v zsh || true)"
+if [[ -z "$zsh_path" ]]; then
+  echo "zsh is not installed; skipping shell change" >&2
+  exit 0
+fi
+
+current_shell="$(getent passwd "$USER" | cut -d: -f7)"
+if [[ "$current_shell" == "$zsh_path" ]]; then
+  exit 0
+fi
+
+read -r -n 1 -p "Current login shell is $current_shell. Change it to zsh? [Y/n] " reply </dev/tty || reply=""
+echo
+if [[ "${reply:-Y}" == [Yy]* ]]; then
+  chsh -s "$zsh_path"
+  echo "Login shell changed to zsh (takes effect on next login)."
+fi
