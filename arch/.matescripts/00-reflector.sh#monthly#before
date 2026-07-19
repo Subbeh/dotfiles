@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+read -r -n 1 -p "Run reflector to update Pacman mirrorlist? [Y/n] " reply </dev/tty || reply=""
+echo
+if [[ "${reply:-Y}" == [Yy]* ]]; then
+  sudo reflector --country AU --age 24 --protocol http,https --sort rate --save /etc/pacman.d/mirrorlist
+  echo "Mirrorlist has been updated."
+fi

@@ -13,6 +13,7 @@ packages:
     - lsof
     - openssh
     - os-prober
+    - reflector
     - vim
   aur:
     - yay

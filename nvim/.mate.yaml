@@ -1,5 +1,6 @@
 packages:
   common:
+    - neovim
     - luacheck
     - stylua
     - yaml-language-server

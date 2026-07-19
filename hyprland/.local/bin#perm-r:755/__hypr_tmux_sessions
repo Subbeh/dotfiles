@@ -32,3 +32,4 @@ start_session "dropterm"
 # start_session "monitoring"
 
 echo "All tmux sessions started successfully"
+__tmuxinator_sessions

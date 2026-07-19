@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+read -r -n 1 -p "Update packages? [Y/n] " reply </dev/tty || reply=""
+echo
+if [[ "${reply:-Y}" == [Yy]* ]]; then
+  yay && echo "Packages have been updated."
+fi
