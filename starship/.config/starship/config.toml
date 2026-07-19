@@ -5,6 +5,7 @@ continuation_prompt = '[❯❯](dimmed white) '
 command_timeout = 1000
 
 format = """
+${custom.user}\
 $hostname\
 $directory\
 ${custom.direnv}\
@@ -25,6 +26,16 @@ $golang\
 $python\
 """
 
+[custom.user]
+command = 'echo $USER'
+when = ''' test "$USER" != "sysadm" && test "$USER" != "steven.terwindt" '''
+format = '[$output ](bold green)'
+
+[hostname]
+ssh_symbol = '\[\] '
+style = 'bright-blue'
+format = '[$ssh_symbol$hostname]($style)[ ❯](bold purple) '
+
 [directory]
 truncate_to_repo = false
 truncation_length = 8
@@ -36,14 +47,14 @@ read_only = ' 󰌾'
 [directory.substitutions]
 '~/.config/' = '[] '
 '~/.config' = '[]'
-'~/workspace/chezmoi/dotfiles/' = '[󰇘] '
-'~/workspace/chezmoi/dotfiles' = '[󰇘]'
+'~/workspace/dotfiles/' = '[󰇘] '
+'~/workspace/dotfiles' = '[󰇘]'
 '~/workspace/' = '[󱧽] '
 '~/workspace' = '[󱧽]'
 '~/' = '[] '
 '~' = '[]'
-'/data/workspace/chezmoi/dotfiles/' = '[󰇘] '
-'/data/workspace/chezmoi/dotfiles' = '[󰇘]'
+'/data/workspace/dotfiles/' = '[󰇘] '
+'/data/workspace/dotfiles' = '[󰇘]'
 '/data/workspace/' = '[󱧽] '
 '/data/workspace' = '[󱧽]'
 '/data/' = '[] '
@@ -74,11 +85,6 @@ symbol = ''
 
 [golang]
 format = '[ ](sapphire)'
-
-[hostname]
-ssh_symbol = '\[\] '
-style = 'bright-blue'
-format = '[$ssh_symbol$hostname]($style)[ ❯](bold purple) '
 
 [python]
 format = '[[](bold yellow) $virtualenv](dimmed white) '
