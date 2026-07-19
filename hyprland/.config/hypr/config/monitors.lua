@@ -2,6 +2,7 @@ local M = {}
 
 local function is_connected(monitor, live)
   for _, mon in ipairs(live) do
+    Utils.debug("IS_CON: " .. mon.description .. " == " .. MONITORS[monitor].desc)
     if mon.description == MONITORS[monitor].desc then
       return true
     end
@@ -15,6 +16,7 @@ local function match_profile(profile, live)
       return false
     end
   end
+  Utils.debug("PROFILE MATCH: " .. profile.name)
   return true
 end
 
