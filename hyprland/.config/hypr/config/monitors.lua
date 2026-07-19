@@ -2,7 +2,6 @@ local M = {}
 
 local function is_connected(monitor, live)
   for _, mon in ipairs(live) do
-    Utils.debug("IS_CON: " .. mon.description .. " == " .. MONITORS[monitor].desc)
     if mon.description == MONITORS[monitor].desc then
       return true
     end

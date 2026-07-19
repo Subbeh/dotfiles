@@ -12,29 +12,16 @@ applies the configuration:
 curl -fsSL https://raw.githubusercontent.com/Subbeh/dotfiles/main/install.sh | bash
 ```
 
-### Options
+The script is interactive and prompts for each step, so you can skip any part
+you don't need:
 
-| Option | Description |
-|--------|-------------|
-| `--statemate [BRANCH]` | Build statemate from source instead of downloading the binary. Optionally specify a branch (default: `main`). |
-| `--branch BRANCH` | Use specified branch for dotfiles repo (default: `main`). |
-| `-h, --help` | Show help message. |
-
-Examples:
-
-```sh
-# Default: download pre-built statemate binary, use main branch for dotfiles
-curl -fsSL https://raw.githubusercontent.com/Subbeh/dotfiles/main/install.sh | bash
-
-# Build statemate from source (main branch)
-curl -fsSL https://raw.githubusercontent.com/Subbeh/dotfiles/main/install.sh | bash -s -- --statemate
-
-# Build statemate from source (specific branch)
-curl -fsSL https://raw.githubusercontent.com/Subbeh/dotfiles/main/install.sh | bash -s -- --statemate dev
-
-# Use a different dotfiles branch
-curl -fsSL https://raw.githubusercontent.com/Subbeh/dotfiles/main/install.sh | bash -s -- --branch feature-branch
-```
+- Install prerequisites
+- (Re)install statemate — choose the prebuilt binary (Homebrew on macOS) or
+  build from source, selecting a branch when more than one exists
+- Fetch secrets from Bitwarden (prompts to log in when needed)
+- Clone the dotfiles repository — pick a branch and the clone location
+- Initialize the configuration (`mate init`)
+- Apply the configuration (`mate apply`)
 
 You'll be prompted to log in to Bitwarden during the run to retrieve the
 decryption key for secrets.

@@ -23,15 +23,6 @@ MONITORS = {
 
 PROFILES = {
   {
-    name = "undocked",
-    monitors = {
-      internal_x1 = {
-        ws = { 1, 2, 3 },
-        waybar = true,
-      },
-    },
-  },
-  {
     name = "docked",
     monitors = {
       internal_x1 = {},
@@ -40,6 +31,15 @@ PROFILES = {
       },
       lg_32 = {
         ws = { 2, 3 },
+        waybar = true,
+      },
+    },
+  },
+  {
+    name = "undocked",
+    monitors = {
+      internal_x1 = {
+        ws = { 1, 2, 3 },
         waybar = true,
       },
     },

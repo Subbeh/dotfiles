@@ -21,7 +21,7 @@ packages:
     - qt6-wayland
     - noto-fonts
   aur:
-    - siji-ttf
+    - siji-ng
 ignore:
   - .luacheckrc
   - .luarc.json
