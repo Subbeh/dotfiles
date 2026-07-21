@@ -70,18 +70,33 @@ zstyle :completion:* cache-path "$XDG_CACHE_HOME/zsh/zcompcache"
 autoload -U compinit
 compinit -u -C -d "${XDG_CACHE_HOME}/zsh/zcompdump"
 
-TRAPUSR1() {
+# Rebuild the command hash and completion dump so newly installed programs are
+# found and completable. Broadcast via SIGUSR1 by the dotfiles deploy hook.
+_refresh_completions() {
   rehash
   compinit -u -d "${XDG_CACHE_HOME}/zsh/zcompdump"
 }
 
-src() {
+# Reload shell configuration in place, then refresh completions. Broadcast via
+# SIGUSR2 so `src all` can reload every running shell.
+_reload() {
   source "$ZDOTDIR/.zshrc"
-  # .zshrc only sources profile.d for non-login shells; reload it here so src
-  # picks up profile.d changes regardless of login status.
+  # .zshrc only sources profile.d for non-login shells; reload it here so the
+  # reload picks up profile.d changes regardless of login status.
   emulate sh -c 'test -r "$XDG_CONFIG_HOME/sh/profile.d.sh" && . "$_"'
   [[ -n $DIRENV_DIR ]] && direnv reload
   [[ -n $MISE_SHELL ]] && _mise_hook
-  kill -USR1 $$
-  return 0
+  _refresh_completions
 }
+
+# Reload this shell, or every zsh with `src all`.
+src() {
+  if [[ "$1" == all ]]; then
+    pkill -u "$USER" zsh --signal=USR2 || true
+  else
+    _reload
+  fi
+}
+
+TRAPUSR1() { _refresh_completions; }
+TRAPUSR2() { _reload; }
