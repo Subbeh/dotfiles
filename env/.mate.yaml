@@ -1,7 +1,8 @@
 packages:
   common:
-    - tree
     - onefetch
     - pandoc-cli
+    - tree
+    - vivid
   brew:
     - coreutils

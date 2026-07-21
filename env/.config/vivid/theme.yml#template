@@ -1,0 +1,124 @@
+colors:
+  fg: "{{ .Vars.color.fg0 }}"
+  bg: "{{ .Vars.color.bg0 }}"
+
+  white:          "{{ .Vars.color.white }}"
+  grey:           "{{ .Vars.color.bg2 }}"
+  red:            "{{ .Vars.color.red }}"
+  red_bright:     "{{ .Vars.color.red_bright }}"
+  green:          "{{ .Vars.color.green }}"
+  green_bright:   "{{ .Vars.color.green_bright }}"
+  yellow:         "{{ .Vars.color.yellow }}"
+  yellow_bright:  "{{ .Vars.color.yellow_bright }}"
+  blue:           "{{ .Vars.color.blue }}"
+  blue_bright:    "{{ .Vars.color.blue_bright }}"
+  magenta:        "{{ .Vars.color.magenta }}"
+  magenta_bright: "{{ .Vars.color.magenta_bright }}"
+  cyan:           "{{ .Vars.color.cyan }}"
+  cyan_bright:    "{{ .Vars.color.cyan_bright }}"
+  orange:         "{{ .Vars.color.orange }}"
+
+core:
+  normal_text: {}
+  regular_file: {}
+  reset_to_normal: {}
+
+  directory:
+    foreground: blue_bright
+    font-style: bold
+
+  symlink:
+    foreground: magenta
+
+  multi_hard_link: {}
+
+  fifo:
+    foreground: fg
+    background: blue
+
+  socket:
+    foreground: fg
+    background: magenta
+
+  door:
+    foreground: fg
+    background: magenta
+
+  block_device:
+    foreground: cyan
+    background: grey
+
+  character_device:
+    foreground: magenta
+    background: grey
+
+  broken_symlink:
+    foreground: fg
+    background: red
+
+  missing_symlink_target:
+    foreground: fg
+    background: red
+
+  setuid: {}
+
+  setgid: {}
+
+  file_with_capability: {}
+
+  sticky_other_writable: {}
+
+  other_writable: {}
+
+  sticky: {}
+
+  executable_file:
+    foreground: green_bright
+    font-style: bold
+
+text:
+  special:
+    foreground: bg
+    background: yellow
+
+  todo:
+    font-style: bold
+
+  licenses:
+    foreground: grey
+
+  configuration:
+    foreground: yellow
+
+  other:
+    foreground: yellow
+
+markup:
+  foreground: yellow
+
+programming:
+  source:
+    foreground: cyan
+
+  tooling:
+    foreground: cyan
+
+    continuous-integration:
+      foreground: cyan
+
+media:
+  foreground: magenta
+
+office:
+  foreground: red
+
+archives:
+  foreground: cyan
+  font-style: underline
+
+executable:
+  foreground: red
+  font-style: bold
+
+unimportant:
+  foreground: grey
