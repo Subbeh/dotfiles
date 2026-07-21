@@ -48,15 +48,6 @@ function zle-line-init() {
 }
 zle -N zle-line-init
 
-function push-input-hold {
-  buf="$BUFFER"
-  cur="$CURSOR"
-  zle push-input
-  BUFFER="$buf"
-  CURSOR="$cur"
-}
-zle -N push-input-hold
-
 source "$XDG_CONFIG_HOME/zsh/keybinds"
 
 # Adopt the behavior of the system wide configuration for application specific settings
@@ -79,13 +70,18 @@ zstyle :completion:* cache-path "$XDG_CACHE_HOME/zsh/zcompcache"
 autoload -U compinit
 compinit -u -C -d "${XDG_CACHE_HOME}/zsh/zcompdump"
 
-src() {
-  source "$ZDOTDIR/.zshrc"
-  [[ -n $DIRENV_DIR ]] && direnv reload
-  [[ -n $MISE_SHELL ]] && _mise_hook
-}
-
 TRAPUSR1() {
   rehash
   compinit -u -d "${XDG_CACHE_HOME}/zsh/zcompdump"
+}
+
+src() {
+  source "$ZDOTDIR/.zshrc"
+  # .zshrc only sources profile.d for non-login shells; reload it here so src
+  # picks up profile.d changes regardless of login status.
+  emulate sh -c 'test -r "$XDG_CONFIG_HOME/sh/profile.d.sh" && . "$_"'
+  [[ -n $DIRENV_DIR ]] && direnv reload
+  [[ -n $MISE_SHELL ]] && _mise_hook
+  kill -USR1 $$
+  return 0
 }
