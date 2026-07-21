@@ -29,25 +29,6 @@ setopt pushd_silent         # Don't print directory stack after pushd/popd
 
 hash -d ws=${XDG_WORKSPACE_HOME}
 
-autoload -U select-word-style
-zle -N select-word-style
-select-word-style normal
-zstyle :zle:transpose-words word-style shell
-
-function zle-keymap-select() {
-  case $KEYMAP in
-    vicmd) echo -ne '\e[2 q' ;;        # steady block
-    viins | main) echo -ne '\e[6 q' ;; # steady line
-  esac
-  zle reset-prompt
-}
-zle -N zle-keymap-select
-
-function zle-line-init() {
-  zle -K viins
-}
-zle -N zle-line-init
-
 source "$XDG_CONFIG_HOME/zsh/keybinds"
 
 # Adopt the behavior of the system wide configuration for application specific settings
@@ -76,6 +57,7 @@ _refresh_completions() {
   rehash
   compinit -u -d "${XDG_CACHE_HOME}/zsh/zcompdump"
 }
+TRAPUSR1() { _refresh_completions; }
 
 # Reload shell configuration in place, then refresh completions. Broadcast via
 # SIGUSR2 so `src all` can reload every running shell.
@@ -88,6 +70,7 @@ _reload() {
   [[ -n $MISE_SHELL ]] && _mise_hook
   _refresh_completions
 }
+TRAPUSR2() { _reload; }
 
 # Reload this shell, or every zsh with `src all`.
 src() {
@@ -97,6 +80,3 @@ src() {
     _reload
   fi
 }
-
-TRAPUSR1() { _refresh_completions; }
-TRAPUSR2() { _reload; }
