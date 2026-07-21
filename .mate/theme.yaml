@@ -1,0 +1,27 @@
+variables:
+  color:
+    fg0:            d7d7d7  # #d7d7d7
+    bg0:            262626  # #262626
+    bg1:            303030  # #303030
+    bg2:            6c6c6c  # #6c6c6c
+    cursor:         87afd7  # #87afd7
+    sel_fg:         d7d7d7  # #d7d7d7
+    sel_bg:         005f87  # #005f87
+    black:          262626  # #262626
+    black_bright:   6c6c6c  # #6c6c6c
+    red:            d75f5f  # #d75f5f
+    red_bright:     ff5f5f  # #ff5f5f
+    green:          afffaf  # #afffaf
+    green_bright:   afd787  # #afd787
+    yellow:         d7d7af  # #d7d7af
+    yellow_bright:  ffffd7  # #ffffd7
+    blue:           87afd7  # #87afd7
+    blue_bright:    87d7ff  # #87d7ff
+    magenta:        d7afd7  # #d7afd7
+    magenta_bright: d787ff  # #d787ff
+    cyan:           87d7af  # #87d7af
+    cyan_bright:    87ffff  # #87ffff
+    white:          d7d7d7  # #d7d7d7
+    white_bright:   d7d7d7  # #d7d7d7
+
+    orange:         fab387  # #fab387

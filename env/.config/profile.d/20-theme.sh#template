@@ -1,0 +1,29 @@
+#!/bin/sh
+
+BASE16_COLOR_00_HEX=${BASE16_COLOR_00_HEX:-{{ .Vars.color.bg0 }}}
+BASE16_COLOR_01_HEX=${BASE16_COLOR_01_HEX:-{{ .Vars.color.red }}}
+BASE16_COLOR_02_HEX=${BASE16_COLOR_02_HEX:-{{ .Vars.color.green }}}
+BASE16_COLOR_03_HEX=${BASE16_COLOR_03_HEX:-{{ .Vars.color.yellow }}}
+BASE16_COLOR_04_HEX=${BASE16_COLOR_04_HEX:-{{ .Vars.color.blue }}}
+BASE16_COLOR_05_HEX=${BASE16_COLOR_05_HEX:-{{ .Vars.color.magenta }}}
+BASE16_COLOR_06_HEX=${BASE16_COLOR_06_HEX:-{{ .Vars.color.cyan }}}
+BASE16_COLOR_07_HEX=${BASE16_COLOR_07_HEX:-{{ .Vars.color.white }}}
+BASE16_COLOR_08_HEX=${BASE16_COLOR_08_HEX:-{{ .Vars.color.bg2 }}}
+BASE16_COLOR_09_HEX=${BASE16_COLOR_09_HEX:-{{ .Vars.color.red_bright }}}
+BASE16_COLOR_0A_HEX=${BASE16_COLOR_0A_HEX:-{{ .Vars.color.green_bright }}}
+BASE16_COLOR_0B_HEX=${BASE16_COLOR_0B_HEX:-{{ .Vars.color.yellow_bright }}}
+BASE16_COLOR_0C_HEX=${BASE16_COLOR_0C_HEX:-{{ .Vars.color.blue_bright }}}
+BASE16_COLOR_0D_HEX=${BASE16_COLOR_0D_HEX:-{{ .Vars.color.magenta_bright }}}
+BASE16_COLOR_0E_HEX=${BASE16_COLOR_0E_HEX:-{{ .Vars.color.cyan_bright }}}
+BASE16_COLOR_0F_HEX=${BASE16_COLOR_0F_HEX:-{{ .Vars.color.white_bright }}}
+
+export BASE16_COLOR_00_HEX BASE16_COLOR_01_HEX BASE16_COLOR_02_HEX BASE16_COLOR_03_HEX \
+  BASE16_COLOR_04_HEX BASE16_COLOR_05_HEX BASE16_COLOR_06_HEX BASE16_COLOR_07_HEX \
+  BASE16_COLOR_08_HEX BASE16_COLOR_09_HEX BASE16_COLOR_0A_HEX BASE16_COLOR_0B_HEX \
+  BASE16_COLOR_0C_HEX BASE16_COLOR_0D_HEX BASE16_COLOR_0E_HEX BASE16_COLOR_0F_HEX
+
+if chkcmd dircolors; then
+  eval "$(dircolors "$XDG_CONFIG_HOME"/.dircolors)"
+elif chkcmd gdircolors; then
+  eval "$(gdircolors "$XDG_CONFIG_HOME"/.dircolors)"
+fi

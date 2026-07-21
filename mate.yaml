@@ -4,6 +4,8 @@
 # Default target for deployed files (default: $HOME)
 target_base: "~"
 
+include:
+  - .mate/theme.yaml
 variables:
   authorizedSshKeys:
     - laptop-personal-ssh-key
