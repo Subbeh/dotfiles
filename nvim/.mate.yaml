@@ -4,3 +4,7 @@ packages:
     - luacheck
     - stylua
     - yaml-language-server
+ignore:
+  - .luacheckrc
+  - .luarc.json
+  - .stylua.toml
