@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+read -r -n 1 -p "Update zinit and zsh plugins? [Y/n] " reply </dev/tty || reply=""
+echo
+if [[ "${reply:-Y}" == [Yy]* ]]; then
+  ZINIT_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git"
+  if [[ -r "$ZINIT_HOME/zinit.zsh" ]]; then
+    # zinit is a zsh function, so run the updates inside zsh with it sourced.
+    zsh -c "source '$ZINIT_HOME/zinit.zsh'; zinit self-update; zinit update --all" &&
+      echo "zinit and plugins have been updated."
+  else
+    echo "zinit is not installed yet; skipping."
+  fi
+fi
