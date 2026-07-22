@@ -1,0 +1,32 @@
+-- Color palette, generated from .mate/theme.yaml by statemate templating.
+-- Do NOT edit the deployed lua/palette.lua by hand; edit .mate/theme.yaml
+-- and re-apply statemate so every tool stays in sync.
+return {
+  fg0            = "#{{ .Vars.color.fg0 }}",
+  bg0            = "#{{ .Vars.color.bg0 }}",
+  bg1            = "#{{ .Vars.color.bg1 }}",
+  bg2            = "#{{ .Vars.color.bg2 }}",
+
+  cursor         = "#{{ .Vars.color.cursor }}",
+  sel_fg         = "#{{ .Vars.color.sel_fg }}",
+  sel_bg         = "#{{ .Vars.color.sel_bg }}",
+
+  black          = "#{{ .Vars.color.black }}",
+  black_bright   = "#{{ .Vars.color.black_bright }}",
+  red            = "#{{ .Vars.color.red }}",
+  red_bright     = "#{{ .Vars.color.red_bright }}",
+  green          = "#{{ .Vars.color.green }}",
+  green_bright   = "#{{ .Vars.color.green_bright }}",
+  yellow         = "#{{ .Vars.color.yellow }}",
+  yellow_bright  = "#{{ .Vars.color.yellow_bright }}",
+  blue           = "#{{ .Vars.color.blue }}",
+  blue_bright    = "#{{ .Vars.color.blue_bright }}",
+  magenta        = "#{{ .Vars.color.magenta }}",
+  magenta_bright = "#{{ .Vars.color.magenta_bright }}",
+  cyan           = "#{{ .Vars.color.cyan }}",
+  cyan_bright    = "#{{ .Vars.color.cyan_bright }}",
+  white          = "#{{ .Vars.color.white }}",
+  white_bright   = "#{{ .Vars.color.white_bright }}",
+
+  orange         = "#{{ .Vars.color.orange }}",
+}
