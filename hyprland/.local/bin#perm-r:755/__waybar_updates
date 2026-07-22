@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-if command -v checkupdates-with-aur &>/dev/null; then
-  updates=$(checkupdates-with-aur | sed -r "s/\x1B\[[0-9;]*[mK]//g" | column -t)
+if command -v checkupdates_all &>/dev/null; then
+  updates=$(checkupdates_all)
 
   if [[ -z "$(echo "$updates" | tr -d '[:space:]')" ]]; then
     updates_fmt=""

@@ -4,9 +4,11 @@ variables:
     bg0:            262626  # #262626
     bg1:            303030  # #303030
     bg2:            6c6c6c  # #6c6c6c
+
     cursor:         87afd7  # #87afd7
     sel_fg:         d7d7d7  # #d7d7d7
     sel_bg:         005f87  # #005f87
+
     black:          262626  # #262626
     black_bright:   6c6c6c  # #6c6c6c
     red:            d75f5f  # #d75f5f
