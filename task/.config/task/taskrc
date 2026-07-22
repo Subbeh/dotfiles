@@ -1,0 +1,37 @@
+news.version=3.4.2
+
+hooks.location=~/.config/task/hooks
+uda.priority.values=H,M,,L
+urgency.uda.priority.L.coefficient=0
+urgency.uda.priority..coefficient=1.8
+
+# description.count=true
+context.work.read=project:work
+context.work.write=project:work
+context.home.read=project:home
+context.home.write=project:home
+context.tech.read=project:tech
+context.tech.write=project:tech
+
+# theme
+color=on
+color.active=black on magenta
+color.overdue=on red
+color.due.today=on bold red
+color.due=on yellow
+color.blocked=on grey
+#color.tagged=bold
+#color.recurring=italic
+#color.scheduled=italic
+
+color.project.home=yellow
+color.project.work=blue
+color.project.tech=magenta
+
+uda.taskwarrior-tui.style.navbar=bold blue
+uda.taskwarrior-tui.style.command=magenta
+uda.taskwarrior-tui.style.report.scrollbar=blue
+uda.taskwarrior-tui.style.report.scrollbar.area=blue
+uda.taskwarrior-tui.style.command.error=red
+uda.taskwarrior-tui.style.context.active=magenta
+uda.taskwarrior-tui.style.calendar.title=blue

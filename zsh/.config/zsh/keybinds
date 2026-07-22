@@ -49,6 +49,7 @@ bindkey '^E'      end-of-line
 bindkey '^Z'      fancy-ctrl-z
 bindkey '^[[1;5C' forward-word
 bindkey '^[[1;5D' backward-word
+bindkey '^[[1;5A' kill-line
 bindkey '^[t'     transpose-words
 
 bindkey -M vicmd '^[q'     push-line
