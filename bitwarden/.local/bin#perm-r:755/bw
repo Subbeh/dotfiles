@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+_self_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+_real_bw=$(PATH="${PATH//$_self_dir:/}" command -v bw)
+
+bw_unlock() {
+  local bw_key=$("$_real_bw" unlock --raw)
+  echo "$bw_key" | gpg --yes --encrypt --recipient "${BW_GPGKEY}" -o "${BW_KEYCHAIN}" &&
+    chmod 600 "${BW_KEYCHAIN}"
+  pkill -u "$USER" zsh --signal=USR2 || true
+}
+
+case "$1" in
+  unlock) bw_unlock ;;
+  *)
+    "$_real_bw" "$@"
+    ;;
+esac
