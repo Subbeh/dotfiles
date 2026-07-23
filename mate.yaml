@@ -10,6 +10,8 @@ variables:
   authorizedSshKeys:
     - laptop-personal-ssh-key
     - laptop-work-ssh-key
+  gpgKeys:
+    - D70DB41617DF61F1
 
 sources:
   - env

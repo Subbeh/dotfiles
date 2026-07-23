@@ -13,17 +13,17 @@ variables:
     black_bright:   6c6c6c  # #6c6c6c
     red:            d75f5f  # #d75f5f
     red_bright:     ff5f5f  # #ff5f5f
-    green:          afffaf  # #afffaf
-    green_bright:   afd787  # #afd787
+    green:          b6d8b6  # #b6d8b6
+    green_bright:   afffaf  # #afffaf
     yellow:         d7d7af  # #d7d7af
-    yellow_bright:  ffffd7  # #ffffd7
+    yellow_bright:  ffffc0  # #ffffc0
     blue:           87afd7  # #87afd7
     blue_bright:    87d7ff  # #87d7ff
-    magenta:        d7afd7  # #d7afd7
-    magenta_bright: d787ff  # #d787ff
-    cyan:           87d7af  # #87d7af
-    cyan_bright:    87ffff  # #87ffff
-    white:          d7d7d7  # #d7d7d7
+    magenta:        d7bad7  # #d7bad7
+    magenta_bright: d7a3d7  # #d7a3d7
+    cyan:           97caca  # #97caca
+    cyan_bright:    adffff  # #adffff
+    white:          a7a7a7  # #a7a7a7
     white_bright:   d7d7d7  # #d7d7d7
 
     orange:         fab387  # #fab387

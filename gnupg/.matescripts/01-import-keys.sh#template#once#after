@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+{{ range $key := (var "gpgKeys") }}
+if ! gpg --list-keys "{{ $key }}" &>/dev/null; then
+  echo "==> Importing GPG key {{ $key }} from keyserver..."
+  gpg --keyserver keys.openpgp.org --recv-keys "{{ $key }}"
+  echo -e "5\ny\n" | gpg --command-fd 0 --expert --edit-key "{{ $key }}" trust quit
+fi
+{{ end }}

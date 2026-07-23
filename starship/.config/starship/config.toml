@@ -29,7 +29,7 @@ $python\
 [custom.user]
 command = 'echo $USER'
 when = ''' test "$USER" != "sysadm" && test "$USER" != "steven.terwindt" '''
-format = '[$output ](bold green)'
+format = '[$output ](bold yellow)'
 
 [hostname]
 ssh_symbol = '\[\] '
@@ -99,7 +99,7 @@ format = '[[$symbol](bold bright-blue)$namespace](dimmed white) '
 [custom.direnv]
 command = 'echo '
 when = ''' test -n "$DIRENV_DIR" '''
-format = '[$output ](bold green)'
+format = '[$output ](bold bright-green)'
 
 [custom.mise]
 command = 'echo '
