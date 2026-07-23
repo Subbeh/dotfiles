@@ -13,14 +13,6 @@
   "hyprland/workspaces": {
     "all-outputs": true,
     "format": "{name}",
-    // "format-icons": {
-    //   "1": "󰬺",
-    //   "2": "󰬻",
-    //   "3": "",
-    //   "4": "",
-    //   "5": "",
-    //   "special": "X"
-    // },
     "on-scroll-up": "hyprctl dispatch workspace +1 1>/dev/null",
     "on-scroll-down": "hyprctl dispatch workspace -1 1>/dev/null",
     "sort-by-number": true,
@@ -253,8 +245,6 @@
     },
     "on-click": "__waybar_cycle_sink next",
     "on-click-right": "__waybar_cycle_sink prev",
-    // "on-click-right": "pavucontrol -t 3",
-    // "on-scroll-down": "__waybar_cycle_sink prev",
     "ignored-sinks": []
   },
   //
@@ -323,16 +313,6 @@
     "return-type": "json",
     "interval": 10,
     "tooltip": true
-  },
-  //
-  // BORGMATIC
-  //
-  "custom/borgmatic": {
-    "exec": "__waybar_borgmatic",
-    "return-type": "json",
-    "interval": 10,
-    "tooltip": true,
-    "on-click-right": "systemctl --user start borgmatic.service"
   },
   //
   // STATEMATE
